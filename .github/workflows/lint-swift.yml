@@ -1,0 +1,29 @@
+name: Lint Swift
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/lint-swift.yml"
+      - "packages/react-native-legal/ios/**"
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  lint-swift:
+    name: Lint Swift
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Install Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: '6'
+
+      - name: Lint Swift code
+        run: ./scripts/lint-swift.sh
+

@@ -130,6 +130,18 @@ To fix formatting errors, run the following:
 yarn lint:js --fix
 ```
 
+For Swift code, run the following to verify code quality:
+
+```sh
+yarn lint:swift
+```
+
+To fix Swift formatting errors, run:
+
+```sh
+yarn format:swift
+```
+
 To edit the iOS native part, open `examples/bare-example/ios/ReactNativeLegalBareExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > ReactNativeLegal`.
 
 To edit the Android native part, open `examples/bare-example/android` in Android studio and find the source files at `react-native-legal` under `Android`.
@@ -149,9 +161,11 @@ Our pre-commit hooks verify that your commit message matches this format when co
 
 ### Linting and tests
 
-[ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [TypeScript](https://www.typescriptlang.org/)
+[ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [TypeScript](https://www.typescriptlang.org/), [swift-format](https://github.com/swiftlang/swift-format)
 
-We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint](https://eslint.org/) with [Prettier](https://prettier.io/) for linting and formatting the code.
+We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint](https://eslint.org/) with [Prettier](https://prettier.io/) for linting and formatting JS/TS code.
+
+For Swift code, we use [swift-format](https://github.com/swiftlang/swift-format) as a linter and formatter
 
 Our pre-commit hooks verify that the linter passes when committing.
 
@@ -172,6 +186,8 @@ The `package.json` file contains various scripts for common tasks:
 - `yarn build:library`: compile the library code with babel.
 - `yarn lint:js`: lint files with ESLint.
 - `yarn typescript`: type-check files with TypeScript.
+- `yarn lint:swift`: lint Swift files.
+- `yarn format:swift`: format Swift files.
 
 ### Sending a pull request
 

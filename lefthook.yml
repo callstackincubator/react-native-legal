@@ -11,6 +11,11 @@ pre-commit:
       files: git diff --name-only --cached
       glob: "*.{js,ts,jsx,tsx}"
       run: yarn typescript
+    lint-swift:
+      # Run linter for Swift files if any of them are staged
+      files: git diff --name-only --cached
+      glob: "*.{swift}"
+      run: yarn lint:swift
 commit-msg:
   commands:
     commitlint:

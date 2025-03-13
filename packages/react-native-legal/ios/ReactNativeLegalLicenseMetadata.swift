@@ -1,4 +1,4 @@
 struct ReactNativeLegalLicenseMetadata {
-    var name: String?
-    var content: String?
+  var name: String?
+  var content: String?
 }

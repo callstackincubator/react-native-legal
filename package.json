@@ -11,6 +11,8 @@
     "build:library": "yarn workspace react-native-legal build-plugins && yarn workspace react-native-legal build-library",
     "lint:js": "eslint \"**/*.{js,ts,tsx}\"",
     "typescript": "yarn build:library && tsc --noEmit -p examples/bare-example/tsconfig.json && tsc --noEmit -p examples/expo-example/tsconfig.json",
+    "lint:swift": "./scripts/lint-swift.sh",
+    "format:swift": "./scripts/format-swift.sh",
     "release": "changeset publish",
     "version": "changeset version",
     "changeset": "changeset"
