@@ -142,6 +142,13 @@ To fix Swift formatting errors, run:
 yarn format:swift
 ```
 
+Objective-C code is linted and formatted using following commands:
+
+```sh
+yarn lint:objc
+yarn format:objc
+```
+
 To edit the iOS native part, open `examples/bare-example/ios/ReactNativeLegalBareExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > ReactNativeLegal`.
 
 To edit the Android native part, open `examples/bare-example/android` in Android studio and find the source files at `react-native-legal` under `Android`.
@@ -161,23 +168,19 @@ Our pre-commit hooks verify that your commit message matches this format when co
 
 ### Linting and tests
 
-[ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [TypeScript](https://www.typescriptlang.org/), [swift-format](https://github.com/swiftlang/swift-format)
+[ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [TypeScript](https://www.typescriptlang.org/), [swift-format](https://github.com/swiftlang/swift-format), [clang-format](https://clang.llvm.org/docs/ClangFormat.html)
 
 We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint](https://eslint.org/) with [Prettier](https://prettier.io/) for linting and formatting JS/TS code.
 
 For Swift code, we use [swift-format](https://github.com/swiftlang/swift-format) as a linter and formatter
 
+For Objective-C, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html) as a linter and formatter
+
 Our pre-commit hooks verify that the linter passes when committing.
 
 ### Publishing to npm
 
-We use [release-it](https://github.com/release-it/release-it) to make it easier to publish new versions. It handles common tasks like bumping version based on semver, creating tags and releases etc.
-
-To publish new versions, run the following:
-
-```sh
-yarn release
-```
+We use [changesets](https://github.com/changesets/changesets) to make it easier to publish new versions. It handles common tasks like bumping version based on semver, creating tags and releases etc.
 
 ### Scripts
 
@@ -186,7 +189,9 @@ The `package.json` file contains various scripts for common tasks:
 - `yarn build:library`: compile the library code with babel.
 - `yarn lint:js`: lint files with ESLint.
 - `yarn typescript`: type-check files with TypeScript.
+- `yarn lint:objc`: lint Objective-C files.
 - `yarn lint:swift`: lint Swift files.
+- `yarn format:objc`: format Objective-C files.
 - `yarn format:swift`: format Swift files.
 
 ### Sending a pull request

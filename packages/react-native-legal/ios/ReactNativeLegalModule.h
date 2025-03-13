@@ -2,6 +2,6 @@
 
 @class ReactNativeLegalModuleImpl;
 
-@interface ReactNativeLegalModule : NSObject<RCTBridgeModule>
+@interface ReactNativeLegalModule : NSObject <RCTBridgeModule>
 
 @end
