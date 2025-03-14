@@ -9,10 +9,11 @@ object ReactNativeLegalModuleImpl {
 
     fun launchLicenseListScreen(reactContext: ReactApplicationContext, licenseHeaderText: String) {
         val context = reactContext.currentActivity ?: return
-        val intent = Intent(context, ReactNativeLegalActivity::class.java).apply {
-            this.putExtra("data", LibsBuilder())
-            this.putExtra(LibsBuilder.BUNDLE_TITLE, licenseHeaderText)
-        }
+        val intent =
+            Intent(context, ReactNativeLegalActivity::class.java).apply {
+                this.putExtra("data", LibsBuilder())
+                this.putExtra(LibsBuilder.BUNDLE_TITLE, licenseHeaderText)
+            }
 
         context.startActivity(intent)
     }

@@ -8,7 +8,7 @@ import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
 import com.facebook.react.turbomodule.core.interfaces.TurboModule
 
-class ReactNativeLegalTurboPackage: TurboReactPackage() {
+class ReactNativeLegalTurboPackage : TurboReactPackage() {
     override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
         return when (name) {
             ReactNativeLegalModule.NAME -> ReactNativeLegalModule(reactContext)
@@ -17,9 +17,8 @@ class ReactNativeLegalTurboPackage: TurboReactPackage() {
     }
 
     override fun getReactModuleInfoProvider(): ReactModuleInfoProvider {
-        val moduleList: Array<Class<out NativeModule?>> = arrayOf(
-            ReactNativeLegalModule::class.java
-        )
+        val moduleList: Array<Class<out NativeModule?>> =
+            arrayOf(ReactNativeLegalModule::class.java)
         val reactModuleInfoMap: MutableMap<String, ReactModuleInfo> = HashMap()
         for (moduleClass in moduleList) {
             val reactModule = moduleClass.getAnnotation(ReactModule::class.java) ?: continue
@@ -30,7 +29,7 @@ class ReactNativeLegalTurboPackage: TurboReactPackage() {
                     true,
                     reactModule.needsEagerInit,
                     reactModule.isCxxModule,
-                    TurboModule::class.java.isAssignableFrom(moduleClass)
+                    TurboModule::class.java.isAssignableFrom(moduleClass),
                 )
         }
         return ReactModuleInfoProvider { reactModuleInfoMap }

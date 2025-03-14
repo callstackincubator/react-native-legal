@@ -144,9 +144,26 @@ yarn format:swift
 
 Objective-C code is linted and formatted using following commands:
 
+Lint code
 ```sh
 yarn lint:objc
+```
+
+Fixing formatting errors
+```sh
 yarn format:objc
+```
+
+For Kotlin codebase, run the following to verify code quality:
+
+Lint Kotlin code
+```sh
+yarn lint:android
+```
+
+Format Kotlin code
+```sh
+yarn format:android
 ```
 
 To edit the iOS native part, open `examples/bare-example/ios/ReactNativeLegalBareExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > ReactNativeLegal`.
@@ -168,13 +185,15 @@ Our pre-commit hooks verify that your commit message matches this format when co
 
 ### Linting and tests
 
-[ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [TypeScript](https://www.typescriptlang.org/), [swift-format](https://github.com/swiftlang/swift-format), [clang-format](https://clang.llvm.org/docs/ClangFormat.html)
+[ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [TypeScript](https://www.typescriptlang.org/), [swift-format](https://github.com/swiftlang/swift-format), [clang-format](https://clang.llvm.org/docs/ClangFormat.html), [Spotless](https://github.com/diffplug/spotless), [ktfmt](https://facebook.github.io/ktfmt/)
 
 We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint](https://eslint.org/) with [Prettier](https://prettier.io/) for linting and formatting JS/TS code.
 
 For Swift code, we use [swift-format](https://github.com/swiftlang/swift-format) as a linter and formatter
 
 For Objective-C, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html) as a linter and formatter
+
+For Android, we use [Spotless](https://github.com/diffplug/spotless) and [ktfmt](https://facebook.github.io/ktfmt/) for linting and formatting
 
 Our pre-commit hooks verify that the linter passes when committing.
 
@@ -189,8 +208,10 @@ The `package.json` file contains various scripts for common tasks:
 - `yarn build:library`: compile the library code with babel.
 - `yarn lint:js`: lint files with ESLint.
 - `yarn typescript`: type-check files with TypeScript.
+- `yarn lint:android`: lint Kotlin files.
 - `yarn lint:objc`: lint Objective-C files.
 - `yarn lint:swift`: lint Swift files.
+- `yarn format:android`: format Kotlin files.
 - `yarn format:objc`: format Objective-C files.
 - `yarn format:swift`: format Swift files.
 

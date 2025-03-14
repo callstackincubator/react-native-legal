@@ -11,6 +11,11 @@ pre-commit:
       files: git diff --name-only --cached
       glob: "*.{js,ts,jsx,tsx}"
       run: yarn typescript
+    lint-android:
+      # Run linter for Kotlin files if any of them are staged
+      files: git diff --name-only --cached
+      glob: "*.{kt,kts}"
+      run: yarn lint:android
     lint-objc:
       # Run linter for ObjC files if any of them are staged
       files: git diff --name-only --cached
