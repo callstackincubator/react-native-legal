@@ -6,6 +6,8 @@ Automagically generate license acknowledgements for your React Native app 🚀
 | - | - | - | - |
 | ![Android example](https://github.com/callstackincubator/react-native-legal/raw/main/static/android-expo.gif) | ![iOS example](https://github.com/callstackincubator/react-native-legal/raw/main/static/ios-expo.gif) | ![AndroidTV example](https://github.com/callstackincubator/react-native-legal/raw/main/static/android-tv.gif) | ![tvOS example](https://github.com/callstackincubator/react-native-legal/raw/main/static/tvos.gif) |
 
+# Test if will trigger status checks
+
 ## Installation
 
 ```sh
