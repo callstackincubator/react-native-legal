@@ -1,0 +1,120 @@
+name: Expo Example E2E Tests
+
+on:
+  push:
+    branches: [7-add-maestro-e2e-tests]
+    paths:
+      - 'packages/react-native-legal/**'
+      - 'examples/expo-example/**'
+      - '.github/workflows/expo-example-e2e.yml'
+  pull_request:
+    paths:
+      - 'packages/react-native-legal/**'
+      - 'examples/expo-example/**'
+      - '.github/workflows/expo-example-e2e.yml'
+
+jobs:
+  android-e2e:
+    name: Android E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: examples/expo-example
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          
+      - name: Install dependencies
+        run: yarn install --immutable
+        
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+        
+      - name: Prebuild
+        run: yarn expo prebuild --platform android
+        
+      - name: Build Android
+        run: |
+          cd android && ./gradlew assembleRelease || {
+            echo "Error: Failed to build Android app"
+            exit 1
+          }
+          echo "APK should be at:"
+          find ${{ github.workspace }} -name "*.apk"
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Run Android E2E tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          profile: pixel_7
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          script: cd examples/expo-example && adb install -r $(find . -name "*.apk") && yarn test:e2e:android
+
+  ios-e2e:
+    name: iOS E2E Tests
+    runs-on: macos-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: examples/expo-example
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          
+      - name: Install dependencies
+        run: yarn install --immutable
+        
+      - name: Prebuild
+        run: yarn expo prebuild --platform ios
+        
+      - name: Setup iOS Simulator
+        uses: futureware-tech/simulator-action@v2
+        with:
+          model: 'iPhone 15'
+          
+      - name: Build iOS
+        run: |
+          xcodebuild -workspace ios/ReactNativeLegalExpoExample.xcworkspace \
+            -scheme ReactNativeLegalExpoExample \
+            -sdk iphonesimulator \
+            -configuration Release \
+            -derivedDataPath build || {
+              echo "Error: Failed to build iOS app"
+              exit 1
+            }
+          
+      - name: Install iOS app
+        run: |
+          xcrun simctl install booted ./build/Build/Products/Release-iphonesimulator/ReactNativeLegalExpoExample.app || {
+            echo "Error: Failed to install iOS app"
+            exit 1
+          }
+          
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+          
+      - name: Run iOS E2E tests
+        run: yarn test:e2e:ios 
