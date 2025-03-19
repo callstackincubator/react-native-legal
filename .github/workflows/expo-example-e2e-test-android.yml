@@ -126,4 +126,3 @@ jobs:
           script: |
             adb install android-debug-build/android-debug.apk
             yarn run test:e2e:android
-          working-directory: examples/expo-example
