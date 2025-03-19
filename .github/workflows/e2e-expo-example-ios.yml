@@ -28,9 +28,9 @@ jobs:
       
       - name: Setup
         uses: ./.github/actions/setup
-      
-      - name: Install Expo CLI
-        run: yarn global add expo-cli
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
         
       - name: Install Maestro
         run: |
