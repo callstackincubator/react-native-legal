@@ -1510,7 +1510,7 @@ PODS:
     - React-logger (= 0.76.7)
     - React-perflogger (= 0.76.7)
     - React-utils (= 0.76.7)
-  - ReactNativeLegal (1.0.0):
+  - ReactNativeLegal (1.1.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1803,10 +1803,10 @@ SPEC CHECKSUMS:
   React-utils: 9f9a6a31d703b136eb1614d914c10a3c96b1e6dd
   ReactCodegen: 5d7e2d2948a6629a51a59ebc99f620e2afb13ee5
   ReactCommon: 04292c6f596181ebf755e7929d96d2148542b0e8
-  ReactNativeLegal: 3514fb143867dc60703a0a04af5d9c200c8ae83f
+  ReactNativeLegal: 9ef07788333fd105354eeafd6892a29e52cfaae0
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 90d80701b27946c4b23461c00a7207f300a6ff71
 
-PODFILE CHECKSUM: d8cf13800dea3fa1eb0928883853c6b37979b1d5
+PODFILE CHECKSUM: 281ef88fa74b8505eb17a64f6c9548afb72d4104
 
 COCOAPODS: 1.15.2

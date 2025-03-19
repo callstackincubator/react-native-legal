@@ -15,7 +15,10 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.reactnativelegal.expoexample"
+      "bundleIdentifier": "com.reactnativelegal.expoexample",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -42,6 +45,12 @@
         }
       ],
       "react-native-legal"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "58a16ff5-f983-4966-9d2f-9ba2b653b081"
+      }
+    },
+    "owner": "piotrski"
   }
 }

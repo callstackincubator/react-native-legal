@@ -1,4 +1,4 @@
-appId: com.reactnativelegal.expoexample
+appId: org.reactjs.native.example.ReactNativeLegalBareExample
 ---
 # Launch the app fresh to avoid cached state
 - launchApp:

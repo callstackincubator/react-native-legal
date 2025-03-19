@@ -2,43 +2,46 @@ appId: com.reactnativelegal.expoexample
 ---
 # Launch the app fresh to avoid cached state
 - launchApp:
-    clearState: true 
+    clearState: true
+
+# Wait for the app to be ready
+- extendedWaitUntil:
+    visible: 'Tap to see list of OSS libraries'
+    timeout: 60000
+
+# Take screenshot for debugging
+- takeScreenshot: initial-screen
 
 # Open the OSS libraries list
-- tapOn: "Tap to see list of OSS libraries"
-- assertVisible: "Licences"
+- tapOn: 'Tap to see list of OSS libraries'
+- assertVisible: 'Licences'
 
 # Scroll to find "react-native-legal"
 - scrollUntilVisible:
     centerElement: true
     element:
-      text: "react-native-legal"
+      text: 'react-native-legal'
     direction: DOWN
-<<<<<<< HEAD
-    speed: 95
-=======
     speed: 60
     timeout: 300000
->>>>>>> 8f809c6 (fix: flaky android test)
 
 # Verify contributor information
-- assertVisible: "Mateusz Mędrek <luigimario1913@gmail.com> (https://github.com/mateusz1913)"
+- assertVisible: 'Mateusz Mędrek <luigimario1913@gmail.com> (https://github.com/mateusz1913)'
 
 # Open license details
 - tapOn:
-    text: "MIT License"
-    below: "react-native-legal"
-
+    text: 'MIT License'
+    below: 'react-native-legal'
 
 # Verify MIT license text is displayed
-- assertVisible: ".*MIT License.*"
-- assertVisible: ".*Permission is hereby granted.*"
-- assertVisible: ".*THE SOFTWARE IS PROVIDED \"AS IS\".*"
+- assertVisible: '.*MIT License.*'
+- assertVisible: '.*Permission is hereby granted.*'
+- assertVisible: '.*THE SOFTWARE IS PROVIDED "AS IS".*'
 
 # Navigate back to the list
 - back
-- assertVisible: "Licences"
+- assertVisible: 'Licences'
 
 # Navigate back to home screen
 - back
-- assertVisible: "Tap to see list of OSS libraries"
+- assertVisible: 'Tap to see list of OSS libraries'

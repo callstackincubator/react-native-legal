@@ -8,7 +8,10 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e:ios": "maestro test ./e2e/ios-flow.yaml",
+    "test:e2e:android": "maestro test ./e2e/android-flow.yaml",
+    "test:e2e": "yarn test:e2e:ios && yarn test:e2e:android"
   },
   "dependencies": {
     "expo": "~52.0.36",

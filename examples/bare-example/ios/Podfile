@@ -18,7 +18,7 @@ if linkage != nil
 end
 
 target 'ReactNativeLegalBareExample' do
-  config = use_native_modules!
+  config = use_native_modules!(['npx', 'rnef', 'config', '-p', 'ios'])
 
   use_react_native!(
     :path => config[:reactNativePath],

@@ -1,0 +1,5 @@
+  - name: 📱 Install app on simulator
+    run: |
+      APP_PATH=$(find . -name "*.app" -type d | grep "build-*")
+      xcrun simctl install booted "$APP_PATH"
+    working-directory: examples/expo-example 
