@@ -1,0 +1,119 @@
+name: Expo Example - iOS E2E Tests
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'examples/expo-example/**'
+      - 'packages/**'
+      - '.github/workflows/e2e-expo-example-ios.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'examples/expo-example/**'
+      - 'packages/**'
+      - '.github/workflows/e2e-expo-example-ios.yml'
+  workflow_dispatch:
+
+jobs:
+  build-debug-ios:
+    name: Build iOS Debug App
+    uses: ./.github/workflows/expo-example-build-debug-ios.yml
+
+  ios-e2e:
+    name: Run Expo Example iOS E2E Tests
+    needs: build-debug-ios
+    runs-on: macos-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐛 Restore debug build from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ios-debug-build/
+          key: ${{ needs.build-debug-ios.outputs.build-cache-key }}
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'examples/expo-example/.nvmrc'
+          cache: 'yarn'
+
+      - name: ☕ Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 📦 Install macOS dependencies
+        run: |
+          brew tap facebook/fb
+          brew install facebook/fb/idb-companion
+
+      - name: 📦 Install Maestro
+        run: |
+          MAESTRO_VERSION=1.38.1
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: 📱 Boot iOS Simulator (iPhone 16 Pro)
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 16 Pro" | head -n 1 | awk -F "[()]" '{print $2}')
+          if [ -z "$DEVICE_ID" ]; then
+            echo "No available simulator found for the criteria."
+            exit 1
+          fi
+
+          echo "Booting iPhone 16 Pro simulator with DEVICE_ID=$DEVICE_ID..."
+          xcrun simctl boot "$DEVICE_ID" || true
+
+          TIMEOUT=120
+          START_TIME=$(date +%s)
+          echo "Waiting for simulator to boot..."
+
+          while true; do
+            CURRENT_TIME=$(date +%s)
+            ELAPSED_TIME=$((CURRENT_TIME - START_TIME))
+
+            if [ $ELAPSED_TIME -ge $TIMEOUT ]; then
+              echo "Timeout: simulator failed to boot for $TIMEOUT seconds."
+              exit 1
+            fi
+
+            STATUS=$(xcrun simctl list | grep "$DEVICE_ID" | grep "(Booted)")
+            if [[ -n "$STATUS" ]]; then
+              echo "Simulator is booted!"
+              break
+            else
+              echo "Still waiting for the simulator to boot..."
+              sleep 5
+            fi
+          done
+
+      - name: 🚇 Run Metro bundler in the background
+        uses: miguelteixeiraa/action-run-in-background@v1
+        with:
+          script: yarn --cwd examples/expo-example start
+          readiness-script: |
+            if curl -sSf http://localhost:8081 > /dev/null; then
+                echo "curl request to metro was successful."
+            else
+                echo "curl request to metro failed."
+                exit 1
+            fi
+
+      - name: 🧪 Run Maestro tests
+        run: |
+          xcrun simctl install booted ios-debug-build/ios-debug.app
+          yarn run test:e2e:ios
+        working-directory: examples/expo-example

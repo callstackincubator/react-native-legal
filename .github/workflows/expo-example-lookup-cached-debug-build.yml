@@ -1,0 +1,62 @@
+name: Lookup Cached Debug Build
+
+on:
+  workflow_call:
+    inputs:
+      platform:
+        description: 'The platform for which the build should be looked up (android | ios)'
+        required: true
+        type: string
+    outputs:
+      build-exists:
+        description: 'Whether the build exists in the cache'
+        value: ${{ jobs.lookup-cached-build.outputs.build-exists }}
+      fingerprint:
+        description: 'The fingerprint of the native code'
+        value: ${{ jobs.lookup-cached-build.outputs.fingerprint }}
+
+jobs:
+  lookup-cached-build:
+    name: Lookup cached debug build
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: ${{ steps.debug-build-restore.outputs.cache-hit }}
+      fingerprint: ${{ steps.fingerprint.outputs.fingerprint }}
+    steps:
+      - name: 🔍 Validate inputs
+        run: |
+          if [[ "${{ inputs.platform }}" != "android" && "${{ inputs.platform }}" != "ios" ]]; then
+            echo "Invalid platform: ${{ inputs.platform }}. Must be one of: android, ios."
+            exit 1
+          else
+            echo "Valid platform specified: ${{ inputs.platform }}"
+          fi
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'examples/expo-example/.nvmrc'
+          cache: 'yarn'
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🧬 Calculate fingerprint
+        id: fingerprint
+        run: |
+          FINGERPRINT=$(yarn run fingerprint:${{ inputs.platform }} | grep '^fingerprint:' | cut -d ' ' -f2-)
+          echo "Fingerprint for ${{ inputs.platform }}: $FINGERPRINT"
+          echo "FINGERPRINT=$FINGERPRINT" >> $GITHUB_ENV
+          echo "fingerprint=$FINGERPRINT" >> $GITHUB_OUTPUT
+        working-directory: examples/expo-example
+
+      - name: 🐛 Try to restore build from cache
+        id: debug-build-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: ${{ inputs.platform }}-debug-build/
+          key: ${{ inputs.platform }}-debug-build-${{ env.FINGERPRINT }}

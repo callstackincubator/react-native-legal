@@ -8,7 +8,14 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "fingerprint:android": "npx expo-updates fingerprint:generate --platform android | jq -r '.hash' | xargs -n 1 echo 'fingerprint:'",
+    "fingerprint:ios": "npx expo-updates fingerprint:generate --platform ios | jq -r '.hash' | xargs -n 1 echo 'fingerprint:'",
+    "build:debug:android": "npx expo prebuild --yarn && cd android && ./gradlew assembleDebug -DtestBuildType=debug -Dorg.gradle.jvmargs=-Xmx4g",
+    "build:debug:ios": "npx expo prebuild --yarn && xcodebuild ONLY_ACTIVE_ARCH=YES -workspace ios/ReactNativeLegalExpoExample.xcworkspace -UseNewBuildSystem=YES -scheme ReactNativeLegalExpoExample -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build -quiet",
+    "test:e2e:ios": "maestro test ./e2e/ios-flow.yaml",
+    "test:e2e:android": "maestro test ./e2e/android-flow.yaml",
+    "test:e2e": "yarn test:e2e:ios && yarn test:e2e:android"
   },
   "dependencies": {
     "expo": "~52.0.36",
