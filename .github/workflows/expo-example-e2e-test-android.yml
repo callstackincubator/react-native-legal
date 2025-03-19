@@ -113,6 +113,12 @@ jobs:
                 exit 1
             fi
 
+      - name: Debug APK location
+        run: |
+          pwd
+          ls -la
+          find . -name "*.apk" -type f
+    
       - name: 🧪 Run Maestro tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
