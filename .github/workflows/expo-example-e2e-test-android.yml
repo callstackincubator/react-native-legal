@@ -1,4 +1,4 @@
-name: Maestro Test Android
+name: Expo Example - Android E2E Tests
 
 on:
   pull_request:

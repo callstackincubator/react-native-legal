@@ -1,17 +1,18 @@
 name: Expo Example - iOS E2E Tests
+
 on:
-  # push:
-  #   branches: [ main ]
-  #   paths:
-  #     - 'examples/expo-example/**'
-  #     - 'packages/**'
-  #     - '.github/workflows/e2e-expo-example-ios.yml'
-  # pull_request:
-  #   branches: [ main ]
-  #   paths:
-  #     - 'examples/expo-example/**'
-  #     - 'packages/**'
-  #     - '.github/workflows/e2e-expo-example-ios.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'examples/expo-example/**'
+      - 'packages/**'
+      - '.github/workflows/e2e-expo-example-ios.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'examples/expo-example/**'
+      - 'packages/**'
+      - '.github/workflows/e2e-expo-example-ios.yml'
   workflow_dispatch:
 
 jobs:
