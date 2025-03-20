@@ -4,6 +4,11 @@ appId: com.reactnativelegal.expoexample
 - launchApp:
     clearState: true 
 
+# Wait for the app to be ready
+- extendedWaitUntil:
+    visible: "Tap to see list of OSS libraries"
+    timeout: 30000
+
 # Open the OSS libraries list
 - tapOn: "Tap to see list of OSS libraries"
 - assertVisible: "Licences"
