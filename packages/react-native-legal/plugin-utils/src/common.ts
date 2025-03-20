@@ -8,6 +8,7 @@ type LicenseObj = {
   author?: string;
   content?: string;
   description?: string;
+  file?: string;
   type?: string;
   url?: string;
   version: string;
@@ -31,10 +32,11 @@ type AboutLibrariesLicenseJsonPayload = {
 };
 
 type LicensePlistPayload = {
-  body: string;
   name: string;
   source?: string;
   version: string;
+  body?: string;
+  file?: string;
 };
 
 function compareObjects(a: unknown, b: unknown): boolean {
@@ -110,6 +112,7 @@ function scanPackage(
       result[packageName] = {
         author: parseAuthorField(localPackageJson),
         content: licenseFiles?.[0] ? fs.readFileSync(licenseFiles[0], { encoding: 'utf-8' }) : undefined,
+        file: licenseFiles?.[0] ? licenseFiles[0] : undefined,
         description: localPackageJson.description,
         type: parseLicenseField(localPackageJson),
         url: parseRepositoryFieldToUrl(localPackageJson),
@@ -243,11 +246,15 @@ export function generateLicensePlistNPMOutput(licenses: Record<string, LicenseOb
       renames[normalizedName] = dependency;
     }
 
+    const relativeLicenseFile = licenseObj.file ? path.relative(iosProjectPath, licenseObj.file) : undefined;
+
     return {
       name: normalizedName,
       version: licenseObj.version,
       ...(licenseObj.url && { source: licenseObj.url }),
-      body: licenseObj.content ?? licenseObj.type ?? 'UNKNOWN',
+      ...(licenseObj.file
+        ? { file: relativeLicenseFile }
+        : { body: licenseObj.content ?? licenseObj.type ?? 'UNKNOWN' }),
     } as LicensePlistPayload;
   });
 
