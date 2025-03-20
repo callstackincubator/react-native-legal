@@ -1,6 +1,6 @@
 {
   "name": "react-native-legal",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Acknowledge OSS libraries used in your React Native app",
   "keywords": [
     "react-native",

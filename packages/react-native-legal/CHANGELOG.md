@@ -1,5 +1,11 @@
 # react-native-legal
 
+## 1.1.1
+
+### Patch Changes
+
+- [#29](https://github.com/callstackincubator/react-native-legal/pull/29) [`1417a01`](https://github.com/callstackincubator/react-native-legal/commit/1417a01dbd66034299de06117cd608d282c167d7) Thanks [@piotrski](https://github.com/piotrski)! - Fixes an issue where licenses with unusual indentation caused YAML errors, breaking the LicencePlist script during the build. This ensures proper processing and prevents build failures.
+
 ## 1.1.0
 
 ### Minor Changes
