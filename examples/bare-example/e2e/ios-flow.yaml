@@ -1,0 +1,52 @@
+appId: org.reactjs.native.example.ReactNativeLegalBareExample
+---
+# Launch the app fresh to avoid cached state
+- launchApp:
+    clearState: true
+    
+# Wait for the app to be ready
+- extendedWaitUntil:
+    visible: "Tap to see list of OSS libraries"
+    timeout: 30000
+
+# Open the OSS libraries list
+- tapOn: "Tap to see list of OSS libraries"
+- assertVisible: "Licences"
+
+# Scroll to find "react-native-legal"
+- scrollUntilVisible:
+    element:
+      text: "react-native-legal"
+    direction: DOWN
+    speed: 100
+
+# Open license details
+- tapOn: "react-native-legal"
+
+# Verify MIT license text is displayed
+- assertVisible: "MIT"
+  
+# Navigate back to the list
+- tapOn: "Licences"
+- assertVisible: "Licences"
+
+# Test React-Core license
+- scrollUntilVisible:
+    element: "React-Core"
+    direction: DOWN
+    speed: 100
+
+# Open license details
+- tapOn: "React-Core"
+
+# Verify React-Core license text is displayed
+- assertVisible: "Copyright (c) Meta Platforms, Inc. and affiliates."
+
+# Navigate back to the list
+- tapOn: "Licences"
+- assertVisible: "Licences"
+
+# Navigate back to home screen
+- tapOn:
+    id: "UICloseButtonBackground"
+- assertVisible: "Tap to see list of OSS libraries"
