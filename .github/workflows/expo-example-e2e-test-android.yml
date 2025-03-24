@@ -3,16 +3,10 @@ name: Expo Example - Android E2E Tests
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'examples/expo-example/**'
-      - 'packages/**'
-      - '.github/workflows/e2e-expo-example-android.yml'
+    paths: ['examples/expo-example/**', 'packages/**']
   pull_request:
     branches: [ main ]
-    paths:
-      - 'examples/expo-example/**'
-      - 'packages/**'
-      - '.github/workflows/e2e-expo-example-android.yml'
+    paths: ['examples/expo-example/**', 'packages/**']
   workflow_dispatch:
 
 jobs:
@@ -45,22 +39,21 @@ jobs:
           curl -Ls "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-      - name: 📱 Setup Android Emulator
+      - name: 🛠️ Build Android App
+        working-directory: examples/expo-example
+        run: |
+          eas build --profile testing -p android --local --non-interactive
+          echo "BUILD_PATH=$(find . -name "*.apk")" >> $GITHUB_ENV
+
+      - name: 🧪 Run Tests on Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 33
           target: google_apis
           arch: x86_64
           profile: pixel_6
-          script: echo "Emulator is ready"
-
-      - name: 🛠️ Build & Install App
-        working-directory: examples/expo-example
-        run: |
-          eas build --profile testing -p android --local --non-interactive
-          BUILD_PATH=$(find . -name "*.apk")
-          adb install "$BUILD_PATH"
-
-      - name: 🧪 Run Maestro tests
-        working-directory: examples/expo-example
-        run: yarn run test:e2e:android
+          script: |
+            adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
+            sleep 30  # Extra time for all services to start
+            adb install "$BUILD_PATH"
+            cd examples/expo-example && yarn run test:e2e:android
