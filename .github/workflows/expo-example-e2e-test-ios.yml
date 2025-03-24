@@ -48,10 +48,15 @@ jobs:
       - name: 🛠️ Build & Install App
         working-directory: examples/expo-example
         run: |
-          eas build --profile testing -p ios --local --non-interactive
-          BUILD_PATH=$(find . -name "*.tar.gz")
+          # Build and capture the output path
+          BUILD_OUTPUT=$(eas build --profile testing -p ios --local --non-interactive)
+          BUILD_PATH=$(echo "$BUILD_OUTPUT" | grep -o '/.*\.tar\.gz')
+          
+          echo "📦 Extracting from $BUILD_PATH..."
           tar -xzf "$BUILD_PATH"
+          
           APP_PATH=$(find . -name "*.app" -type d)
+          echo "📱 Installing $APP_PATH..."
           xcrun simctl install booted "$APP_PATH"
 
       - name: 🧪 Run Maestro tests
