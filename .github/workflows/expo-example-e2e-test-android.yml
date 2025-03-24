@@ -1,62 +1,66 @@
 name: Expo Example - Android E2E Tests
 
-# on:
-#   push:
-#     branches: [ main ]
-#     paths:
-#       - 'examples/expo-example/**'
-#       - 'packages/**'
-#       - '.github/workflows/e2e-expo-example-android.yml'
-#   pull_request:
-#     branches: [ main ]
-#     paths:
-#       - 'examples/expo-example/**'
-#       - 'packages/**'
-#       - '.github/workflows/e2e-expo-example-android.yml'
-#   workflow_dispatch:
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'examples/expo-example/**'
+      - 'packages/**'
+      - '.github/workflows/e2e-expo-example-android.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'examples/expo-example/**'
+      - 'packages/**'
+      - '.github/workflows/e2e-expo-example-android.yml'
+  workflow_dispatch:
 
 jobs:
   android-e2e:
     name: Run Expo Example Android E2E Tests
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    permissions:
-      contents: read
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
     steps:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🌿 Setup Node
+      - name: 🌿 Setup Node & Install Dependencies
         uses: actions/setup-node@v4
         with:
           node-version-file: 'examples/expo-example/.nvmrc'
           cache: 'yarn'
+      - run: yarn install --immutable
 
-      - name: ☕ Setup JDK 17
+      - name: ☕ Setup Java
         uses: actions/setup-java@v4
         with:
+          distribution: 'temurin'
           java-version: '17'
-          distribution: 'zulu'
 
-      - name: 📦 Install dependencies
-        run: yarn install --immutable
-
-      - name: 📦 Install EAS CLI
-        run: npm install -g eas-cli
-
-      - name: 📦 Install Maestro
+      - name: 📦 Install Tools
         run: |
-          MAESTRO_VERSION=1.38.1
-          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          npm install -g eas-cli
+          curl -Ls "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-      - name: 🛠️ Build Android app with EAS
-        run: eas build --profile testing -p android --local
-        working-directory: examples/expo-example
+      - name: 📱 Setup Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          script: echo "Emulator is ready"
 
-      - name: 🧪 Run Maestro tests on Android
-        run: yarn run test:e2e:android
+      - name: 🛠️ Build & Install App
         working-directory: examples/expo-example
+        run: |
+          eas build --profile testing -p android --local --non-interactive
+          BUILD_PATH=$(find . -name "*.apk")
+          adb install "$BUILD_PATH"
+
+      - name: 🧪 Run Maestro tests
+        working-directory: examples/expo-example
+        run: yarn run test:e2e:android
