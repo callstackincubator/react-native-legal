@@ -7,7 +7,7 @@ const BUTTON_RIPPLE_COLOR = '#8232ffba';
 
 export default function App() {
   function launchNotice() {
-    ReactNativeLegal.launchLicenseListScreen('OSS Notice');
+    ReactNativeLegal.launchLicenseListScreen('Licences');
   }
 
   return (
