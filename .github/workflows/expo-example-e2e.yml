@@ -38,16 +38,6 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-
-      - name: Setup Android Emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          profile: pixel_7
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          disable-animations: true
-          script: echo "Emulator is ready"
         
       - name: Prebuild
         run: yarn expo prebuild --platform android
@@ -59,22 +49,27 @@ jobs:
             exit 1
           }
           
-      - name: Install Android app
-        run: |
-          adb install -r android/app/build/outputs/apk/release/app-release.apk || {
-            echo "Error: Failed to install Android APK"
-            exit 1
-          }
-          
       - name: Install Maestro
         run: |
           curl -Ls "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
           source $HOME/.bash_profile
           maestro --version
-          
+
       - name: Run Android E2E tests
-        run: yarn test:e2e:android
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          profile: pixel_7
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          script: |
+            adb install -r android/app/build/outputs/apk/release/app-release.apk || {
+              echo "Error: Failed to install Android APK"
+              exit 1
+            }
+            yarn test:e2e:android
 
   ios-e2e:
     name: iOS E2E Tests
