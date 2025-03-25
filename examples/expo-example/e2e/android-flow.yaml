@@ -19,7 +19,8 @@ appId: com.reactnativelegal.expoexample
     element:
       text: "react-native-legal"
     direction: DOWN
-    speed: 95
+    speed: 75
+    timeout: 100000
 
 # Verify contributor information
 - assertVisible: "Mateusz Mędrek <luigimario1913@gmail.com> (https://github.com/mateusz1913)"

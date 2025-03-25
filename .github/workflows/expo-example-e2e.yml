@@ -1,0 +1,115 @@
+name: Expo Example E2E Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/react-native-legal/**'
+      - 'examples/expo-example/**'
+      - '.github/workflows/expo-example-e2e.yml'
+  pull_request:
+    paths:
+      - 'packages/react-native-legal/**'
+      - 'examples/expo-example/**'
+      - '.github/workflows/expo-example-e2e.yml'
+
+jobs:
+  android-e2e:
+    name: Android E2E Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/expo-example
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        
+      - name: Generate legal notices
+        run: yarn expo prebuild --platform android
+        
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        
+      - name: Build Android
+        run: |
+          cd android && ./gradlew assembleRelease || {
+            echo "Error: Failed to build Android app"
+            exit 1
+          }
+          
+      - name: Install Android app
+        run: |
+          adb install -r android/app/build/outputs/apk/release/app-release.apk || {
+            echo "Error: Failed to install Android APK"
+            exit 1
+          }
+          
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          export PATH="$PATH":"$HOME/.maestro/bin"
+          maestro --version
+          
+      - name: Run Android E2E tests
+        run: yarn test:e2e:android
+        
+  ios-e2e:
+    name: iOS E2E Tests
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: examples/expo-example
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        
+      - name: Generate legal notices
+        run: yarn expo prebuild --platform ios
+        
+      - name: Setup iOS Simulator
+        uses: futureware-tech/simulator-action@v2
+        with:
+          model: 'iPhone 15'
+          
+      - name: Build iOS
+        run: |
+          xcodebuild -workspace ios/ReactNativeLegalExpoExample.xcworkspace \
+            -scheme ReactNativeLegalExpoExample \
+            -sdk iphonesimulator \
+            -configuration Release \
+            -derivedDataPath build || {
+              echo "Error: Failed to build iOS app"
+              exit 1
+            }
+          
+      - name: Install iOS app
+        run: |
+          xcrun simctl install booted ./build/Build/Products/Release-iphonesimulator/ReactNativeLegalExpoExample.app || {
+            echo "Error: Failed to install iOS app"
+            exit 1
+          }
+          
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          export PATH="$PATH":"$HOME/.maestro/bin"
+          maestro --version
+          
+      - name: Run iOS E2E tests
+        run: yarn test:e2e:ios 
