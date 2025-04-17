@@ -3,6 +3,7 @@ package com.reactnativelegal
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.WritableMap
 import com.facebook.react.module.annotations.ReactModule
 
 @ReactModule(name = ReactNativeLegalModule.NAME)
@@ -16,6 +17,20 @@ class ReactNativeLegalModule(private val reactContext: ReactApplicationContext) 
             reactApplicationContext,
             licenseHeaderText,
         )
+    }
+
+    @ReactMethod
+    fun getLibraries(): WritableMap {
+        return ReactNativeLegalModuleImpl.getLibraries(reactApplicationContext)
+    }
+
+    @ReactMethod
+    fun getLibrariesAsync(promise: Promise?) {
+        try {
+            promise?.resolve(ReactNativeLegalModuleImpl.getLibraries(reactApplicationContext))
+        } catch (e: Exception) {
+            promise?.reject(e)
+        }
     }
 
     companion object {
