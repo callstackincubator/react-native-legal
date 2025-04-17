@@ -1,0 +1,39 @@
+appId: org.reactjs.native.example.ReactNativeLegalBareExample
+name: '[iOS] Check React Native entry in custom OSS libraries list'
+tags:
+  - pull-request
+  - ios
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- startRecording: 'e2e_results/checkLicenses-getLicences'
+- tapOn: 'Tap to get list of licenses'
+- assertVisible: 'Exit list'
+# workaround for long list issue taking ages to scroll to 'r*' packages (causing a timeout)
+- repeat:
+    times: 6
+    commands:
+      - swipe:
+          start: 50%, 95%
+          end: 50%, 0%
+          duration: 50
+- scrollUntilVisible:
+    label: Scroll to React Native library
+    element: 'react-native (.*)'
+    direction: 'DOWN'
+    timeout: 100000
+    speed: 80
+    visibilityPercentage: 75
+- takeScreenshot: 'e2e_results/getLicenses-react-native_list_element'
+- tapOn: 'react-native (.*)'
+- takeScreenshot: 'e2e_results/getLicenses-react-native_entry'
+- assertVisible: 'Exit detail view'
+- assertVisible: 'react-native (.*)'
+- assertVisible: '.*MIT License.*'
+- tapOn: 'Exit detail view'
+- takeScreenshot: 'e2e_results/react-native_back_to_list'
+- assertVisible: 'Exit list'
+- tapOn: 'Exit list'
+- stopRecording
+- killApp

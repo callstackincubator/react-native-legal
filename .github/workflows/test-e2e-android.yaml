@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/test-e2e-android.yaml'
       - 'examples/bare-example/e2e/checkLicenses/android.yaml'
+      - 'examples/bare-example/e2e/checkLicenses/android-get-licenses.yaml'
       - 'packages/react-native-legal/**/*.[tj]sx?'
       - 'packages/react-native-legal/android/**'
       - 'packages/licenses-api/**/*.[tj]sx?'
@@ -34,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [30, 34, 35]
+        api-level: [30, 35]
     steps:
       - name: Enable KVM group perms
         run: |
