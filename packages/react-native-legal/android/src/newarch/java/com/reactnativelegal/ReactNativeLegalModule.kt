@@ -1,5 +1,6 @@
 package com.reactnativelegal
 
+import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.annotations.ReactModule
 
@@ -11,6 +12,14 @@ class ReactNativeLegalModule(reactContext: ReactApplicationContext) :
             reactApplicationContext,
             licenseHeaderText,
         )
+    }
+
+    override fun getLibrariesAsync(promise: Promise?) {
+        try {
+            promise?.resolve(ReactNativeLegalModuleImpl.getLibraries(reactApplicationContext))
+        } catch (e: Exception) {
+            promise?.reject(e)
+        }
     }
 
     companion object {
