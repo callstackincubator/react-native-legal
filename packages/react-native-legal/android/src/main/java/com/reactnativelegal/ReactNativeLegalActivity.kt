@@ -1,11 +1,13 @@
 package com.reactnativelegal
 
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.mikepenz.aboutlibraries.LibsBuilder.Companion.BUNDLE_TITLE
@@ -22,6 +24,15 @@ class ReactNativeLegalActivity : AppCompatActivity() {
         setTheme(R.style.ReactNativeLegalTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_licenses)
+
+        val isLightTheme =
+            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK !=
+                Configuration.UI_MODE_NIGHT_YES
+
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = isLightTheme
+            isAppearanceLightNavigationBars = isLightTheme
+        }
 
         val bundle = intent.extras
         fragment = LibsSupportFragment().apply { arguments = bundle }
@@ -41,6 +52,11 @@ class ReactNativeLegalActivity : AppCompatActivity() {
             .commit()
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        recreate()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             onBackPressedDispatcher.onBackPressed()
@@ -56,7 +72,7 @@ class ReactNativeLegalActivity : AppCompatActivity() {
     }
 
     private fun setupToolbar(bundle: Bundle?) {
-        val title = bundle?.let { it.getString(BUNDLE_TITLE, "") } ?: ""
+        val title = bundle?.getString(BUNDLE_TITLE, "") ?: ""
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
