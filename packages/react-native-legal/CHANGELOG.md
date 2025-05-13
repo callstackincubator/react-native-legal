@@ -1,5 +1,11 @@
 # react-native-legal
 
+## 1.2.0
+
+### Minor Changes
+
+- [#35](https://github.com/callstackincubator/react-native-legal/pull/35) [`8a892a5`](https://github.com/callstackincubator/react-native-legal/commit/8a892a5819c80350e784b555a614334333a4e0d5) Thanks [@shovel-kun](https://github.com/shovel-kun)! - Adjusts ReactNativeLegalActivity to automatically switch appearance to dark or light depending on Android device theme
+
 ## 1.1.1
 
 ### Patch Changes
