@@ -1,0 +1,31 @@
+name: Lint TS/JS
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "packages/react-native-legal/**/*.jsx?"
+      - "packages/react-native-legal/**/*.tsx?"
+      - "examples/**/*.jsx?"
+      - "examples/**/*.tsx?"
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  lint-ts_js:
+    name: Lint TS/JS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Run linter
+        run: yarn lint:js
+
+      - name: Run Typescript check
+        run: yarn typescript
