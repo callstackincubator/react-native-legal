@@ -64,3 +64,5 @@ yarn-error.log
 
 # testing
 /coverage
+
+/e2e_results
