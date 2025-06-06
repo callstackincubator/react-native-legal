@@ -1,0 +1,91 @@
+name: E2E tests - iOS
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/test-e2e-ios.yaml'
+      - 'packages/react-native-legal/**/*.[tj]sx?'
+      - 'packages/react-native-legal/ios/**'
+      - 'examples/bare-example/**/*.[tj]sx?'
+      - 'examples/bare-example/ios/**'
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+env:
+  MAESTRO_CLI_NO_ANALYTICS: true
+  MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: true
+  MAESTRO_DISABLE_UPDATE_CHECK: true
+
+concurrency:
+  group: e2e_tests-ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-ios:
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        simulator: [ 'iPhone 16 Pro (18.5)', 'iPhone SE (3rd generation) (18.0)' ]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install Maestro
+        uses: ./.github/actions/installMaestro
+        with:
+          target-platform: ios
+
+      - name: Install example dependencies
+        run:  yarn workspace react-native-legal-bare-example install --frozen-lockfile --immutable
+
+      - name: Cache Pods
+        id: cache-pods
+        uses: actions/cache@v4
+        env:
+          cache-name: cached-ios-pods-deps
+        with:
+          path: examples/bare-example/ios/Pods
+          key: bare-example-pods
+
+      - name: Cache Build
+        id: cache-build
+        uses: actions/cache@v4
+        env:
+          cache-name: cached-ios-build
+        with:
+          path: examples/bare-example/ios/build
+          key: bare-example-ios-build
+
+      - name: Install example Pods
+        run: yarn workspace react-native-legal-bare-example pods
+
+      - name: Bundle app
+        run: yarn workspace react-native-legal-bare-example build:ios
+
+      - name: List simulators
+        run: xcrun simctl list
+
+      - name: Build iOS App
+        run: yarn workspace react-native-legal-bare-example ios:release --simulator="${{ matrix.simulator }}"
+
+      - name: Run tests
+        run: yarn workspace react-native-legal-bare-example e2e:ios
+
+      - name: Upload report
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/uploadMaestroTestResults
+        with:
+          id: ${{ matrix.simulator }}
