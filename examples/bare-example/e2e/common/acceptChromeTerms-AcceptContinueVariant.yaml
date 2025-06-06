@@ -1,0 +1,9 @@
+name: "[Android] Accept Chrome T & C - Use without an account variant"
+appId: com.android.chrome
+---
+- tapOn:
+        label: Accept Chrome T & C
+        text: "Accept & continue"
+- tapOn:
+        label: "Turn off Chrome sync"
+        text: "No thanks"

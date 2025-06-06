@@ -4,8 +4,17 @@
   "private": true,
   "scripts": {
     "android": "react-native legal-generate && react-native run-android --no-packager",
+    "android:release": "react-native legal-generate && react-native run-android --no-packager --mode \"Release\" --appId com.reactnativelegalbareexample",
+    "build:android": "yarn mkdist && react-native legal-generate && react-native bundle --entry-file index.js --platform android --dev true --bundle-output dist/main.android.jsbundle --assets-dest dist/res",
+    "build:ios": "yarn mkdist && react-native legal-generate && react-native bundle --entry-file index.js --platform ios --dev false --bundle-output dist/main.ios.jsbundle --assets-dest dist",
+    "e2e:android": "yarn mke2e_results && maestro test --config=e2e/config.yaml --exclude-tags=ios --format junit --output=e2e_results/report.xml e2e",
+    "e2e:ios": "yarn mke2e_results && maestro test --config=e2e/config.yaml --exclude-tags=android --format junit --output=e2e_results/report.xml e2e",
     "ios": "react-native legal-generate && react-native run-ios --no-packager",
+    "ios:release": "react-native legal-generate && react-native run-ios --no-packager --mode \"Release\"",
     "lint": "eslint .",
+    "mkdist": "node -e \"require('node:fs').mkdirSync('dist', { recursive: true, mode: 0o755 })\"",
+    "mke2e_results": "node -e \"require('node:fs').mkdirSync('e2e_results', { recursive: true, mode: 0o755 })\"",
+    "pods": "pod install --project-directory=ios",
     "start": "react-native start --config ./metro.config.js",
     "test": "jest",
     "typecheck": "tsc --noEmit"

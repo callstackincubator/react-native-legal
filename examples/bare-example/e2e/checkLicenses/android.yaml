@@ -1,0 +1,60 @@
+appId: com.reactnativelegalbareexample
+name: "[Android] Check React Native entry in OSS libraries list"
+tags:
+  - pull-request
+  - android
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- startRecording: 'e2e_results/checkLicenses'
+- tapOn: 'Tap to see list of OSS libraries'
+- assertVisible: 'OSS Notice'
+- scrollUntilVisible:
+    element:
+      containsChild: 'react-native'
+      index: 0
+    direction: 'DOWN'
+    timeout: 120000
+    centerElement: true
+    speed: 70
+- takeScreenshot: 'e2e_results/react-native_list_element'
+- assertVisible:
+    text: 'Facebook'
+    index: 0
+- assertVisible:
+    text: '\d+\.\d+\.\d+'
+    index: 0
+- assertVisible:
+    text: 'MIT License'
+    index: 0
+- tapOn:
+    text: 'MIT License'
+    index: 0
+- takeScreenshot: 'e2e_results/license_modal'
+- assertVisible: '.*MIT License.*'
+- assertVisible: '.*Copyright \(c\).*'
+- assertVisible: '.*Permission is hereby granted, free of charge.*'
+- back
+- tapOn:
+    containsChild: 'react-native'
+    waitToSettleTimeoutMs: 3500
+    index: 0
+
+- runFlow:
+    when:
+      visible:
+        text: 'Use without an account'
+    file: '../common/acceptChromeTerms-UseWithoutAnAccountVariant.yaml'
+
+- runFlow:
+    when:
+      visible:
+        text: 'Accept & continue'
+    file: '../common/acceptChromeTerms-AcceptContinueVariant.yaml'
+
+- assertVisible: A framework for building native applications using React
+- takeScreenshot: 'e2e_results/github_page'
+- back
+- stopRecording
+- killApp
