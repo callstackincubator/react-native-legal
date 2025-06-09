@@ -1,4 +1,4 @@
-import { arrayIncludesObject } from './common';
+import { arrayIncludesObject } from '@callstack/react-native-legal-shared';
 
 /**
  * Applies Gradle Plugin Portal & AboutLibraries Gradle plugin repositories (if needed) inside root build.gradle

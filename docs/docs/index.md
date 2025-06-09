@@ -8,6 +8,9 @@ hero:
     - theme: brand
       text: Quick Start
       link: /docs/quick-start
+    - theme: brand
+      text: Standalone CLI
+      link: /docs/standalone-cli
     - theme: alt
       text: GitHub
       link: https://github.com/callstackincubator/react-native-legal

@@ -48,7 +48,8 @@ project.xcworkspace
 
 # Library
 build/
-packages/react-native-legal/lib/
+packages/*/lib/
+packages/*/build/
 
 # Expo example
 examples/expo-example/android

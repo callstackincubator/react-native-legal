@@ -77,8 +77,8 @@ yarn ios
 The codebase of Expo Config Plugin is located in:
 
 - `packages/react-native-legal/plugin`
-- `packages/react-native-legal/plugin-utils`
 - `packages/react-native-legal/app.plugin.js` (the entry point)
+- `packages/licenses-aggregator` (logic)
 
 To test the changes, build the plugin run (from the root directory, the one with consisting all workspaces):
 
@@ -97,8 +97,8 @@ yarn expo prebuild --clean
 The codebase of RN CLI plugin is located in:
 
 - `packages/react-native-legal/bare-plugin`
-- `packages/react-native-legal/plugin-utils`
 - `packages/react-native-legal/react-native.config.js` (the entry point)
+- `packages/react-native-legal/licenses-aggregator` (logic)
 
 To test the changes, build the plugin run (from the root directory, the one with consisting all workspaces):
 
@@ -145,11 +145,13 @@ yarn format:swift
 Objective-C code is linted and formatted using following commands:
 
 Lint code
+
 ```sh
 yarn lint:objc
 ```
 
 Fixing formatting errors
+
 ```sh
 yarn format:objc
 ```
@@ -157,11 +159,13 @@ yarn format:objc
 For Kotlin codebase, run the following to verify code quality:
 
 Lint Kotlin code
+
 ```sh
 yarn lint:android
 ```
 
 Format Kotlin code
+
 ```sh
 yarn format:android
 ```

@@ -2,7 +2,7 @@ import path from 'path';
 
 import { type ConfigPlugin, withAndroidManifest } from 'expo/config-plugins';
 
-import { generateAboutLibrariesNPMOutput, scanDependencies } from '../../../plugin-utils/build/common';
+import { generateAboutLibrariesNPMOutput, scanDependencies } from '../../../../shared/build/index';
 
 import { addListActivity } from './addListActivity';
 import { applyAndConfigureAboutLibrariesPlugin } from './applyAndConfigureAboutLibrariesPlugin';

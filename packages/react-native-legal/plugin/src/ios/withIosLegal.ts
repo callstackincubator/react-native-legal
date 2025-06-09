@@ -2,7 +2,7 @@ import path from 'path';
 
 import { type ConfigPlugin, withXcodeProject } from 'expo/config-plugins';
 
-import { generateLicensePlistNPMOutput, scanDependencies } from '../../../plugin-utils/build/common';
+import { generateLicensePlistNPMOutput, scanDependencies } from '../../../../shared/build/index';
 
 import { addSettingsBundle } from './addSettingsBundle';
 import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase';

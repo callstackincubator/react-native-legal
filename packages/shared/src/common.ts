@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
-const glob = require('glob');
+import glob from 'glob';
 
 type LicenseObj = {
   author?: string;

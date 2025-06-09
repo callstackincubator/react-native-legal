@@ -4,16 +4,13 @@
     "lib": ["es2020"],
     "module": "commonjs",
     "target": "es2020",
-
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-
     "outDir": "build",
-    "rootDir": "src",
-    "typeRoots": ["../types-definitions", "../../../node_modules/@types"]
+    "rootDir": "src"
   },
   "include": ["./src"],
   "exclude": ["**/__mocks__/*", "**/__tests__/*"]

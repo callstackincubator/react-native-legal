@@ -1,7 +1,13 @@
 /** @type {import("eslint").Linter.Config} */
 const config = {
   root: true,
-  extends: '@callstack',
+  extends: ['@callstack', 'plugin:import/typescript'],
+  plugins: ['import'],
+  settings: {
+    'import/resolver': {
+      typescript: {},
+    },
+  },
   ignorePatterns: ['node_modules/', '**/node_modules/', 'lib/', '**/lib/', 'build/', '**/build/'],
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
