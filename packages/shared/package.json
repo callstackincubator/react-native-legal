@@ -2,7 +2,6 @@
   "name": "@callstack/react-native-legal-shared",
   "version": "0.1.0",
   "description": "Shared code for all packages",
-  "private": true,
   "main": "build/index",
   "module": "build/index",
   "types": "build/index.d.ts",
