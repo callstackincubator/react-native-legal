@@ -5,9 +5,7 @@
   "main": "build/index",
   "module": "build/index",
   "types": "build/index.d.ts",
-  "bin": {
-    "license-kit": "build/index.js"
-  },
+  "bin": "build/index.js",
   "exports": {
     ".": {
       "source": "./src/index.ts",
