@@ -1,6 +1,6 @@
 {
   "name": "@callstack/react-native-legal-shared",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Shared code for all packages",
   "private": true,
   "main": "build/index",
@@ -39,7 +39,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/callstackincubator/react-native-legal.git",
-    "directory": "packages/licenses-aggregator"
+    "directory": "packages/license-kit"
   },
   "author": "Mateusz Mędrek <luigimario1913@gmail.com> (https://github.com/mateusz1913)",
   "license": "MIT",

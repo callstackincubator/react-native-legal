@@ -120,15 +120,17 @@ function scanPackage(
       };
     }
 
-    const dependencies = localPackageJson.dependencies || {};
+    const dependencies = localPackageJson.dependencies;
 
     const isWorkspacePackage = version.startsWith('workspace:');
 
     if (!isWorkspacePackage) return;
 
-    Object.entries(dependencies).forEach(([depName, depVersion]) => {
-      scanPackage(depName, depVersion as string, processedPackages, result);
-    });
+    if (dependencies) {
+      Object.entries(dependencies).forEach(([depName, depVersion]) => {
+        scanPackage(depName, depVersion as string, processedPackages, result);
+      });
+    }
   } catch (error) {
     console.warn(`[react-native-legal] could not process package.json for ${packageName}`);
   }
@@ -143,9 +145,11 @@ export function scanDependencies(appPackageJsonPath: string) {
   const result: Record<string, LicenseObj> = {};
   const processedPackages = new Set<string>();
 
-  Object.entries(dependencies).forEach(([packageName, version]) => {
-    scanPackage(packageName, version, processedPackages, result);
-  });
+  if (dependencies) {
+    Object.entries(dependencies).forEach(([packageName, version]) => {
+      scanPackage(packageName, version, processedPackages, result);
+    });
+  }
 
   return result;
 }
@@ -402,11 +406,13 @@ function normalizeRepositoryUrl(url: string) {
     .replace('.git', '');
 }
 
-function getPackageJsonPath(dependency: string) {
+function getPackageJsonPath(dependency: string, root = process.cwd()) {
   try {
-    return require.resolve(`${dependency}/package.json`);
+    return require.resolve(`${dependency}/package.json`, { paths: [root] });
   } catch (error) {
-    return resolvePackageJsonFromEntry(dependency);
+    const pkgJsonInNodeModules = path.join(root, 'node_modules', dependency, 'package.json');
+
+    return fs.existsSync(pkgJsonInNodeModules) ? pkgJsonInNodeModules : resolvePackageJsonFromEntry(dependency);
   }
 }
 

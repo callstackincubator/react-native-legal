@@ -78,7 +78,7 @@ The codebase of Expo Config Plugin is located in:
 
 - `packages/react-native-legal/plugin`
 - `packages/react-native-legal/app.plugin.js` (the entry point)
-- `packages/licenses-aggregator` (logic)
+- `packages/license-kit` (logic)
 
 To test the changes, build the plugin run (from the root directory, the one with consisting all workspaces):
 
@@ -98,7 +98,7 @@ The codebase of RN CLI plugin is located in:
 
 - `packages/react-native-legal/bare-plugin`
 - `packages/react-native-legal/react-native.config.js` (the entry point)
-- `packages/react-native-legal/licenses-aggregator` (logic)
+- `packages/react-native-legal/license-kit` (logic)
 
 To test the changes, build the plugin run (from the root directory, the one with consisting all workspaces):
 
