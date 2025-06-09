@@ -58,7 +58,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@callstack/react-native-legal-shared": "workspace:*",
+    "@callstack/react-native-legal-shared": "^0.1.0",
     "minimist": "^1.2.8"
   }
 }
