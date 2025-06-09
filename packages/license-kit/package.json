@@ -1,6 +1,6 @@
 {
   "name": "license-kit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Aggregate license notes of OSS libraries used in your Node.js project",
   "main": "build/index",
   "module": "build/index",
