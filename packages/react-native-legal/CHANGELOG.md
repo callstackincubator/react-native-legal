@@ -1,5 +1,13 @@
 # react-native-legal
 
+## 1.2.1
+
+### Patch Changes
+
+- [#42](https://github.com/callstackincubator/react-native-legal/pull/42) [`e5a79a6`](https://github.com/callstackincubator/react-native-legal/commit/e5a79a6a9d799746d25c63d1e3aa4e245c719fee) Thanks [@wjaszczuk](https://github.com/wjaszczuk)! - Fix: plugin throws an error when user uses bare rn app and one of platform is missing
+
+- [#40](https://github.com/callstackincubator/react-native-legal/pull/40) [`58a46f1`](https://github.com/callstackincubator/react-native-legal/commit/58a46f1ba1319d2755469631a55bb367f321b7cf) Thanks [@wjaszczuk](https://github.com/wjaszczuk)! - RN Legal plugin will remove Settings.bundle from XCode project, and add it again
+
 ## 1.2.0
 
 ### Minor Changes
