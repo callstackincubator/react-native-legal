@@ -24,7 +24,7 @@ Version: ${version}
 Options:
   --copyleft: Check for copyleft licenses. Exits with error if strong copyleft licenses are found.
   --error-on-weak: Exit with error if weak copyleft licenses are found.
-  --root: Path to the root of the React Native project. Defaults to the current working directory.
+  --root: Path to the root of your project. Defaults to the current working directory.
   --format: Output format (default: 'json'). Supported formats: 'json', 'about-json' (AboutLibraries-compatible), 'text', 'markdown'.
   --output: Where to write the output (default: 'stdout'). Supported: 'stdout', <path to output file>.
   --help: Show this help message.

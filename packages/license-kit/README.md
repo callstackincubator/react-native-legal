@@ -6,7 +6,7 @@ A CLI for managing and analyzing Open Source Software (OSS) licenses in your Nod
 
 - 🔍 Scan and aggregate license information from your project dependencies
 - ⚠️ Detect copyleft licenses that might affect your project
-- 📝 Generate license reports
+- 📝 Generate license reports in a format of choice (JSON, Markdown, raw text, AboutLibraries-compatible JSON metadata)
 - 🔄 Support for both direct and transitive dependencies
 
 ## Installation
@@ -40,12 +40,14 @@ npx license-kit --error-on-weak
 
 ### Command Line Options
 
-| Option            | Description                                                                         | Default                   |
-| ----------------- | ----------------------------------------------------------------------------------- | ------------------------- |
-| `--copyleft`      | Check for copyleft licenses. Exits with error if strong copyleft licenses are found | `false`                   |
-| `--error-on-weak` | Exit with error if weak copyleft licenses are found                                 | `false`                   |
-| `--root`          | Path to the root of your project                                                    | Current working directory |
-| `--help`          | Show help message                                                                   | -                         |
+| Option            | Description                                                                                         | Default                   |
+| ----------------- | --------------------------------------------------------------------------------------------------- | ------------------------- |
+| `--copyleft`      | Check for copyleft licenses. Exits with error if strong copyleft licenses are found                 | `false`                   |
+| `--error-on-weak` | Exit with error if weak copyleft licenses are found                                                 | `false`                   |
+| `--root`          | Path to the root of your project                                                                    | Current working directory |
+| `--format`        | Output format, one of: `'json'`, `'about-json'` (AboutLibraries-compatible), `'text'`, `'markdown'` | `'json'`                  |
+| `--output`        | Where to write the output - either `'stdout'` or a path to an output file                           | `'stdout'`                |
+| `--help`          | Show help message                                                                                   | -                         |
 
 ## License Types
 

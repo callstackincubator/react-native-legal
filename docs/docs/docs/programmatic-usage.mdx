@@ -1,0 +1,76 @@
+---
+sidebar_position: 4
+---
+
+import { PackageManagerTabs, Badge } from '@theme';
+
+# Programmatic Usage (API)
+
+In case your use case involves programmatic usage of the functionality provided by `license-kit`, you can use the `@callstack/react-native-legal-shared` package. This package exposes the core functionalities of the license management tool, allowing you to integrate it into your Node.js applications.
+
+## Installation
+
+To get started, install the package using your preferred package manager:
+
+<PackageManagerTabs command="install @callstack/react-native-legal-shared" />
+
+## Usage
+
+### Basic Usage
+
+```typescript
+import {
+  generateAboutLibrariesNPMOutput,
+  generateLicensePlistNPMOutput,
+  scanDependencies,
+} from '@callstack/react-native-legal-shared';
+
+// scan dependencies of a package
+const licenses = scanDependencies(packageJsonPath);
+
+// generate AboutLibraries-compatible JSON metadata
+const aboutLibrariesCompatibleReport = generateAboutLibrariesNPMOutput(licenses);
+
+// generate LicensePlist-compatible metadata
+const licensePlistReport = generateLicensePlistNPMOutput(licenses);
+
+// generate a Markdown report
+const markdownString = md
+  .joinBlocks(
+    Object.entries(licenses)
+      .flatMap(([packageName, { version, author, content, description, file, type, url }]) => [
+        md.heading(packageName, { level: 2 }),
+        '\n',
+        `Version: ${version}<br/>\n`,
+        url ? `URL: ${url}<br/>\n` : '',
+        author ? `Author: ${author}<br/>\n\n` : '',
+        content ?? '',
+        '\n',
+        description ? `Description: ${description}\n` : '',
+        file ? `\nFile: ${file}\n` : '',
+        type ? `Type: ${type}` : '',
+        '\n',
+        md.horizontalRule,
+      ])
+      .join('\n'),
+  )
+  .toString();
+```
+
+## Additional details
+
+### License Types
+
+The tool recognizes various license types:
+
+- **Strong Copyleft**: Licenses that require derivative works to be released under the same license (e.g., GPL-3.0)
+- **Weak Copyleft**: Licenses that require derivative works to be released under the same license, but with some exceptions (e.g., LGPL-3.0)
+- **Permissive**: Licenses that allow for more flexible use (e.g., MIT, Apache-2.0)
+
+### Monorepo Support
+
+`react-native-legal` scans dependencies from workspace packages with the `workspace:*` notation in your `package.json` in addition to the app's direct dependencies.
+
+:::info
+If a monorepo package is private, its name and license won't be included in the license list, but its dependencies will still be scanned and included.
+:::

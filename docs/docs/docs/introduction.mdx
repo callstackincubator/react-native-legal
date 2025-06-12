@@ -1,7 +1,17 @@
+---
+sidebar_position: 1
+---
+
+import { PackagesPresentation } from '@components/PackagesPresentation';
+
 # Introduction
 
-React Native Legal helps you acknowledge open-source libraries in your React Native app by automatically generating and displaying license information using native platform tools. This ensures compliance with open-source licenses while maintaining a native user experience.
+<PackagesPresentation />
 
-| ![Android example](https://github.com/callstackincubator/react-native-legal/raw/main/static/android-expo.gif) | ![iOS example](https://github.com/callstackincubator/react-native-legal/raw/main/static/ios-expo.gif) | ![AndroidTV example](https://github.com/callstackincubator/react-native-legal/raw/main/static/android-tv.gif) | ![tvOS example](https://github.com/callstackincubator/react-native-legal/raw/main/static/tvos.gif) |
-| :-: | :-: | :-: | :-: |
-| **Android** | **iOS** | **AndroidTV** | **tvOS** |
+<br />
+
+React Native Legal (`react-native-legal`) helps you acknowledge open-source libraries in your React Native app by automatically generating and displaying license information using native platform tools. This ensures compliance with open-source licenses while maintaining a native user experience.
+
+We expose the core functionality related to Node.JS dependencies as a standalone CLI tool, `license-kit`, which can be used in any Node.js project, not just React Native apps. This allows you to generate license reports for any Node.js application.
+
+In case your use case involves programmatic usage of the functionality provided by `license-kit`, you can use the `@callstack/react-native-legal-shared` package. This package exposes the core functionalities of the license management tool, allowing you to integrate it into your Node.js applications.

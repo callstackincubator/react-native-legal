@@ -1,12 +1,20 @@
+---
+sidebar_position: 2
+---
+
 import { PackageManagerTabs, Badge } from '@theme';
 
-# Quick Start
+# React Native Legal
 
 ## Installation
 
 To get started, install the package using your preferred package manager:
 
 <PackageManagerTabs command="install react-native-legal" />
+
+| ![Android example](https://github.com/callstackincubator/react-native-legal/raw/main/static/android-expo.gif) | ![iOS example](https://github.com/callstackincubator/react-native-legal/raw/main/static/ios-expo.gif) | ![AndroidTV example](https://github.com/callstackincubator/react-native-legal/raw/main/static/android-tv.gif) | ![tvOS example](https://github.com/callstackincubator/react-native-legal/raw/main/static/tvos.gif) |
+| :-----------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------: |
+|                                                  **Android**                                                  |                                                **iOS**                                                |                                                 **AndroidTV**                                                 |                                              **tvOS**                                              |
 
 ## Setup
 
@@ -62,10 +70,7 @@ function launchNotice() {
 function MyComponent() {
   return (
     <View>
-      <Button 
-        onPress={launchNotice} 
-        title="Open source licenses" 
-      />
+      <Button onPress={launchNotice} title="Open source licenses" />
     </View>
   );
 }
@@ -77,10 +82,13 @@ This will open a native screen listing all detected licenses. The title of the s
 
 On **iOS**, all detected licenses will also appear in the **Settings app** under the app's information section. This is done to comply with **Apple's guidelines**, which require apps to provide open-source license acknowledgments in a visible location.
 
-## Monorepo Support
+## Node.js / Non-RN Projects Support
 
-`react-native-legal` scans dependencies from workspace packages with the `workspace:*` notation in your `package.json` in addition to the app's direct dependencies.
+If you want to use the license management functionality in a Node.js project or any non-React Native application, you can either:
 
-:::info
-If a monorepo package is private, its name and license won't be included in the license list, but its dependencies will still be scanned and included.
-:::
+- use the `license-kit` CLI tool, which is a standalone tool that can be used in any Node.js project to generate license metadata - see [this section](/docs/standalone-cli) for more details
+- programmatically use the `@callstack/react-native-legal-shared` package, which exposes the core functionalities of this tool - see [this section](/docs/programmatic-usage) for more details
+
+## Additional details
+
+For more notes on the mechanics of the tool, please see [core additional details section](/docs/programmatic-usage#additional-details).

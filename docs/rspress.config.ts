@@ -5,9 +5,9 @@ import { defineConfig } from 'rspress/config';
 
 export default defineConfig({
   root: path.join(__dirname, 'docs'),
-  title: 'React Native Legal',
-  description: 'React Native Legal Documentation',
-  logoText: 'React Native Legal',
+  title: 'React Native Legal & License Kit',
+  description: 'React Native Legal & License Kit Documentation',
+  logoText: 'React Native Legal & License Kit',
   icon: '/img/notice.png',
   logo: '/img/notice.png',
   themeConfig: {
@@ -24,4 +24,5 @@ export default defineConfig({
   },
   base: '/react-native-legal/',
   plugins: [pluginCallstackTheme()],
+  globalStyles: path.join(__dirname, 'styles/globalStyles.css'),
 });

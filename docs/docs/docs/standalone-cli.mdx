@@ -1,6 +1,12 @@
+---
+sidebar_position: 3
+---
+
 import { PackageManagerTabs, Badge } from '@theme';
 
-# Standalone CLI
+# Standalone CLI (Node.js)
+
+We expose the `license-kit` package as a CLI for managing and analyzing Open Source Software (OSS) licenses in your Node.js projects. This package helps you aggregate license information and ensure compliance with license requirements.
 
 ## Installation
 
@@ -8,18 +14,53 @@ To get started, install the package using your preferred package manager:
 
 <PackageManagerTabs command="install license-kit" />
 
-## Programmatic usage (API)
+## Features
 
-Once the setup is complete, you can easily add a button to your app to display the list of open-source licenses:
+- 🔍 Scan and aggregate license information from your project dependencies
+- ⚠️ Detect copyleft licenses that might affect your project
+- 📝 Generate license reports in a format of choice (JSON, Markdown, raw text, AboutLibraries-compatible JSON metadata)
+- 🔄 Support for both direct and transitive dependencies
 
-```tsx
+## Quick Start
 
+Run the license check in your project root:
+
+```bash
+npx license-kit
 ```
 
-This will open a native screen listing all detected licenses. The title of the screen can be customized by passing a different string argument to `launchLicenseListScreen()`.
+## Usage
 
-## Programmatic usage (API)
+### Basic Usage
+
+```bash
+# Run with default settings (JSON, stdout)
+npx license-kit
+
+# Check for copyleft licenses
+npx license-kit --copyleft
+
+# Exit on weak copyleft licenses
+npx license-kit --error-on-weak
+
+# Write a markdown report to ./public/licenses.md
+npx license-kit --format markdown --output ./public/licenses.md
+
+# Write a text report to ./public/licenses.txt of a different project
+npx license-kit --format markdown --output ../../out/licenses.md --root ../../another-project
+```
+
+### Command Line Options
+
+| Option            | Description                                                                                         | Default                   |
+| ----------------- | --------------------------------------------------------------------------------------------------- | ------------------------- |
+| `--copyleft`      | Check for copyleft licenses. Exits with error if strong copyleft licenses are found                 | `false`                   |
+| `--error-on-weak` | Exit with error if weak copyleft licenses are found                                                 | `false`                   |
+| `--root`          | Path to the root of your project                                                                    | Current working directory |
+| `--format`        | Output format, one of: `'json'`, `'about-json'` (AboutLibraries-compatible), `'text'`, `'markdown'` | `'json'`                  |
+| `--output`        | Where to write the output - either `'stdout'` or a path to an output file                           | `'stdout'`                |
+| `--help`          | Show help message                                                                                   | -                         |
 
 ## Additional details
 
-For more notes on the mechanics of the tool, please see [Quick Start](/docs/quick-start)
+For more notes on the mechanics of the tool, please see [core additional details section](/docs/programmatic-usage#additional-details).

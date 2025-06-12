@@ -1,0 +1,34 @@
+[
+  {
+    "type": "section-header",
+    "label": "Quickstart"
+  },
+  {
+    "type": "custom-link",
+    "link": "/index",
+    "label": "Home"
+  },
+  {
+    "type": "file",
+    "name": "introduction"
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section-header",
+    "label": "Packages documentation"
+  },
+  {
+    "type": "file",
+    "name": "react-native"
+  },
+  {
+    "type": "file",
+    "name": "standalone-cli"
+  },
+  {
+    "type": "file",
+    "name": "programmatic-usage"
+  }
+]
