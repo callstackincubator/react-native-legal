@@ -39,7 +39,6 @@
     "@evilmartians/lefthook": "1.4.3",
     "commitlint": "17.6.6",
     "eslint": "^8.46.0",
-    "eslint-import-resolver-typescript": "^4.4.3",
     "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.1",
