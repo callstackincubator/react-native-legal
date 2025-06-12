@@ -6,6 +6,7 @@
 ![Deploy Docs](https://github.com/callstackincubator/react-native-legal/actions/workflows/deploy-docs.yml/badge.svg)
 
 - [`react-native-legal`](#react-native-legal)
+  - [Documentation](#documentation)
   - [Installation](#installation)
     - [React Native](#react-native)
     - [Standalone CLI](#standalone-cli)
@@ -25,6 +26,10 @@ Automagically generate license acknowledgements for your React Native app and an
 | Android                                                                                                       | iOS                                                                                                   | AndroidTV                                                                                                     | tvOS                                                                                               |
 | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | ![Android example](https://github.com/callstackincubator/react-native-legal/raw/main/static/android-expo.gif) | ![iOS example](https://github.com/callstackincubator/react-native-legal/raw/main/static/ios-expo.gif) | ![AndroidTV example](https://github.com/callstackincubator/react-native-legal/raw/main/static/android-tv.gif) | ![tvOS example](https://github.com/callstackincubator/react-native-legal/raw/main/static/tvos.gif) |
+
+## Documentation
+
+You can find the full documentation for all packages in this repository at [callstackincubator.github.io/react-native-legal](https://callstackincubator.github.io/react-native-legal/).
 
 ## Installation
 
@@ -168,8 +173,23 @@ For a list of supported flags and the default values, run `npx license-kit --hel
 You can use the `@callstack/react-native-legal-shared` package to access the core functionalities of the license management tool. Here's a basic example of how to use it:
 
 ```typescript
-import { LicenseKit } from '@callstack/react-native-legal-shared';
+import {
+  generateAboutLibrariesNPMOutput,
+  generateLicensePlistNPMOutput,
+  scanDependencies,
+} from '@callstack/react-native-legal-shared';
+
+// scan dependencies of a package
+const licenses = scanDependencies(packageJsonPath);
+
+// generate AboutLibraries-compatible JSON metadata
+const aboutLibrariesCompatibleReport = generateAboutLibrariesNPMOutput(licenses);
+
+// generate LicensePlist-compatible metadata
+const licensePlistReport = generateLicensePlistNPMOutput(licenses);
 ```
+
+For more advanced usage, read the [programmatic usage documentation](https://callstackincubator.github.io/react-native-legal/docs/programmatic-usage#usage).
 
 ## Expo
 
