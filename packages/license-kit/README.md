@@ -64,6 +64,10 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 - Pull request process
 - Testing requirements
 
+To build the project, run `yarn build-library`. This will compile the TypeScript code into JavaScript and prepare the package for distribution.
+
+To run the project in development mode, use `yarn dev`. This will run the TypeScript entrypoint with node directly.
+
 ## License
 
 MIT © [Callstack](https://callstack.com)
