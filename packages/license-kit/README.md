@@ -28,26 +28,61 @@ npx license-kit
 ### Basic Usage
 
 ```bash
-# Run with default settings
-npx license-kit
+# Generate licenses report with default settings (JSON, stdout)
+npx license-kit report
+
+# Generate licenses report in Markdown format and write to ./public/licenses.md
+npx license-kit report --format markdown --output ./public/licenses.md
+
+# Write a text report to ./public/licenses.txt of a different project
+npx license-kit report --format markdown --output ../../out/licenses.md --root ../../another-project
 
 # Check for copyleft licenses
-npx license-kit --copyleft
+npx license-kit copyleft
 
 # Exit on weak copyleft licenses
-npx license-kit --error-on-weak
+npx license-kit copyleft --error-on-weak
+
+# Print help for the report command
+npx license-kit report --help
+
+# Print help for the copyleft command
+npx license-kit copyleft --help
 ```
 
 ### Command Line Options
 
-| Option            | Description                                                                                         | Default                   |
-| ----------------- | --------------------------------------------------------------------------------------------------- | ------------------------- |
-| `--copyleft`      | Check for copyleft licenses. Exits with error if strong copyleft licenses are found                 | `false`                   |
-| `--error-on-weak` | Exit with error if weak copyleft licenses are found                                                 | `false`                   |
-| `--root`          | Path to the root of your project                                                                    | Current working directory |
-| `--format`        | Output format, one of: `'json'`, `'about-json'` (AboutLibraries-compatible), `'text'`, `'markdown'` | `'json'`                  |
-| `--output`        | Where to write the output - either `'stdout'` or a path to an output file                           | `'stdout'`                |
-| `--help`          | Show help message                                                                                   | -                         |
+#### Command: `copyleft`
+
+Check for copyleft licenses. Exits with error code (≠ 0) if strong copyleft licenses are found.
+
+| Flag / Option   | Description                                              | Default                   |
+| --------------- | -------------------------------------------------------- | ------------------------- |
+| --root <path>   | Path to the root of your project                         | Current working directory |
+| --error-on-weak | Exit with error code if weak copyleft licenses are found | `false`                   |
+
+#### Command: `report`
+
+Generates a licenses report in the specified format. The output can be written to `stdout` (default) or a file.
+
+| Flag / Option   | Description                                                                                         | Default                   |
+| --------------- | --------------------------------------------------------------------------------------------------- | ------------------------- |
+| --root <path>   | Path to the root of your project                                                                    | Current working directory |
+| --format <type> | Output format, one of: `'json'`, `'about-json'` (AboutLibraries-compatible), `'text'`, `'markdown'` | `'json'`                  |
+| --output <path> | Where to write the output - either `'stdout'` or a path to an output file                           | `'stdout'`                |
+
+#### Command: `help`
+
+Displays help, listing the available commands.
+
+#### General options
+
+General options that can be passed to the CLI with after any command.
+
+| Option      | Description                     |
+| ----------- | ------------------------------- |
+| `--version` | Outputs the version of the CLI. |
+| `--help`    | Displays help for the command.  |
 
 ## License Types
 

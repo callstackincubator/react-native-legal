@@ -155,18 +155,18 @@ You can use the `license-kit` CLI tool to generate license reports in your Node.
 1. Run the CLI tool from the root of your Node.js project:
 
 ```sh
-npx license-kit --format markdown --output ./public/licenses.md
+npx license-kit report --format markdown --output ./public/licenses.md
 ```
 
 or
 
 ```sh
-yarn license-kit --format markdown --output ./public/licenses.md
+yarn license-kit report --format markdown --output ./public/licenses.md
 ```
 
 This will scan your project's dependencies and generate a license report in the specified format (JSON, Markdown, raw text, or AboutLibraries-compatible JSON metadata).
 
-For a list of supported flags and the default values, run `npx license-kit --help` or read them documented [in the package's README](./packages/license-kit/README.md#command-line-options).
+For a list of supported flags and the default values, run `npx license-kit --help` or read them documented [in the package's README](./packages/license-kit/README.md#command-line-options). To read more about a specific command, run `npx license-kit <command> --help`, e.g. `npx license-kit report --help`.
 
 ### I want to customize the presentation of the licenses in my JS/TS project
 
