@@ -1,4 +1,4 @@
-import { arrayIncludesObject } from '@callstack/react-native-legal-shared';
+import { MiscUtils } from '@callstack/react-native-legal-shared';
 
 /**
  * Applies Gradle Plugin Portal & AboutLibraries Gradle plugin repositories (if needed) inside root build.gradle
@@ -62,7 +62,7 @@ export function applyAndConfigureAboutLibrariesPluginUtil(androidAppBuildGradleC
 export function addListActivityUtil<T>(activities: T[]): T[] {
   const listActivity = prepareListActivity();
 
-  if (!arrayIncludesObject(activities, listActivity)) {
+  if (!MiscUtils.arrayIncludesObject(activities, listActivity)) {
     activities?.push(listActivity as T);
     console.log('About Libraries activity - ADDED');
   } else {

@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { generateLicensePlistNPMOutput, scanDependencies } from '@callstack/react-native-legal-shared';
+import { scanDependencies, writeLicensePlistNPMOutput } from '@callstack/react-native-legal-shared';
 
 import { addSettingsBundle } from './addSettingsBundle';
 import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase';
@@ -14,7 +14,7 @@ import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase
 export function iosCommand(iosProjectPath: string) {
   const licenses = scanDependencies(path.join(path.resolve(iosProjectPath, '..'), 'package.json'));
 
-  generateLicensePlistNPMOutput(licenses, iosProjectPath);
+  writeLicensePlistNPMOutput(licenses, iosProjectPath);
 
   addSettingsBundle(iosProjectPath);
   registerLicensePlistBuildPhase(iosProjectPath);

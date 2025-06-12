@@ -1,76 +1,15 @@
-import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
 import glob from 'glob';
 
-type LicenseObj = {
-  author?: string;
-  content?: string;
-  description?: string;
-  file?: string;
-  type?: string;
-  url?: string;
-  version: string;
-};
-
-type AboutLibrariesLibraryJsonPayload = {
-  artifactVersion: string;
-  description: string;
-  developers: { name: string; organisationUrl: string }[];
-  licenses: string[];
-  name: string;
-  tag: string;
-  uniqueId: string;
-};
-
-type AboutLibrariesLicenseJsonPayload = {
-  content: string;
-  hash: string;
-  name: string;
-  url: string;
-};
-
-type LicensePlistPayload = {
-  name: string;
-  source?: string;
-  version: string;
-  body?: string;
-  file?: string;
-};
-
-function compareObjects(a: unknown, b: unknown): boolean {
-  if (a == null || b == null || typeof a !== 'object' || typeof b !== 'object') {
-    return a === b;
-  }
-
-  const entriesA = Object.entries(a);
-  const entriesB = Object.entries(b);
-
-  return (
-    entriesA.length === entriesB.length &&
-    entriesA
-      .map(([keyA, valueA]) => {
-        const entry = entriesB.find(([keyB]) => keyA === keyB);
-
-        if (!entry) {
-          return valueA === entry;
-        }
-
-        const [, valueB] = entry;
-
-        return compareObjects(valueA, valueB);
-      })
-      .reduce((acc, curr) => acc && curr, true)
-  );
-}
-
-/**
- * Makes a deep-check between array items and provided object, returns true if array has provided object.
- */
-export function arrayIncludesObject(array?: unknown[], object?: unknown) {
-  return array?.map((item) => compareObjects(item, object)).reduce((acc, curr) => acc || curr, false);
-}
+import type {
+  AboutLibrariesLibraryJsonPayload,
+  AboutLibrariesLicenseJsonPayload,
+  AggregatedLicensesObj,
+  LicensePlistPayload,
+} from './types';
+import { PackageUtils } from './utils';
 
 /**
  * Scans a single package and its dependencies for license information
@@ -79,7 +18,7 @@ function scanPackage(
   packageName: string,
   version: string,
   processedPackages: Set<string>,
-  result: Record<string, LicenseObj>,
+  result: AggregatedLicensesObj,
 ) {
   const packageKey = `${packageName}@${version}`;
 
@@ -91,7 +30,7 @@ function scanPackage(
   processedPackages.add(packageKey);
 
   try {
-    const localPackageJsonPath = getPackageJsonPath(packageName);
+    const localPackageJsonPath = PackageUtils.getPackageJsonPath(packageName);
 
     if (!localPackageJsonPath) {
       console.warn(`[react-native-legal] skipping ${packageName} could not find package.json`);
@@ -110,12 +49,12 @@ function scanPackage(
       });
 
       result[packageName] = {
-        author: parseAuthorField(localPackageJson),
+        author: PackageUtils.parseAuthorField(localPackageJson),
         content: licenseFiles?.[0] ? fs.readFileSync(licenseFiles[0], { encoding: 'utf-8' }) : undefined,
         file: licenseFiles?.[0] ? licenseFiles[0] : undefined,
         description: localPackageJson.description,
-        type: parseLicenseField(localPackageJson),
-        url: parseRepositoryFieldToUrl(localPackageJson),
+        type: PackageUtils.parseLicenseField(localPackageJson),
+        url: PackageUtils.parseRepositoryFieldToUrl(localPackageJson),
         version: localPackageJson.version,
       };
     }
@@ -125,8 +64,9 @@ function scanPackage(
     const isWorkspacePackage = version.startsWith('workspace:');
 
     if (!isWorkspacePackage) return;
-
+    console.log(dependencies);
     if (dependencies) {
+      console.log(dependencies);
       Object.entries(dependencies).forEach(([depName, depVersion]) => {
         scanPackage(depName, depVersion as string, processedPackages, result);
       });
@@ -142,7 +82,7 @@ function scanPackage(
 export function scanDependencies(appPackageJsonPath: string) {
   const appPackageJson = require(path.resolve(appPackageJsonPath));
   const dependencies: Record<string, string> = appPackageJson.dependencies;
-  const result: Record<string, LicenseObj> = {};
+  const result: AggregatedLicensesObj = {};
   const processedPackages = new Set<string>();
 
   if (dependencies) {
@@ -229,22 +169,16 @@ function toYaml(obj: unknown, indent = 0): string {
 }
 
 /**
- * Generates LicensePlist-compatible metadata for NPM dependencies
+ * Generates LicensePlist-compatible metadata for NPM dependencies as a YAML string.
  *
- * This will take scanned NPM licenses and produce following output inside iOS project's directory:
+ * To write a file directly, use `writeLicensePlistNPMOutput` function.
  *
- * | - ios
- * | ---- myawesomeapp
- * | ---- myawesomeapp.xcodeproj
- * | ---- myawesomeapp.xcodeworkspace
- * | ---- license_plist.yml <--- generated LicensePlist config with NPM dependencies
- * | ---- Podfile
- * | ---- Podfile.lock
+ * @see {@link writeLicensePlistNPMOutput}
  */
-export function generateLicensePlistNPMOutput(licenses: Record<string, LicenseObj>, iosProjectPath: string) {
+export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, iosProjectPath: string) {
   const renames: Record<string, string> = {};
   const licenseEntries = Object.entries(licenses).map(([dependency, licenseObj]) => {
-    const normalizedName = normalizePackageName(dependency);
+    const normalizedName = PackageUtils.normalizePackageName(dependency);
 
     if (dependency !== normalizedName) {
       renames[normalizedName] = dependency;
@@ -273,6 +207,27 @@ export function generateLicensePlistNPMOutput(licenses: Record<string, LicenseOb
     '# END Generated NPM license entries',
   ].join('\n');
 
+  return yamlContent;
+}
+
+/**
+ * Writes LicensePlist-compatible metadata for NPM dependencies to a file
+ *
+ * This will take scanned NPM licenses and produce following output inside iOS project's directory:
+ *
+ * | - ios
+ * | ---- myawesomeapp
+ * | ---- myawesomeapp.xcodeproj
+ * | ---- myawesomeapp.xcodeworkspace
+ * | ---- license_plist.yml <--- generated LicensePlist config with NPM dependencies
+ * | ---- Podfile
+ * | ---- Podfile.lock
+ *
+ * @see {@link generateLicensePlistNPMOutput}
+ */
+export function writeLicensePlistNPMOutput(licenses: AggregatedLicensesObj, iosProjectPath: string) {
+  const yamlContent = generateLicensePlistNPMOutput(licenses, iosProjectPath);
+
   fs.writeFileSync(path.join(iosProjectPath, 'license_plist.yml'), yamlContent, { encoding: 'utf-8' });
 }
 
@@ -280,44 +235,20 @@ export function generateLicensePlistNPMOutput(licenses: Record<string, LicenseOb
  * Generates AboutLibraries-compatible metadata for NPM dependencies
  *
  * This will take scanned NPM licenses and produce following output inside android project's directory:
- *
- * | - android
- * | ---- app
- * | ---- config <--- generated AboutLibraries config directory
- * | ------- libraries <--- generated directory with JSON files list of NPM dependencies
- * | ------- licenses <--- generated directory with JSON files list of used licenses
- * | ---- build.gradle
- * | ---- settings.gradle
  */
-export function generateAboutLibrariesNPMOutput(licenses: Record<string, LicenseObj>, androidProjectPath: string) {
-  const aboutLibrariesConfigDirPath = path.join(androidProjectPath, 'config');
-  const aboutLibrariesConfigLibrariesDirPath = path.join(aboutLibrariesConfigDirPath, 'libraries');
-  const aboutLibrariesConfigLicensesDirPath = path.join(aboutLibrariesConfigDirPath, 'licenses');
-
-  if (!fs.existsSync(aboutLibrariesConfigDirPath)) {
-    fs.mkdirSync(aboutLibrariesConfigDirPath);
-  }
-
-  if (!fs.existsSync(aboutLibrariesConfigLibrariesDirPath)) {
-    fs.mkdirSync(aboutLibrariesConfigLibrariesDirPath);
-  }
-
-  if (!fs.existsSync(aboutLibrariesConfigLicensesDirPath)) {
-    fs.mkdirSync(aboutLibrariesConfigLicensesDirPath);
-  }
-
-  Object.entries(licenses)
+export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj) {
+  return Object.entries(licenses)
     .map(([dependency, licenseObj]) => {
       return {
         artifactVersion: licenseObj.version,
         content: licenseObj.content ?? '',
         description: licenseObj.description ?? '',
         developers: [{ name: licenseObj.author ?? '', organisationUrl: '' }],
-        licenses: [prepareAboutLibrariesLicenseField(licenseObj)],
+        licenses: [PackageUtils.prepareAboutLibrariesLicenseField(licenseObj)],
         name: dependency,
         tag: '',
         type: licenseObj.type,
-        uniqueId: normalizePackageName(dependency),
+        uniqueId: PackageUtils.normalizePackageName(dependency),
       };
     })
     .map((jsonPayload) => {
@@ -336,109 +267,55 @@ export function generateAboutLibrariesNPMOutput(licenses: Record<string, License
         name: jsonPayload.type ?? '',
         url: '',
       };
-      const libraryJsonFilePath = path.join(
-        aboutLibrariesConfigLibrariesDirPath,
-        `${normalizePackageName(jsonPayload.name)}.json`,
-      );
-      const licenseJsonFilePath = path.join(aboutLibrariesConfigLicensesDirPath, `${licenseJsonPayload.hash}.json`);
 
-      fs.writeFileSync(libraryJsonFilePath, JSON.stringify(libraryJsonPayload));
-
-      if (!fs.existsSync(licenseJsonFilePath)) {
-        fs.writeFileSync(licenseJsonFilePath, JSON.stringify(licenseJsonPayload));
-      }
+      return {
+        normalizedPackageName: PackageUtils.normalizePackageName(jsonPayload.name),
+        libraryJsonPayload,
+        licenseJsonPayload,
+      };
     });
 }
 
-function prepareAboutLibrariesLicenseField(license: LicenseObj) {
-  if (!license.type) {
-    return '';
+/**
+ * Generates AboutLibraries-compatible metadata for NPM dependencies
+ *
+ * This will take scanned NPM licenses and produce following output inside android project's directory:
+ *
+ * | - android
+ * | ---- app
+ * | ---- config <--- generated AboutLibraries config directory
+ * | ------- libraries <--- generated directory with JSON files list of NPM dependencies
+ * | ------- licenses <--- generated directory with JSON files list of used licenses
+ * | ---- build.gradle
+ * | ---- settings.gradle
+ */
+export function writeAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj, androidProjectPath: string) {
+  const aboutLibrariesConfigDirPath = path.join(androidProjectPath, 'config');
+  const aboutLibrariesConfigLibrariesDirPath = path.join(aboutLibrariesConfigDirPath, 'libraries');
+  const aboutLibrariesConfigLicensesDirPath = path.join(aboutLibrariesConfigDirPath, 'licenses');
+
+  if (!fs.existsSync(aboutLibrariesConfigDirPath)) {
+    fs.mkdirSync(aboutLibrariesConfigDirPath);
   }
 
-  return `${license.type}_${sha512(license.content ?? license.type)}`;
-}
-
-function sha512(text: string) {
-  return crypto.createHash('sha512').update(text).digest('hex');
-}
-
-function parseAuthorField(json: { author: string | { name: string } }) {
-  if (typeof json.author === 'object' && typeof json.author.name === 'string') {
-    return json.author.name;
+  if (!fs.existsSync(aboutLibrariesConfigLibrariesDirPath)) {
+    fs.mkdirSync(aboutLibrariesConfigLibrariesDirPath);
   }
 
-  if (typeof json.author === 'string') {
-    return json.author;
-  }
-}
-
-function parseLicenseField(json: { license: string | { type: string } }) {
-  if (typeof json.license === 'object' && typeof json.license.type === 'string') {
-    return json.license.type;
+  if (!fs.existsSync(aboutLibrariesConfigLicensesDirPath)) {
+    fs.mkdirSync(aboutLibrariesConfigLicensesDirPath);
   }
 
-  if (typeof json.license === 'string') {
-    return json.license;
-  }
-}
+  const aboutLibraries = generateAboutLibrariesNPMOutput(licenses);
 
-function parseRepositoryFieldToUrl(json: { repository: string | { url?: string } }) {
-  if (typeof json.repository === 'object' && typeof json.repository.url === 'string') {
-    return normalizeRepositoryUrl(json.repository.url);
-  }
+  aboutLibraries.forEach(({ normalizedPackageName, libraryJsonPayload, licenseJsonPayload }) => {
+    const libraryJsonFilePath = path.join(aboutLibrariesConfigLibrariesDirPath, `${normalizedPackageName}.json`);
+    const licenseJsonFilePath = path.join(aboutLibrariesConfigLicensesDirPath, `${licenseJsonPayload.hash}.json`);
 
-  if (typeof json.repository === 'string') {
-    return normalizeRepositoryUrl(json.repository);
-  }
-}
+    fs.writeFileSync(libraryJsonFilePath, JSON.stringify(libraryJsonPayload));
 
-function normalizeRepositoryUrl(url: string) {
-  return url
-    .replace('git+ssh://git@', 'git://')
-    .replace('.git', '')
-    .replace('git+https://github.com', 'https://github.com')
-    .replace('.git', '')
-    .replace('git://github.com', 'https://github.com')
-    .replace('.git', '')
-    .replace('git@github.com:', 'https://github.com/')
-    .replace('.git', '')
-    .replace('github:', 'https://github.com/')
-    .replace('.git', '');
-}
-
-function getPackageJsonPath(dependency: string, root = process.cwd()) {
-  try {
-    return require.resolve(`${dependency}/package.json`, { paths: [root] });
-  } catch (error) {
-    const pkgJsonInNodeModules = path.join(root, 'node_modules', dependency, 'package.json');
-
-    return fs.existsSync(pkgJsonInNodeModules) ? pkgJsonInNodeModules : resolvePackageJsonFromEntry(dependency);
-  }
-}
-
-function resolvePackageJsonFromEntry(dependency: string) {
-  try {
-    const entryPath = require.resolve(dependency);
-    const packageDir = findPackageRoot(entryPath);
-
-    if (!packageDir) return null;
-
-    const packageJsonPath = path.join(packageDir, 'package.json');
-
-    return fs.existsSync(packageJsonPath) ? packageJsonPath : null;
-  } catch {
-    return null;
-  }
-}
-
-function findPackageRoot(entryPath: string) {
-  let currentDir = path.dirname(entryPath);
-  while (currentDir !== path.dirname(currentDir)) {
-    if (fs.existsSync(path.join(currentDir, 'package.json'))) return currentDir;
-    currentDir = path.dirname(currentDir);
-  }
-}
-
-function normalizePackageName(packageName: string): string {
-  return packageName.replace('/', '_');
+    if (!fs.existsSync(licenseJsonFilePath)) {
+      fs.writeFileSync(licenseJsonFilePath, JSON.stringify(licenseJsonPayload));
+    }
+  });
 }

@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { generateAboutLibrariesNPMOutput, scanDependencies } from '@callstack/react-native-legal-shared';
+import { scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/react-native-legal-shared';
 
 import { addListActivity } from './addListActivity';
 import { applyAndConfigureAboutLibrariesPlugin } from './applyAndConfigureAboutLibrariesPlugin';
@@ -15,7 +15,7 @@ import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
 export function androidCommand(androidProjectPath: string) {
   const licenses = scanDependencies(path.join(path.resolve(androidProjectPath, '..'), 'package.json'));
 
-  generateAboutLibrariesNPMOutput(licenses, androidProjectPath);
+  writeAboutLibrariesNPMOutput(licenses, androidProjectPath);
 
   declareAboutLibrariesPlugin(androidProjectPath);
   applyAndConfigureAboutLibrariesPlugin(androidProjectPath);

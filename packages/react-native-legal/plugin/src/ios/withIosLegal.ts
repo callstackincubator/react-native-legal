@@ -2,7 +2,7 @@ import path from 'path';
 
 import { type ConfigPlugin, withXcodeProject } from 'expo/config-plugins';
 
-import { generateLicensePlistNPMOutput, scanDependencies } from '../../../../shared/build/index';
+import { scanDependencies, writeLicensePlistNPMOutput } from '../../../../shared/build/index';
 
 import { addSettingsBundle } from './addSettingsBundle';
 import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase';
@@ -17,7 +17,7 @@ export const withIosLegal: ConfigPlugin = (config) => {
   withXcodeProject(config, async (exportedConfig) => {
     const licenses = scanDependencies(path.join(exportedConfig.modRequest.projectRoot, 'package.json'));
 
-    generateLicensePlistNPMOutput(licenses, exportedConfig.modRequest.platformProjectRoot);
+    writeLicensePlistNPMOutput(licenses, exportedConfig.modRequest.platformProjectRoot);
     return exportedConfig;
   });
   config = addSettingsBundle(config);
