@@ -11,49 +11,30 @@ export function CustomHomePage() {
 
   return (
     <>
-      <div className="custom-home-hero-wrapper">
-        <HomeHero
-          frontmatter={{
-            hero: {
-              name:
-                `<span class="hero-name">React Native Legal</span>` +
-                '<br/>' +
-                `<span class="hero-name">License Kit</span>`,
+      <HomeHero
+        frontmatter={{
+          hero: {
+            name:
+              `<span class="hero-name">React Native Legal</span>` +
+              '<br/>' +
+              `<span class="hero-name">License Kit</span>`,
 
-              tagline:
-                `<span class="hero-tagline" style="line-height: 1.4;">` +
-                'Automagically generate license acknowledgements' +
-                '\n' +
-                'for your <ins>React Native app</ins> & <ins>any Node.js</ins> project' +
-                `</span>`,
-              actions: [
-                { theme: 'brand', text: 'React Native', link: '/docs/react-native' },
-                { theme: 'brand', text: 'CLI', link: '/docs/standalone-cli' },
-                { theme: 'brand', text: 'API', link: '/docs/programmatic-usage' },
-                { theme: 'alt', text: 'GitHub', link: 'https://github.com/callstackincubator/react-native-legal' },
-              ],
-            },
-          }}
-          routePath={routePath}
-        />
-      </div>
-
-      <div
-        // eslint-disable-next-line react-native/no-inline-styles
-        style={{
-          width: '100%',
-          textAlign: 'center',
-          marginBottom: 40,
+            tagline:
+              `<span class="hero-tagline" style="line-height: 1.4;">` +
+              'Automagically generate license acknowledgements' +
+              '\n' +
+              'for your <ins>React Native app</ins> & <ins>any Node.js</ins> project' +
+              `</span>`,
+            actions: [
+              { theme: 'brand', text: 'React Native', link: '/docs/react-native' },
+              { theme: 'brand', text: 'CLI', link: '/docs/standalone-cli' },
+              { theme: 'brand', text: 'API', link: '/docs/programmatic-usage' },
+              { theme: 'alt', text: 'GitHub', link: 'https://github.com/callstackincubator/react-native-legal' },
+            ],
+          },
         }}
-      >
-        <span
-          onClick={() => {
-            window.location.pathname = routePath + (routePath.endsWith('/') ? '' : '/') + 'docs/introduction';
-          }}
-        >
-          <Button text="Not sure, which to choose?" theme="alt" type="button" size="medium" />
-        </span>
-      </div>
+        routePath={routePath}
+      />
 
       <HomeFeature
         frontmatter={{
@@ -104,6 +85,24 @@ export function CustomHomePage() {
         }}
         routePath={routePath}
       />
+
+      <div
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{
+          width: '100%',
+          textAlign: 'center',
+          marginTop: 40,
+          marginBottom: 40,
+        }}
+      >
+        <span
+          onClick={() => {
+            window.location.pathname = routePath + (routePath.endsWith('/') ? '' : '/') + 'docs/introduction';
+          }}
+        >
+          <Button text="Not sure, which to choose?" theme="alt" type="button" size="medium" />
+        </span>
+      </div>
 
       {/* eslint-disable-next-line react-native/no-inline-styles */}
       <div style={{ position: 'relative', marginTop: 140 }}>
