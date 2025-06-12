@@ -35,6 +35,7 @@
     "ios",
     "lib",
     "plugin",
+    "plugin-utils",
     "src",
     "LICENSE",
     "app.plugin.js",
