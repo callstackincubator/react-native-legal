@@ -1,8 +1,7 @@
 import path from 'path';
 
+import { scanDependencies, writeLicensePlistNPMOutput } from '@callstack/react-native-legal-shared';
 import { type ConfigPlugin, withXcodeProject } from 'expo/config-plugins';
-
-import { scanDependencies, writeLicensePlistNPMOutput } from '../../../../shared/build/index';
 
 import { addSettingsBundle } from './addSettingsBundle';
 import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase';
