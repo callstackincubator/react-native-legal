@@ -1,5 +1,10 @@
 # `react-native-legal`
 
+![E2E tests - Android](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-e2e-android.yaml/badge.svg)
+![E2E tests - iOS](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-e2e-ios.yaml/badge.svg)
+![Release](https://github.com/callstackincubator/react-native-legal/actions/workflows/release.yml/badge.svg)
+![Deploy Docs](https://github.com/callstackincubator/react-native-legal/actions/workflows/deploy-docs.yml/badge.svg)
+
 - [`react-native-legal`](#react-native-legal)
   - [Installation](#installation)
     - [React Native](#react-native)
