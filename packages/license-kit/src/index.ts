@@ -6,6 +6,8 @@ import process from 'node:process';
 import { scanDependencies } from '@callstack/react-native-legal-shared';
 import minimist from 'minimist';
 
+import { version } from '../package.json';
+
 const args = minimist(process.argv.slice(2));
 
 if (args.help) {
@@ -13,6 +15,7 @@ if (args.help) {
 Usage: license-kit [options]
 
 License Kit: Scan dependencies and check for copyleft licenses.
+Version: ${version}
 
 Options:
   --copyleft: Check for copyleft licenses. Exits with error if strong copyleft licenses are found.
