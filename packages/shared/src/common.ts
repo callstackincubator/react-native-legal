@@ -64,9 +64,8 @@ function scanPackage(
     const isWorkspacePackage = version.startsWith('workspace:');
 
     if (!isWorkspacePackage) return;
-    console.log(dependencies);
+
     if (dependencies) {
-      console.log(dependencies);
       Object.entries(dependencies).forEach(([depName, depVersion]) => {
         scanPackage(depName, depVersion as string, processedPackages, result);
       });
