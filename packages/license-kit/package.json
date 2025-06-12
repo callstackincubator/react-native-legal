@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@callstack/react-native-legal-shared": "^0.1.1",
-    "minimist": "^1.2.8"
+    "minimist": "^1.2.8",
+    "ts-markdown-builder": "^0.4.1"
   }
 }
