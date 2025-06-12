@@ -23,9 +23,4 @@
   height: 0px !important;
 }
 
-/* Remove bottom padding of the home hero */
-.custom-home-hero-wrapper div {
-  padding-bottom: 0px !important;
-}
-
 /* == Introduction page styles section end == */
