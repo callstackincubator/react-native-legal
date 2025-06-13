@@ -6,7 +6,7 @@ module.exports = {
       func: ([], { project: { android, ios } }, {}) => {
         const generateLegal = require('./bare-plugin/build').default;
 
-        generateLegal(android.sourceDir, ios.sourceDir);
+        generateLegal(android?.sourceDir, ios?.sourceDir);
       },
     },
   ],

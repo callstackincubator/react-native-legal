@@ -1,0 +1,31 @@
+name: Install Maestro
+description: Install Maestro
+
+inputs:
+  target-platform:
+    description: 'Target platform like ios or android'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install Maestro CLI
+      shell: bash
+      run: |
+        export MAESTRO_VERSION=1.40.3
+        curl -Ls "https://get.maestro.mobile.dev" | bash
+
+    - name: Conditionally install brew packages for iOS
+      shell: bash
+      run: |
+        if [[ "${{ inputs.target-platform }}" == "ios" ]]; then
+          echo "Installing brew packages for iOS..."
+          brew tap facebook/fb
+          brew install facebook/fb/idb-companion
+        else
+          echo "Skipping brew install because target platform is ${{ inputs.target-platform }}"
+        fi
+
+    - name: Add Maestro to path
+      shell: bash
+      run: echo "${HOME}/.maestro/bin" >> $GITHUB_PATH

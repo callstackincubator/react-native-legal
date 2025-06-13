@@ -142,23 +142,8 @@ declare module 'xcode' {
         runOnlyForDeploymentPostprocessing: number;
       };
     };
-    addFile(
-      path: string,
-      group?: string,
-      opt?: {
-        plugin?: string;
-        target?: string;
-        variantGroup?: string;
-        lastKnownFileType?: string;
-        defaultEncoding?: number;
-        customFramework?: boolean;
-        explicitFileType?: number;
-        weak?: boolean;
-        compilerFlags?: string;
-        embed?: boolean;
-        sign?: boolean;
-      },
-    ): pbxFile | null;
+    addFile(path: string, group?: string, opt?: FileOptions): pbxFile | null;
+    removeFile(path: string, group?: string, opt?: FileOptions): pbxFile | null;
     addToPbxBuildFileSection(file: pbxFile): void;
     addToPbxResourcesBuildPhase(file: pbxFile): void;
     buildPhase(group: string, target: string): string | undefined;
@@ -170,6 +155,20 @@ declare module 'xcode' {
     parseSync(): void;
     writeSync(options?: { omitEmptyValues?: boolean }): string;
   }
+
+  type FileOptions = Partial<{
+    plugin: string;
+    target: string;
+    variantGroup: string;
+    lastKnownFileType: string;
+    defaultEncoding: number;
+    customFramework: boolean;
+    explicitFileType: number;
+    weak: boolean;
+    compilerFlags: string;
+    embed: boolean;
+    sign: boolean;
+  }>;
 
   export function project(projectPath: string): XcodeProject;
 }

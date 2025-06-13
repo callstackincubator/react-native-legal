@@ -1,0 +1,99 @@
+name: E2E tests - Android
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/test-e2e-android.yaml'
+      - 'packages/react-native-legal/**/*.[tj]sx?'
+      - 'packages/react-native-legal/android/**'
+      - 'examples/bare-example/**/*.[tj]sx?'
+      - 'examples/bare-example/android/**'
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+concurrency:
+  group: e2e_tests-android-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MAESTRO_CLI_NO_ANALYTICS: true
+  MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: true
+  MAESTRO_DISABLE_UPDATE_CHECK: true
+
+jobs:
+  e2e-android:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [ 30, 34, 35 ]
+    steps:
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install Maestro
+        uses: ./.github/actions/installMaestro
+        with:
+          target-platform: android
+
+      - name: Cache Build
+        id: cache-build
+        uses: actions/cache@v4
+        env:
+          cache-name: cached-android-build
+        with:
+          path: |
+            examples/bare-example/android/build
+            examples/bare-example/android/app/build
+            examples/bare-example/android/app/.cxx
+          key: bare-example-android-build
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Install example dependencies
+        run:  yarn workspace react-native-legal-bare-example install --frozen-lockfile --immutable
+
+      - name: Bundle app
+        run: yarn workspace react-native-legal-bare-example build:android
+
+      - name: Create AVD and generate snapshot for caching
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: 'x86_64'
+          target: 'google_apis'
+          force-avd-creation: true
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: ./scripts/e2e_android_emulator_build_and_test.sh
+
+      - name: Upload report
+        if: always()
+        continue-on-error: true
+        uses: ./.github/actions/uploadMaestroTestResults
+        with:
+          id: API ${{ matrix.api-level }}

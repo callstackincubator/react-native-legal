@@ -11,6 +11,9 @@ export function addSettingsBundle(iosProjectPath: string) {
   addSettingsBundleUtil(iosProjectPath, ({ settingsBundleFilename }) => {
     const projectName = getIOSProjectName(iosProjectPath);
     const { pbxproj, pbxprojPath } = getIOSPbxProj(iosProjectPath);
+
+    pbxproj.removeFile(settingsBundleFilename, pbxproj.findPBXGroupKey({ name: projectName }));
+
     const settingsBundleFile = pbxproj.addFile(settingsBundleFilename, pbxproj.findPBXGroupKey({ name: projectName }));
 
     if (!settingsBundleFile) {
