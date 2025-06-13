@@ -16,7 +16,7 @@
       "@components/*": ["./components/*"]
     }
   },
-  "include": ["docs", "theme", "rspress.config.ts"],
+  "include": ["docs", "theme", "rspress.config.ts", "../packages/shared/src/"],
   "mdx": {
     "checkMdx": true
   }

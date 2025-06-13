@@ -15,6 +15,7 @@ const config = {
           '**/babel.config.js',
           '**/jest.config.js',
           '**/metro.config.js',
+          '**/rspress.config.ts',
         ],
       },
     ],

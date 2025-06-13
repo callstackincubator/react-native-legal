@@ -214,6 +214,7 @@ export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, i
  *
  * This will take scanned NPM licenses and produce following output inside iOS project's directory:
  *
+ * ```
  * | - ios
  * | ---- myawesomeapp
  * | ---- myawesomeapp.xcodeproj
@@ -221,6 +222,7 @@ export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, i
  * | ---- license_plist.yml <--- generated LicensePlist config with NPM dependencies
  * | ---- Podfile
  * | ---- Podfile.lock
+ * ```
  *
  * @see {@link generateLicensePlistNPMOutput}
  */
@@ -280,6 +282,7 @@ export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj)
  *
  * This will take scanned NPM licenses and produce following output inside android project's directory:
  *
+ * ```
  * | - android
  * | ---- app
  * | ---- config <--- generated AboutLibraries config directory
@@ -287,6 +290,7 @@ export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj)
  * | ------- licenses <--- generated directory with JSON files list of used licenses
  * | ---- build.gradle
  * | ---- settings.gradle
+ * ```
  */
 export function writeAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj, androidProjectPath: string) {
   const aboutLibrariesConfigDirPath = path.join(androidProjectPath, 'config');

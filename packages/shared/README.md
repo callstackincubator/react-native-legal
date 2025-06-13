@@ -57,7 +57,7 @@ const markdownString = md
 
 ## API Documentation
 
-The API documentation is published under: https://callstackincubator.github.io/react-native-legal/docs/api/.
+The API documentation is published under: https://callstackincubator.github.io/react-native-legal/api/.
 
 ## Contributing
 
