@@ -20,10 +20,5 @@
     "strict": true,
     "target": "esnext"
   },
-  "exclude": [
-    "node_modules",
-    "bare-plugin",
-    "plugin",
-    "plugin-utils"
-  ],
+  "exclude": ["node_modules", "bare-plugin", "plugin", "plugin-utils"]
 }

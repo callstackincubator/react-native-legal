@@ -1,8 +1,7 @@
 import path from 'path';
 
+import { scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/react-native-legal-shared';
 import { type ConfigPlugin, withAndroidManifest } from 'expo/config-plugins';
-
-import { generateAboutLibrariesNPMOutput, scanDependencies } from '../../../plugin-utils/build/common';
 
 import { addListActivity } from './addListActivity';
 import { applyAndConfigureAboutLibrariesPlugin } from './applyAndConfigureAboutLibrariesPlugin';
@@ -18,7 +17,7 @@ export const withAndroidLegal: ConfigPlugin = (config) => {
   withAndroidManifest(config, async (exportedConfig) => {
     const licenses = scanDependencies(path.join(exportedConfig.modRequest.projectRoot, 'package.json'));
 
-    generateAboutLibrariesNPMOutput(licenses, exportedConfig.modRequest.platformProjectRoot);
+    writeAboutLibrariesNPMOutput(licenses, exportedConfig.modRequest.platformProjectRoot);
     return exportedConfig;
   });
   config = declareAboutLibrariesPlugin(config);

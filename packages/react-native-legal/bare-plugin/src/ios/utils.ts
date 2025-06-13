@@ -1,9 +1,8 @@
 import path from 'path';
 
+import glob from 'glob';
 import type { XcodeProject } from 'xcode';
 import xcode from 'xcode';
-
-const glob = require('glob');
 
 const ignoredPaths = ['**/@(Carthage|Pods|vendor|node_modules)/**'];
 

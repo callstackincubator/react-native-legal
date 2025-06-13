@@ -1,7 +1,18 @@
 [
   {
-    "text": "Docs",
-    "link": "/docs/introduction.html",
-    "activeMatch": "/docs/"
+    "text": "Introduction",
+    "link": "/docs/introduction.html"
+  },
+  {
+    "text": "React Native",
+    "link": "/docs/react-native.html"
+  },
+  {
+    "text": "CLI",
+    "link": "/docs/standalone-cli.html"
+  },
+  {
+    "text": "API",
+    "link": "/docs/programmatic-usage.html"
   }
 ]
