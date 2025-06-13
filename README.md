@@ -1,25 +1,28 @@
-# `react-native-legal`
+<a href="https://www.callstack.com/open-source?utm_campaign=generic&utm_source=github&utm_medium=referral&utm_content=legal" align="center">
+  <img alt="react-native-paper" src="./images/banner.jpg">
+</a>
+
+---
 
 ![E2E tests - Android](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-e2e-android.yaml/badge.svg)
 ![E2E tests - iOS](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-e2e-ios.yaml/badge.svg)
 ![Release](https://github.com/callstackincubator/react-native-legal/actions/workflows/release.yml/badge.svg)
 ![Deploy Docs](https://github.com/callstackincubator/react-native-legal/actions/workflows/deploy-docs.yml/badge.svg)
 
-- [`react-native-legal`](#react-native-legal)
-  - [Documentation](#documentation)
-  - [Installation](#installation)
-    - [React Native](#react-native)
-    - [Standalone CLI](#standalone-cli)
-    - [Node.js - API](#nodejs---api)
-  - [Usage](#usage)
-    - [I want to generate licenses in my Expo project ](#i-want-to-generate-licenses-in-my-expo-project-)
-    - [I want to generate licenses reports in my bare RN project ](#i-want-to-generate-licenses-reports-in-my-bare-rn-project-)
-    - [I want to generate licenses reports in my Node.js project](#i-want-to-generate-licenses-reports-in-my-nodejs-project)
-    - [I want to customize the presentation of the licenses in my JS/TS project](#i-want-to-customize-the-presentation-of-the-licenses-in-my-jsts-project)
-  - [Expo](#expo)
-  - [Contributing](#contributing)
-  - [Acknowledgements](#acknowledgements)
-  - [License](#license)
+- [Documentation](#documentation)
+- [Installation](#installation)
+  - [React Native](#react-native)
+  - [Standalone CLI](#standalone-cli)
+  - [Node.js - API](#nodejs---api)
+- [Usage](#usage)
+  - [I want to generate licenses in my Expo project ](#i-want-to-generate-licenses-in-my-expo-project-)
+  - [I want to generate licenses reports in my bare RN project ](#i-want-to-generate-licenses-reports-in-my-bare-rn-project-)
+  - [I want to generate licenses reports in my Node.js project](#i-want-to-generate-licenses-reports-in-my-nodejs-project)
+  - [I want to customize the presentation of the licenses in my JS/TS project](#i-want-to-customize-the-presentation-of-the-licenses-in-my-jsts-project)
+- [Expo](#expo)
+- [Contributing](#contributing)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
 
 Automagically generate license acknowledgements for your React Native app and any Node.js project 🚀
 
