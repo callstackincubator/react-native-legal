@@ -104,7 +104,7 @@ The codebase of RN CLI plugin is located in:
 
 - `packages/react-native-legal/bare-plugin`
 - `packages/react-native-legal/react-native.config.js` (the entry point)
-- `packages/react-native-legal/license-kit` (logic)
+- `packages/license-kit` (logic)
 
 To test the changes, build the plugin run (from the root directory, the one with consisting all workspaces):
 
