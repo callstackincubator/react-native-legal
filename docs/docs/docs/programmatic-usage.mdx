@@ -23,11 +23,19 @@ import {
   generateAboutLibrariesNPMOutput,
   generateLicensePlistNPMOutput,
   scanDependencies,
+  Types,
 } from '@callstack/react-native-legal-shared';
 import * as md from 'ts-markdown-builder';
 
+// apart from dependencies, also include devDependencies, but only from the root package.json;
+// also, include all transitive dependencies
+const optionsFactory: Types.ScanPackageOptionsFactory = ({ isRoot }) => ({
+  includeDevDependencies: isRoot,
+  includeTransitiveDependencies: true,
+});
+
 // scan dependencies of a package
-const licenses = scanDependencies(packageJsonPath);
+const licenses = scanDependencies(packageJsonPath, optionsFactory);
 
 // generate AboutLibraries-compatible JSON metadata
 const aboutLibrariesCompatibleReport = generateAboutLibrariesNPMOutput(licenses);
@@ -57,6 +65,14 @@ const markdownString = md
   )
   .toString();
 ```
+
+### Options
+
+As you can see in the example above, filtering for the packages to be included in the scan for dependencies is based on the passed in `ScanPackageOptionsFactory`. This factory would be invoked for every scanned `package.json` file, including the root and any considered dependencies and - given a `ScanPackageOptionsFactoryPackageInfo` object informing of the context of the package being scanned - should produce an accompanying configuration that would filter this package's dependencies.
+
+This approach gives a programmatic control at an arbitrary level of precision over filtering of dependencies to be included.
+
+As a reference, you can see how this is used in the `license-kit` CLI in [`createScanOptionsFactory` of `scanOptionsUtils.ts`](https://github.com/callstackincubator/react-native-legal/blob/main/packages/license-kit/src/scanOptionsUtils.ts).
 
 ### API Documentation
 

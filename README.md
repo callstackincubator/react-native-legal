@@ -179,26 +179,7 @@ For a list of supported flags and the default values, run `npx license-kit --hel
 
 ### I want to customize the presentation of the licenses in my JS/TS project
 
-You can use the `@callstack/react-native-legal-shared` package to access the core functionalities of the license management tool. Here's a basic example of how to use it:
-
-```typescript
-import {
-  generateAboutLibrariesNPMOutput,
-  generateLicensePlistNPMOutput,
-  scanDependencies,
-} from '@callstack/react-native-legal-shared';
-
-// scan dependencies of a package
-const licenses = scanDependencies(packageJsonPath);
-
-// generate AboutLibraries-compatible JSON metadata
-const aboutLibrariesCompatibleReport = generateAboutLibrariesNPMOutput(licenses);
-
-// generate LicensePlist-compatible metadata
-const licensePlistReport = generateLicensePlistNPMOutput(licenses);
-```
-
-For more advanced usage, read the [programmatic usage documentation](https://callstackincubator.github.io/react-native-legal/docs/programmatic-usage#usage).
+You can use the `@callstack/react-native-legal-shared` package to access the core functionalities of the license management tool. To do so, please read the [programmatic usage documentation](https://callstackincubator.github.io/react-native-legal/docs/programmatic-usage#usage).
 
 ## Expo
 

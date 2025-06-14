@@ -21,11 +21,19 @@ import {
   generateAboutLibrariesNPMOutput,
   generateLicensePlistNPMOutput,
   scanDependencies,
+  Types,
 } from '@callstack/react-native-legal-shared';
 import * as md from 'ts-markdown-builder';
 
+// apart from dependencies, also include devDependencies, but only from the root package.json;
+// also, include all transitive dependencies
+const optionsFactory: Types.ScanPackageOptionsFactory = ({ isRoot }) => ({
+  includeDevDependencies: isRoot,
+  includeTransitiveDependencies: true,
+});
+
 // scan dependencies of a package
-const licenses = scanDependencies(packageJsonPath);
+const licenses = scanDependencies(packageJsonPath, optionsFactory);
 
 // generate AboutLibraries-compatible JSON metadata
 const aboutLibrariesCompatibleReport = generateAboutLibrariesNPMOutput(licenses);
