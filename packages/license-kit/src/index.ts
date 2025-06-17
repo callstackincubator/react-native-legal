@@ -39,7 +39,7 @@ function curryCommonScanOptions(command: Command): Command {
         `\n${nonTabHelpListingSublistOffset}- 'root-only' (only direct devDependencies from the scanned project's root package.json)` +
         `\n${nonTabHelpListingSublistOffset}- 'none'` +
         '\n', // newline for auto-description of the default value
-      'none' satisfies DevDepsMode,
+      'root-only' satisfies DevDepsMode,
     );
 }
 
