@@ -95,3 +95,30 @@ The tool recognizes various license types:
 :::info
 If a monorepo package is private, its name and license won't be included in the license list, but its dependencies will still be scanned and included.
 :::
+
+### Default `scanOptionsFactory` value
+
+The default value for the optional `scanOptionsFactory` parameter in `scanPackage` & `scanDependencies` functions is set to the following:
+
+```typescript
+{
+  includeTransitiveDependencies: true,
+  includeDevDependencies: false,
+}
+```
+
+Which can be found in [`ScanPackageOptions.ts`](/packages/shared/src/types/ScanPackageOptions.ts).
+
+:::warning
+This default `includeDevDependencies` behaviour is different from the default values of `license-kit` CLI's equivalent flag `--dev-deps-mode`, which is set to `root-only` by default.
+
+To achieve the same default behaviour as in the CLI (`root-only`), set `includeDevDependencies` to `isRoot` in the programmatic API:
+
+```typescript
+const optionsFactory: Types.ScanPackageOptionsFactory = ({ isRoot }) => ({
+  includeDevDependencies: isRoot,
+  includeTransitiveDependencies: ...,
+});
+```
+
+:::
