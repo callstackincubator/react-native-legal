@@ -34,5 +34,9 @@ export function compareObjects(a: unknown, b: unknown): boolean {
  * Makes a deep-check between array items and provided object, returns true if array has provided object.
  */
 export function arrayIncludesObject(array?: unknown[], object?: unknown) {
-  return array?.map((item) => compareObjects(item, object)).reduce((acc, curr) => acc || curr, false);
+  if (!Array.isArray(array)) {
+    return;
+  }
+
+  return array.map((item) => compareObjects(item, object)).reduce((acc, curr) => acc || curr, false);
 }
