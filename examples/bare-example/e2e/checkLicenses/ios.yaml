@@ -10,20 +10,27 @@ tags:
 - startRecording: 'e2e_results/checkLicenses'
 - tapOn: 'Tap to see list of OSS libraries'
 - assertVisible: 'OSS Notice'
+# workaround for long list issue taking ages to scroll to 'r*' packages (causing a timeout)
+- repeat:
+    times: 2
+    commands:
+      - swipe:
+          start: 50%, 90%
+          end: 50%, 0%
+          duration: 50
 - scrollUntilVisible:
     label: Scroll to React Native library
-    element: "react-native"
+    element: 'react-native'
     direction: 'DOWN'
     timeout: 60000
     speed: 80
 - takeScreenshot: 'e2e_results/react-native_list_element'
-- tapOn: "react-native"
+- tapOn: 'react-native'
 - takeScreenshot: 'e2e_results/react-native_entry'
-- assertVisible: "react-native"
-- assertVisible: "MIT License"
-- assertVisible: "OSS Notice"
-- tapOn: "OSS Notice"
+- assertVisible: 'react-native'
+- assertVisible: 'MIT License'
+- assertVisible: 'OSS Notice'
+- tapOn: 'OSS Notice'
 - takeScreenshot: 'e2e_results/react-native_back_to_list'
 - stopRecording
 - killApp
-

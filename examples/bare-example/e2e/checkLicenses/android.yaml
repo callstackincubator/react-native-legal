@@ -1,5 +1,5 @@
 appId: com.reactnativelegalbareexample
-name: "[Android] Check React Native entry in OSS libraries list"
+name: '[Android] Check React Native entry in OSS libraries list'
 tags:
   - pull-request
   - android
@@ -10,6 +10,14 @@ tags:
 - startRecording: 'e2e_results/checkLicenses'
 - tapOn: 'Tap to see list of OSS libraries'
 - assertVisible: 'OSS Notice'
+# workaround for long list issue taking ages to scroll to 'r*' packages (causing a timeout)
+- repeat:
+    times: 7
+    commands:
+      - swipe:
+          start: 50%, 90%
+          end: 50%, 0%
+          duration: 50
 - scrollUntilVisible:
     element:
       containsChild: 'react-native'
