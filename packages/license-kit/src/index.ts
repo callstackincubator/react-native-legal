@@ -56,6 +56,14 @@ program
       strongCopyleftLicensesFound.forEach((entry) => {
         console.error(entry);
       });
+
+      if (options.errorOnWeak) {
+        console.error('⚠️ Weak copyleft licenses found in the following dependencies:');
+        weakCopyleftLicensesFound.forEach((entry) => {
+          console.error(entry);
+        });
+      }
+
       process.exit(1);
     }
 
