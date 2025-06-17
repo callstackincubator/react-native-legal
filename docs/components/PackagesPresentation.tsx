@@ -1,6 +1,4 @@
-// @ts-ignore-next-line
-// eslint-disable-next-line import/no-unresolved
-import { LinkCard } from '@theme';
+import { LinkCard } from 'rspress/theme';
 
 export function PackagesPresentation() {
   return (

@@ -83,6 +83,7 @@ yarn ios
 The codebase of Expo Config Plugin is located in:
 
 - `packages/react-native-legal/plugin`
+- `packages/react-native-legal/plugin-utils`
 - `packages/react-native-legal/app.plugin.js` (the entry point)
 - `packages/license-kit` (logic)
 
@@ -103,10 +104,11 @@ yarn expo prebuild --clean
 The codebase of RN CLI plugin is located in:
 
 - `packages/react-native-legal/bare-plugin`
+- `packages/react-native-legal/plugin-utils`
 - `packages/react-native-legal/react-native.config.js` (the entry point)
 - `packages/license-kit` (logic)
 
-To test the changes, build the plugin run (from the root directory, the one with consisting all workspaces):
+To test the changes, build the plugin (run from the root directory, the one with consisting all workspaces):
 
 ```sh
 yarn workspace react-native-legal build-plugins

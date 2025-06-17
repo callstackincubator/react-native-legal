@@ -13,7 +13,8 @@
     "useDefineForClassFields": true,
     "allowImportingTsExtensions": true,
     "paths": {
-      "@components/*": ["./components/*"]
+      "@components/*": ["./components/*"],
+      "@theme": ["../node_modules/rspress/theme"]
     }
   },
   "include": ["docs", "theme", "rspress.config.ts", "../packages/shared/src/"],

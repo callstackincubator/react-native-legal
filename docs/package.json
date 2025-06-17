@@ -11,11 +11,11 @@
   },
   "dependencies": {
     "@callstack/rspress-theme": "^0.0.2",
-    "rspress": "^1.40.2"
+    "rspress": "1.44.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@rspress/plugin-typedoc": "^1.44.0",
+    "@rspress/plugin-typedoc": "1.44.0",
     "@types/node": "^18.11.17"
   }
 }

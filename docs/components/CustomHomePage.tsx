@@ -1,8 +1,5 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { usePageData } from '@rspress/runtime';
-// @ts-ignore-next-line
-// eslint-disable-next-line import/no-unresolved
-import { Button, HomeFeature, HomeFooter, HomeHero } from '@theme';
+import { usePageData } from 'rspress/runtime';
+import { Button, HomeFeature, HomeFooter, HomeHero } from 'rspress/theme';
 
 export function CustomHomePage() {
   const {
@@ -18,7 +15,7 @@ export function CustomHomePage() {
               `<span class="hero-name">React Native Legal</span>` +
               '<br/>' +
               `<span class="hero-name">License Kit</span>`,
-
+            text: '',
             tagline:
               `<span class="hero-tagline" style="line-height: 1.4;">` +
               'Automagically generate license acknowledgements' +
@@ -86,15 +83,7 @@ export function CustomHomePage() {
         routePath={routePath}
       />
 
-      <div
-        // eslint-disable-next-line react-native/no-inline-styles
-        style={{
-          width: '100%',
-          textAlign: 'center',
-          marginTop: 40,
-          marginBottom: 40,
-        }}
-      >
+      <div className="docs-introduction-cta">
         <span
           onClick={() => {
             window.location.pathname = routePath + (routePath.endsWith('/') ? '' : '/') + 'docs/introduction';
@@ -104,8 +93,7 @@ export function CustomHomePage() {
         </span>
       </div>
 
-      {/* eslint-disable-next-line react-native/no-inline-styles */}
-      <div style={{ position: 'relative', marginTop: 140 }}>
+      <div className="home-footer-wrapper">
         <HomeFooter />
       </div>
     </>

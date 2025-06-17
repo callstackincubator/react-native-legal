@@ -23,4 +23,16 @@
   height: 0px !important;
 }
 
+.docs-introduction-cta {
+  width: 100%;
+  text-align: center;
+  margin-top: 40;
+  margin-bottom: 40;
+}
+
+.home-footer-wrapper {
+  position: relative;
+  margin-top: 140;
+}
+
 /* == Introduction page styles section end == */
