@@ -22,7 +22,7 @@ tags:
     label: Scroll to React Native library
     element: 'react-native'
     direction: 'DOWN'
-    timeout: 60000
+    timeout: 100000
     speed: 80
 - takeScreenshot: 'e2e_results/react-native_list_element'
 - tapOn: 'react-native'

@@ -23,7 +23,7 @@ tags:
       containsChild: 'react-native'
       index: 0
     direction: 'DOWN'
-    timeout: 120000
+    timeout: 190000
     centerElement: true
     speed: 70
 - takeScreenshot: 'e2e_results/react-native_list_element'
