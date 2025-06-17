@@ -24,16 +24,17 @@ program.name('license-kit').description('Scan dependencies and check for copylef
 function curryCommonScanOptions(command: Command): Command {
   return command
     .option(
-      '--tm, --transitive-deps-mode [MODE]',
+      '--tm, --transitive-deps-mode [mode]',
       'Controls, which transitive dependencies are included:' +
         `\n${nonTabHelpListingSublistOffset}- 'all',` +
         `\n${nonTabHelpListingSublistOffset}- 'from-external-only' (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers),` +
-        `\n${nonTabHelpListingSublistOffset}- 'from-workspace-only' (only transitive dependencies of direct dependencies specified by \`workspace:\` specifier) or 'none'` +
+        `\n${nonTabHelpListingSublistOffset}- 'from-workspace-only' (only transitive dependencies of direct dependencies specified by \`workspace:\` specifier),` +
+        `\n${nonTabHelpListingSublistOffset}- 'none'` +
         '\n', // newline for auto-description of the default value
       'all' satisfies TransitiveDepsMode,
     )
     .option(
-      '--dm, --dev-deps-mode [MODE]',
+      '--dm, --dev-deps-mode [mode]',
       'Controls, whether and how development dependencies are included:' +
         `\n${nonTabHelpListingSublistOffset}- 'root-only' (only direct devDependencies from the scanned project's root package.json)` +
         `\n${nonTabHelpListingSublistOffset}- 'none'` +
@@ -67,7 +68,7 @@ curryCommonScanOptions(
     .command('copyleft')
     .description('Check for copyleft licenses. Exits with error if strong copyleft licenses are found.')
     .option('--error-on-weak', 'Exit with error if weak copyleft licenses are found', false)
-    .option('--root <path>', 'Path to the root of your project', '.'),
+    .option('--root [path]', 'Path to the root of your project', '.'),
 ).action((options) => {
   validateCommonScanOptions(options);
 
@@ -125,9 +126,9 @@ curryCommonScanOptions(
   program
     .command('report')
     .description('Generate a license report for your project.')
-    .option('--root <path>', 'Path to the root of your project', '.')
-    .option('--format <type>', "Output format: 'json', 'about-json', 'text', 'markdown'", 'json' satisfies Format)
-    .option('--output <path>', "Where to write the output: 'stdout' or a file path", 'stdout' satisfies Output),
+    .option('--root [path]', 'Path to the root of your project', '.')
+    .option('--format [type]', "Output format: 'json', 'about-json', 'text', 'markdown'", 'json' satisfies Format)
+    .option('--output [path]', "Where to write the output: 'stdout' or a file path", 'stdout' satisfies Output),
 ).action((options) => {
   validateCommonScanOptions(options);
 
