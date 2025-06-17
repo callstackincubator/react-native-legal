@@ -26,7 +26,6 @@ export default defineConfig({
   base: '/react-native-legal/',
   plugins: [
     pluginCallstackTheme(),
-    // @ts-ignore-next-line
     pluginTypeDoc({
       entryPoints: [path.join(__dirname, '..', 'packages', 'shared', 'src', 'index.ts')],
       outDir: 'api',
