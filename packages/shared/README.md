@@ -22,6 +22,7 @@ import {
   generateLicensePlistNPMOutput,
   scanDependencies,
 } from '@callstack/react-native-legal-shared';
+import * as md from 'ts-markdown-builder';
 
 // scan dependencies of a package
 const licenses = scanDependencies(packageJsonPath);
