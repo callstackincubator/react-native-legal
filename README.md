@@ -1,6 +1,12 @@
-<a href="https://www.callstack.com/open-source?utm_campaign=generic&utm_source=github&utm_medium=referral&utm_content=legal" align="center">
-  <img alt="react-native-legal" src="./images/banner.jpg">
+<a href="https://www.callstack.com/open-source?utm_campaign=generic&utm_source=github&utm_medium=referral&utm_content=react-native-legal" align="center">
+  <picture>
+    <img alt="React Native Legal" src="./images/banner.jpg">
+  </picture>
 </a>
+
+<p align="center">
+  <b>React Native Legal</b> - Automagically generate license acknowledgements for your React Native app 🚀
+</p>
 
 ---
 
