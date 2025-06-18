@@ -6,6 +6,7 @@ import glob from 'glob';
 import type {
   AboutLibrariesLibraryJsonPayload,
   AboutLibrariesLicenseJsonPayload,
+  AboutLibrariesLikePackageInfo,
   AggregatedLicensesObj,
   LicensePlistPayload,
 } from './types';
@@ -172,9 +173,11 @@ function toYaml(obj: unknown, indent = 0): string {
  *
  * To write a file directly, use `writeLicensePlistNPMOutput` function.
  *
+ * @param licenses - Scanned NPM licenses
+ * @param iosProjectPath - Path to the iOS project directory
  * @see {@link writeLicensePlistNPMOutput}
  */
-export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, iosProjectPath: string) {
+export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, iosProjectPath: string): string {
   const renames: Record<string, string> = {};
   const licenseEntries = Object.entries(licenses).map(([dependency, licenseObj]) => {
     const normalizedName = PackageUtils.normalizePackageName(dependency);
@@ -224,20 +227,33 @@ export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, i
  * | ---- Podfile.lock
  * ```
  *
+ * @param licenses - Scanned NPM licenses
+ * @param iosProjectPath - Path to the iOS project directory
+ * @param plistLikeOutput - Optional pre-generated string output to use instead of generating it using `generateLicensePlistNPMOutput`
  * @see {@link generateLicensePlistNPMOutput}
  */
-export function writeLicensePlistNPMOutput(licenses: AggregatedLicensesObj, iosProjectPath: string) {
-  const yamlContent = generateLicensePlistNPMOutput(licenses, iosProjectPath);
+export function writeLicensePlistNPMOutput(
+  licenses: AggregatedLicensesObj,
+  iosProjectPath: string,
+  plistLikeOutput?: string,
+) {
+  if (!plistLikeOutput) {
+    plistLikeOutput = generateLicensePlistNPMOutput(licenses, iosProjectPath);
+  }
 
-  fs.writeFileSync(path.join(iosProjectPath, 'license_plist.yml'), yamlContent, { encoding: 'utf-8' });
+  fs.writeFileSync(path.join(iosProjectPath, 'license_plist.yml'), plistLikeOutput, { encoding: 'utf-8' });
 }
 
 /**
  * Generates AboutLibraries-compatible metadata for NPM dependencies
  *
- * This will take scanned NPM licenses and produce following output inside android project's directory:
+ * This will take scanned NPM licenses and produce output that can be modified and/or written to the Android project files.
+ *
+ * @param licenses - Scanned NPM licenses
+ * @returns Array of AboutLibrariesLikePackage objects, each representing a NPM dependency
+ * @see {@link writeAboutLibrariesNPMOutput}
  */
-export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj) {
+export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj): AboutLibrariesLikePackageInfo[] {
   return Object.entries(licenses)
     .map(([dependency, licenseObj]) => {
       return {
@@ -291,8 +307,17 @@ export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj)
  * | ---- build.gradle
  * | ---- settings.gradle
  * ```
+ *
+ * @param licenses - Scanned NPM licenses
+ * @param androidProjectPath - Path to the Android project directory
+ * @param aboutLibrariesLikeOutput - Optional pre-generated output to use instead of generating it using `generateAboutLibrariesNPMOutput`
+ * @see {@link generateAboutLibrariesNPMOutput}
  */
-export function writeAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj, androidProjectPath: string) {
+export function writeAboutLibrariesNPMOutput(
+  licenses: AggregatedLicensesObj,
+  androidProjectPath: string,
+  aboutLibrariesLikeOutput?: AboutLibrariesLikePackageInfo[],
+) {
   const aboutLibrariesConfigDirPath = path.join(androidProjectPath, 'config');
   const aboutLibrariesConfigLibrariesDirPath = path.join(aboutLibrariesConfigDirPath, 'libraries');
   const aboutLibrariesConfigLicensesDirPath = path.join(aboutLibrariesConfigDirPath, 'licenses');
@@ -309,9 +334,11 @@ export function writeAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj, an
     fs.mkdirSync(aboutLibrariesConfigLicensesDirPath);
   }
 
-  const aboutLibraries = generateAboutLibrariesNPMOutput(licenses);
+  if (!aboutLibrariesLikeOutput) {
+    aboutLibrariesLikeOutput = generateAboutLibrariesNPMOutput(licenses);
+  }
 
-  aboutLibraries.forEach(({ normalizedPackageName, libraryJsonPayload, licenseJsonPayload }) => {
+  aboutLibrariesLikeOutput.forEach(({ normalizedPackageName, libraryJsonPayload, licenseJsonPayload }) => {
     const libraryJsonFilePath = path.join(aboutLibrariesConfigLibrariesDirPath, `${normalizedPackageName}.json`);
     const licenseJsonFilePath = path.join(aboutLibrariesConfigLicensesDirPath, `${licenseJsonPayload.hash}.json`);
 
