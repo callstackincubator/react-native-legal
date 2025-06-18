@@ -8,7 +8,13 @@ import { Command } from 'commander';
 
 import { version } from '../package.json';
 
-import { STRONG_COPYLEFT_LICENSES, WEAK_COPYLEFT_LICENSES, nonTabHelpListingSublistOffset } from './constants';
+import {
+  ERROR_EMOJI,
+  NON_TAB_HELP_LISTING_SUBLIST_OFFSET,
+  STRONG_COPYLEFT_LICENSES,
+  WARNING_EMOJI,
+  WEAK_COPYLEFT_LICENSES,
+} from './constants';
 import type { CLIScanOptions } from './scanOptionsUtils';
 import { createScanOptionsFactory } from './scanOptionsUtils';
 import { serializeReport } from './serializeReport';
@@ -26,18 +32,18 @@ function curryCommonScanOptions(command: Command): Command {
     .option(
       '--tm, --transitive-deps-mode [mode]',
       'Controls, which transitive dependencies are included:' +
-        `\n${nonTabHelpListingSublistOffset}- 'all',` +
-        `\n${nonTabHelpListingSublistOffset}- 'from-external-only' (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers),` +
-        `\n${nonTabHelpListingSublistOffset}- 'from-workspace-only' (only transitive dependencies of direct dependencies specified by \`workspace:\` specifier),` +
-        `\n${nonTabHelpListingSublistOffset}- 'none'` +
+        `\n${NON_TAB_HELP_LISTING_SUBLIST_OFFSET}- 'all',` +
+        `\n${NON_TAB_HELP_LISTING_SUBLIST_OFFSET}- 'from-external-only' (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers),` +
+        `\n${NON_TAB_HELP_LISTING_SUBLIST_OFFSET}- 'from-workspace-only' (only transitive dependencies of direct dependencies specified by \`workspace:\` specifier),` +
+        `\n${NON_TAB_HELP_LISTING_SUBLIST_OFFSET}- 'none'` +
         '\n', // newline for auto-description of the default value
       'all' satisfies TransitiveDepsMode,
     )
     .option(
       '--dm, --dev-deps-mode [mode]',
       'Controls, whether and how development dependencies are included:' +
-        `\n${nonTabHelpListingSublistOffset}- 'root-only' (only direct devDependencies from the scanned project's root package.json)` +
-        `\n${nonTabHelpListingSublistOffset}- 'none'` +
+        `\n${NON_TAB_HELP_LISTING_SUBLIST_OFFSET}- 'root-only' (only direct devDependencies from the scanned project's root package.json)` +
+        `\n${NON_TAB_HELP_LISTING_SUBLIST_OFFSET}- 'none'` +
         '\n', // newline for auto-description of the default value
       'root-only' satisfies DevDepsMode,
     );
@@ -66,7 +72,13 @@ function validateCommonScanOptions(options: CLIScanOptions) {
 curryCommonScanOptions(
   program
     .command('copyleft')
-    .description('Check for copyleft licenses. Exits with error if strong copyleft licenses are found.')
+    .description(
+      'Check for copyleft licenses. Exits with error if strong copyleft licenses are found.' +
+        '\nExit codes:' +
+        `\n${NON_TAB_HELP_LISTING_SUBLIST_OFFSET}- 0 - no copyleft licenses found` +
+        `\n${NON_TAB_HELP_LISTING_SUBLIST_OFFSET}- 1 - strong copyleft licenses found` +
+        `\n${NON_TAB_HELP_LISTING_SUBLIST_OFFSET}- 2 - weak copyleft licenses found (if --error-on-weak is set)`,
+    )
     .option('--error-on-weak', 'Exit with error if weak copyleft licenses are found', false)
     .option('--root [path]', 'Path to the root of your project', '.'),
 ).action((options) => {
@@ -101,24 +113,44 @@ curryCommonScanOptions(
     });
   }
 
+  let exitCode = 0,
+    noCopyleftLicensesFound = true;
+
   if (strongCopyleftLicensesFound.length > 0) {
-    console.error('❌ Copyleft licenses found in the following dependencies:');
+    console.error(`${ERROR_EMOJI} Copyleft licenses found in the following dependencies:`);
+
     strongCopyleftLicensesFound.forEach((entry) => {
       console.error(entry);
     });
-    process.exit(1);
+
+    exitCode = 1;
+    noCopyleftLicensesFound = false;
   }
 
   if (weakCopyleftLicensesFound.length > 0) {
-    console.error('⚠️ Weak copyleft licenses found in the following dependencies:');
+    console.error(
+      `${
+        options.errorOnWeak ? ERROR_EMOJI : WARNING_EMOJI
+      } Weak copyleft licenses found in the following dependencies:`,
+    );
+
     weakCopyleftLicensesFound.forEach((entry) => {
-      console.error(entry);
+      (options.errorOnWeak ? console.error : console.warn)(entry);
     });
+
     if (options.errorOnWeak) {
-      process.exit(1);
+      exitCode = 2;
     }
-  } else {
+
+    noCopyleftLicensesFound = false;
+  }
+
+  if (noCopyleftLicensesFound) {
     console.log('✅ No copyleft licenses found');
+  }
+
+  if (exitCode != 0) {
+    process.exit(exitCode);
   }
 });
 

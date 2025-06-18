@@ -53,4 +53,7 @@ export const WEAK_COPYLEFT_LICENSES = [
  * \t cannot be used on its own since it would break Commander.js's auto-alignment of help listing items,
  * therefore U+2063 invisible separator (which is a non-whitespace character is used before a \t)
  */
-export const nonTabHelpListingSublistOffset = '\u2063\t';
+export const NON_TAB_HELP_LISTING_SUBLIST_OFFSET = '\u2063\t';
+
+export const ERROR_EMOJI = '❌';
+export const WARNING_EMOJI = '⚠️';
