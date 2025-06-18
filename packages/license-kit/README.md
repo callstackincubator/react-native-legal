@@ -54,7 +54,13 @@ npx license-kit copyleft --help
 
 #### Command: `copyleft`
 
-Check for copyleft licenses. Exits with error code (≠ 0) if strong copyleft licenses are found.
+Check for copyleft licenses. Exits with error code (≠ 0) if strong copyleft licenses are found. Can be configured to exit with non-zero exit code if weak copyleft licenses are found as well.
+
+Exit codes:
+
+- `0` - no copyleft licenses found
+- `1` - strong copyleft licenses found
+- `2` - weak copyleft licenses found (if `--error-on-weak` is set)
 
 | Flag / Option                         | Description                                                                                                                                                                                                                                                                                                                                                  | Default                   |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------- |
