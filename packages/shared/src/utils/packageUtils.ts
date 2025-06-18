@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import type { LicenseObj } from '../types';
+import type { LicenseObj, ScanPackageOptionsFactory } from '../types';
 
 import { sha512 } from './miscUtils';
 import { normalizeRepositoryUrl } from './repositoryUtils';
@@ -80,3 +80,12 @@ export function parseRepositoryFieldToUrl(json: { repository: string | { url?: s
     return normalizeRepositoryUrl(json.repository);
   }
 }
+
+/**
+ * Default value consistent with legacy behaviour assumptions for the scan package options factory
+ * used so as not to introduce breaking API changes to the shared package
+ */
+export const legacyDefaultScanPackageOptionsFactory: ScanPackageOptionsFactory = () => ({
+  includeTransitiveDependencies: true,
+  includeDevDependencies: false,
+});

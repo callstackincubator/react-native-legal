@@ -10,7 +10,6 @@ import {
   type AggregatedLicensesObj,
   type LicensePlistPayload,
   type ScanPackageOptionsFactory,
-  legacyDefaultScanPackageOptionsFactory,
 } from './types';
 import { PackageUtils } from './utils';
 
@@ -22,7 +21,7 @@ function scanPackage(
   version: string,
   processedPackages: Set<string>,
   result: AggregatedLicensesObj,
-  scanOptionsFactory: ScanPackageOptionsFactory = legacyDefaultScanPackageOptionsFactory,
+  scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
 ) {
   const packageKey = `${packageName}@${version}`;
 
@@ -95,7 +94,7 @@ function scanPackage(
  */
 export function scanDependencies(
   appPackageJsonPath: string,
-  scanOptionsFactory: ScanPackageOptionsFactory = legacyDefaultScanPackageOptionsFactory,
+  scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
 ): AggregatedLicensesObj {
   const appPackageJson = require(path.resolve(appPackageJsonPath));
   const dependencies: Record<string, string> = appPackageJson.dependencies;

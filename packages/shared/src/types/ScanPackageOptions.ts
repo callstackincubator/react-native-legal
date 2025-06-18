@@ -24,12 +24,3 @@ export type ScanPackageOptionsFactoryPackageInfo = {
  * Factory to create a filter for scan options for dependencies of a given package
  */
 export type ScanPackageOptionsFactory = (packageInfo: ScanPackageOptionsFactoryPackageInfo) => ScanPackageOptions;
-
-/**
- * Default value consistent with legacy behaviour assumptions for the scan package options factory
- * used so as not to introduce breaking API changes to the shared package
- */
-export const legacyDefaultScanPackageOptionsFactory: ScanPackageOptionsFactory = () => ({
-  includeTransitiveDependencies: true,
-  includeDevDependencies: false,
-});
