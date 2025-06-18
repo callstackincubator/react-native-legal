@@ -1,0 +1,33 @@
+name: Integration tests - License Kit (Node)
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/test-unit-shared.yml'
+      - 'packages/shared/**/*.[tj]sx?'
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  unit-test-shared:
+    name: Run unit tests for @callstack/react-native-legal-shared
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Run integration tests
+        run: yarn workspace @callstack/react-native-legal-shared test
