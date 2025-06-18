@@ -1,0 +1,35 @@
+name: Integration tests - License Kit (Node)
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/test-integration-node.yml'
+      - 'packages/license-kit/**/*.[tj]sx?'
+      - 'packages/shared/**/*.[tj]sx?'
+      - 'examples/node-example/**/*.[tj]sx?'
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  integration-test-node:
+    name: Run integration tests for license-kit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Run integration tests
+        run: yarn workspace license-kit-node-example test
