@@ -8,6 +8,8 @@ on:
       - '.github/workflows/test-e2e-android.yaml'
       - 'packages/react-native-legal/**/*.[tj]sx?'
       - 'packages/react-native-legal/android/**'
+      - 'packages/shared/**/*.[tj]sx?'
+      - 'packages/license-kit/**/*.[tj]sx?'
       - 'examples/bare-example/**/*.[tj]sx?'
       - 'examples/bare-example/android/**'
 
@@ -32,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 30, 34, 35 ]
+        api-level: [30, 34, 35]
     steps:
       - name: Enable KVM group perms
         run: |
@@ -75,7 +77,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Install example dependencies
-        run:  yarn workspace react-native-legal-bare-example install --frozen-lockfile --immutable
+        run: yarn workspace react-native-legal-bare-example install --frozen-lockfile --immutable
 
       - name: Bundle app
         run: yarn workspace react-native-legal-bare-example build:android

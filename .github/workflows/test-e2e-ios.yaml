@@ -8,6 +8,8 @@ on:
       - '.github/workflows/test-e2e-ios.yaml'
       - 'packages/react-native-legal/**/*.[tj]sx?'
       - 'packages/react-native-legal/ios/**'
+      - 'packages/shared/**/*.[tj]sx?'
+      - 'packages/license-kit/**/*.[tj]sx?'
       - 'examples/bare-example/**/*.[tj]sx?'
       - 'examples/bare-example/ios/**'
 
@@ -32,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        simulator: [ 'iPhone 16 Pro (18.5)', 'iPhone SE (3rd generation) (18.0)' ]
+        simulator: ['iPhone 16 Pro (18.5)', 'iPhone SE (3rd generation) (18.0)']
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -48,7 +50,7 @@ jobs:
           target-platform: ios
 
       - name: Install example dependencies
-        run:  yarn workspace react-native-legal-bare-example install --frozen-lockfile --immutable
+        run: yarn workspace react-native-legal-bare-example install --frozen-lockfile --immutable
 
       - name: Cache Pods
         id: cache-pods
