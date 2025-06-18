@@ -15,6 +15,12 @@ import { PackageUtils, YamlUtils } from './utils';
 
 /**
  * Scans a single package and its dependencies for license information
+ *
+ * @param packageName - Name of the package to scan
+ * @param version - Version of the package to scan
+ * @param processedPackages - Set of already processed packages (avoids cycles)
+ * @param result - Aggregated licenses object to store the results
+ * @param scanOptionsFactory - Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
  */
 function scanPackage(
   packageName: string,
@@ -91,6 +97,10 @@ function scanPackage(
 
 /**
  * Scans `package.json` and searches for all packages under `dependencies` field. Supports monorepo projects.
+ *
+ * @param appPackageJsonPath - Path to the `package.json` file of the application
+ * @param scanOptionsFactory - Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
+ * @returns Aggregated licenses object containing all scanned dependencies and their license information
  */
 export function scanDependencies(
   appPackageJsonPath: string,
