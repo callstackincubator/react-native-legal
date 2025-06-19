@@ -3,6 +3,7 @@ sidebar_position: 2
 ---
 
 import { PackageManagerTabs, Badge } from '@theme';
+import { generateExecCommands } from '@utils/generateExecCommands';
 
 # React Native Legal
 
@@ -34,11 +35,11 @@ If you are using Expo, you need to add the config plugin to your `app.json` or `
 
 After adding the plugin, rebuild your app using either:
 
-<PackageManagerTabs command="expo prebuild" />
+<PackageManagerTabs command={generateExecCommands('expo prebuild')} />
 
 or
 
-<PackageManagerTabs command="eas build" />
+<PackageManagerTabs command={generateExecCommands('eas build')} />
 
 This will ensure the required native dependencies are included.
 
@@ -50,7 +51,7 @@ This library **cannot be used** in [Expo Go](https://expo.dev/go) because it req
 
 For bare React Native projects, you need to run the CLI plugin to generate and include license data. Run the following command from your project root:
 
-<PackageManagerTabs command="react-native legal-generate" />
+<PackageManagerTabs command={generateExecCommands('react-native legal-generate')} />
 
 This will extract and prepare license metadata for use in your app.
 
