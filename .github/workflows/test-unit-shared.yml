@@ -1,4 +1,4 @@
-name: Integration tests - React Native Legal Shared package
+name: Unit tests - React Native Legal Shared package
 
 on:
   pull_request:
@@ -29,5 +29,5 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Run integration tests
+      - name: Run unit tests
         run: yarn workspace @callstack/react-native-legal-shared test
