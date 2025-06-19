@@ -10,10 +10,12 @@
 
 ---
 
-![E2E tests - Android](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-e2e-android.yaml/badge.svg)
-![E2E tests - iOS](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-e2e-ios.yaml/badge.svg)
 ![Release](https://github.com/callstackincubator/react-native-legal/actions/workflows/release.yml/badge.svg)
 ![Deploy Docs](https://github.com/callstackincubator/react-native-legal/actions/workflows/deploy-docs.yml/badge.svg)
+![Integration tests - License Kit (Node)](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-integration-node.yml/badge.svg)
+![Integration tests - React Native Legal Shared](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-unit-shared.yml/badge.svg)
+![E2E tests - Android](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-e2e-android.yaml/badge.svg)
+![E2E tests - iOS](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-e2e-ios.yaml/badge.svg)
 
 - [Documentation](#documentation)
 - [Installation](#installation)
