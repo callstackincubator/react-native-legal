@@ -1,4 +1,4 @@
-name: Integration tests - License Kit (Node)
+name: Integration tests - React Native Legal Shared package
 
 on:
   pull_request:
