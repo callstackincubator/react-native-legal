@@ -59,7 +59,7 @@ export function registerLicensePlistBuildPhaseUtil(
     projectTargetId,
     {
       shellPath: '/bin/sh',
-      shellScript: '${PODS_ROOT}/LicensePlist/license-plist --output-path ./Settings.bundle',
+      shellScript: '${PODS_ROOT}/LicensePlist/license-plist --add-version-numbers --output-path ./Settings.bundle',
     },
   );
   /**
