@@ -6,13 +6,24 @@ import type { LicenseObj, ScanPackageOptionsFactory } from '../types';
 import { sha512 } from './miscUtils';
 import { normalizeRepositoryUrl } from './repositoryUtils';
 
-export function getPackageJsonPath(dependency: string, root = process.cwd()) {
-  try {
-    return require.resolve(`${dependency}/package.json`, { paths: [root] });
-  } catch (error) {
-    const pkgJsonInNodeModules = path.join(root, 'node_modules', dependency, 'package.json');
+export function getPackageJsonPath(dependency: string, root?: string) {
+  const rootsToSearch = [
+    ...(root ? [root] : []), // provided for purpose of nested node_modules resolution inside a package dir, in a subdirectory inside the root node_modules dir
+    process.cwd(), // fallback - root node_modules directory home
+  ]; // in order of priority (left-to-right)
 
-    return fs.existsSync(pkgJsonInNodeModules) ? pkgJsonInNodeModules : resolvePackageJsonFromEntry(dependency);
+  try {
+    return require.resolve(`${dependency}/package.json`, { paths: rootsToSearch });
+  } catch (error) {
+    for (const root of rootsToSearch) {
+      const pkgJsonInNodeModules = path.join(root, 'node_modules', dependency, 'package.json');
+
+      if (fs.existsSync(pkgJsonInNodeModules)) {
+        return pkgJsonInNodeModules;
+      }
+    }
+
+    return resolvePackageJsonFromEntry(dependency); // final fallback
   }
 }
 

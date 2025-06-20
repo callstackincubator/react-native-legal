@@ -22,6 +22,9 @@ import { PackageUtils, YamlUtils } from './utils';
  * @param result - Aggregated licenses object to store the results
  * @param scanOptionsFactory - Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
  * @param isOptionalDependency - Whether the package is an optional dependency, in which case a warning will not be logged if the corresponding package.json is not found; defaults to `false`
+ * @param parentPackageRoot - Optional path to the parent package root, has priority over default root to lock for dependencies in;
+ * used to discover different versions of the same package installed in nested node_modules, e.g. suppose `X@1`, `Y@1` where `Y@1` -> `X@2`; then, node_modules would have `X@1`,
+ * `Y@1` and `X@2` would be installed to `node_modules/Y/node_modules/X@2`
  */
 function scanPackage(
   packageName: string,
@@ -30,11 +33,12 @@ function scanPackage(
   result: AggregatedLicensesObj,
   scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
   isOptionalDependency = false,
+  parentPackageRoot?: string,
 ) {
-  const packageKey = `${packageName}@${version}`;
+  const requiredVersionPackageKey = `${packageName}@${version}`;
 
   // Skip if already processed to avoid circular dependencies
-  if (processedPackages.has(packageKey)) {
+  if (processedPackages.has(requiredVersionPackageKey)) {
     return;
   }
 
@@ -45,10 +49,10 @@ function scanPackage(
     );
   }
 
-  processedPackages.add(packageKey);
+  processedPackages.add(requiredVersionPackageKey);
 
   try {
-    const localPackageJsonPath = PackageUtils.getPackageJsonPath(packageName);
+    const localPackageJsonPath = PackageUtils.getPackageJsonPath(packageName, parentPackageRoot);
 
     if (!localPackageJsonPath) {
       if (!isOptionalDependency) {
@@ -69,7 +73,10 @@ function scanPackage(
         ignore: '**/{__tests__,__fixtures__,__mocks__}/**',
       });
 
-      result[packageName] = {
+      const resolvedVersionPackageKey = `${packageName}@${localPackageJson.version}`;
+
+      result[resolvedVersionPackageKey] = {
+        name: packageName,
         author: PackageUtils.parseAuthorField(localPackageJson),
         content: licenseFiles?.[0] ? fs.readFileSync(licenseFiles[0], { encoding: 'utf-8' }) : undefined,
         file: licenseFiles?.[0] ? licenseFiles[0] : undefined,
@@ -95,13 +102,24 @@ function scanPackage(
       return;
     }
 
+    // helper used for finding nested dependencies installed with different versions for a given package, see docstring of scanPackage
+    const currentPackageRoot = path.dirname(localPackageJsonPath);
+
     [
       // transitive dependencies
       ...(dependencies ? Object.entries(dependencies) : []),
       // transitive devDependencies
       ...(devDependencies && scanOptions.includeDevDependencies ? Object.entries(devDependencies) : []),
     ].forEach(([depName, depVersion]) => {
-      scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, false);
+      scanPackage(
+        depName,
+        depVersion as string,
+        processedPackages,
+        result,
+        scanOptionsFactory,
+        false,
+        currentPackageRoot,
+      );
     });
 
     // transitive optionalDependencies
@@ -109,7 +127,15 @@ function scanPackage(
       ? Object.entries(optionalDependencies)
       : []
     ).forEach(([depName, depVersion]) => {
-      scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, true);
+      scanPackage(
+        depName,
+        depVersion as string,
+        processedPackages,
+        result,
+        scanOptionsFactory,
+        true,
+        currentPackageRoot,
+      );
     });
   } catch (error) {
     console.warn(`[react-native-legal] could not process package.json for ${packageName}`);
@@ -169,11 +195,11 @@ export function scanDependencies(
  */
 export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, iosProjectPath: string): string {
   const renames: Record<string, string> = {};
-  const licenseEntries = Object.entries(licenses).map(([dependency, licenseObj]) => {
-    const normalizedName = PackageUtils.normalizePackageName(dependency);
+  const licenseEntries = Object.values(licenses).map((licenseObj) => {
+    const normalizedName = PackageUtils.normalizePackageName(licenseObj.name);
 
-    if (dependency !== normalizedName) {
-      renames[normalizedName] = dependency;
+    if (licenseObj.name !== normalizedName) {
+      renames[normalizedName] = licenseObj.name;
     }
 
     const relativeLicenseFile = licenseObj.file ? path.relative(iosProjectPath, licenseObj.file) : undefined;

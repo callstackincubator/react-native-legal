@@ -1,4 +1,5 @@
 export type LicenseObj = {
+  name: string;
   author?: string;
   content?: string;
   description?: string;

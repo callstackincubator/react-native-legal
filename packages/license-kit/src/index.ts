@@ -103,17 +103,17 @@ curryCommonScanOptions(
   const strongCopyleftLicensesFound: string[] = [];
   const weakCopyleftLicensesFound: string[] = [];
 
-  for (const [key, value] of Object.entries(licenses)) {
+  for (const value of Object.values(licenses)) {
     STRONG_COPYLEFT_LICENSES.find((license) => {
       if (value.type === license) {
-        strongCopyleftLicensesFound.push(`- ${key}: ${value.type} (${value.file || value.url})`);
+        strongCopyleftLicensesFound.push(`- ${value.name}: ${value.type} (${value.file || value.url})`);
         return true;
       }
     });
 
     WEAK_COPYLEFT_LICENSES.find((license) => {
       if (value.type === license) {
-        weakCopyleftLicensesFound.push(`- ${key}: ${value.type} (${value.file || value.url})`);
+        weakCopyleftLicensesFound.push(`- ${value.name}: ${value.type} (${value.file || value.url})`);
         return true;
       }
     });

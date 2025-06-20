@@ -46,7 +46,7 @@ const licensePlistReport = generateLicensePlistNPMOutput(licenses);
 const markdownString = md
   .joinBlocks(
     Object.entries(licenses)
-      .flatMap(([packageName, { version, author, content, description, file, type, url }]) => [
+      .flatMap(([packageKey, { name: packageName, version, author, content, description, file, type, url }]) => [
         md.heading(packageName, { level: 2 }),
         '\n',
         `Version: ${version}<br/>\n`,
