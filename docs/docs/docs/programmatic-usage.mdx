@@ -96,6 +96,16 @@ The tool recognizes various license types:
 If a monorepo package is private, its name and license won't be included in the license list, but its dependencies will still be scanned and included.
 :::
 
+### Known Limitations
+
+#### `file:` dependencies
+
+:::warning
+This tool (and in turn, the CLI and RN plugins) do not support `file:` specified dependencies, which is a known limitation. If such packages are scanned and their dependencies (of any type) are not installed in the root `node_modules` directory, such dependencies will not be found and included.
+
+If you would like to have support for this, please start a discussion on Github.
+:::
+
 ### Default `scanOptionsFactory` value
 
 The default value for the optional `scanOptionsFactory` parameter in `scanPackage` & `scanDependencies` functions is set to the following:
