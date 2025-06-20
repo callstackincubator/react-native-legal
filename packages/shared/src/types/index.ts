@@ -5,3 +5,5 @@ export * from './AboutLibrariesLicenseJsonPayload';
 export * from './LicensePlistPayload';
 export * from './AboutLibrariesLikePackageInfo';
 export * from './ScanPackageOptions';
+export * from './ScanPackageCallContext';
+export * from './DependencyType';
