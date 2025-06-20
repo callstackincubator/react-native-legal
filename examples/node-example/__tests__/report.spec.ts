@@ -164,7 +164,7 @@ describe('license-kit report', () => {
     expect(resultKeys).not.toIncludeAllMembers(sharedDevDependencies);
   });
 
-  it('without optional dependencies', async () => {
+  it('without optional dependencies disabled', async () => {
     const json = await runReportCommandForJsonOutput(['--include-optional-deps', 'false']);
 
     const resultKeys = Object.keys(json);
@@ -174,8 +174,8 @@ describe('license-kit report', () => {
     expect(resultKeys).not.toIncludeAnyMembers(optionalDependencies);
   });
 
-  it('with default settings (with optional dependencies)', async () => {
-    const json = await runReportCommandForJsonOutput();
+  it('with optional dependencies enabled', async () => {
+    const json = await runReportCommandForJsonOutput(['--include-optional-deps', 'true']);
 
     const resultKeys = Object.keys(json);
 
