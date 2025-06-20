@@ -46,6 +46,12 @@ function curryCommonScanOptions(command: Command): Command {
         `\n${NON_TAB_HELP_LISTING_SUBLIST_OFFSET}- 'none'` +
         '\n', // newline for auto-description of the default value
       'root-only' satisfies DevDepsMode,
+    )
+    .option(
+      '--od, --include-optional-deps [include]',
+      'Whether to include optionalDependencies in the scan; other flags apply',
+      (value) => value === 'true' || value === '1',
+      true,
     );
 }
 

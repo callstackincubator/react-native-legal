@@ -88,4 +88,5 @@ export function parseRepositoryFieldToUrl(json: { repository: string | { url?: s
 export const legacyDefaultScanPackageOptionsFactory: ScanPackageOptionsFactory = () => ({
   includeTransitiveDependencies: true,
   includeDevDependencies: false,
+  includeOptionalDependencies: true,
 });

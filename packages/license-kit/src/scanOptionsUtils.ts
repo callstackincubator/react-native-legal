@@ -6,6 +6,7 @@ import type { TransitiveDepsMode } from './types/TransitiveDepsMode';
 export type CLIScanOptions = {
   transitiveDepsMode: TransitiveDepsMode;
   devDepsMode: DevDepsMode;
+  includeOptionalDeps: boolean;
 };
 
 export const createScanOptionsFactory =
@@ -43,8 +44,11 @@ export const createScanOptionsFactory =
         break;
     }
 
+    const includeOptionalDependencies = cliScanOptions.includeOptionalDeps;
+
     return {
       includeDevDependencies,
       includeTransitiveDependencies,
+      includeOptionalDependencies,
     };
   };

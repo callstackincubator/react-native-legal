@@ -21,6 +21,7 @@ import { PackageUtils, YamlUtils } from './utils';
  * @param processedPackages - Set of already processed packages (avoids cycles)
  * @param result - Aggregated licenses object to store the results
  * @param scanOptionsFactory - Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
+ * @param isOptionalDependency - Whether the package is an optional dependency, in which case a warning will not be logged if the corresponding package.json is not found; defaults to `false`
  */
 function scanPackage(
   packageName: string,
@@ -28,6 +29,7 @@ function scanPackage(
   processedPackages: Set<string>,
   result: AggregatedLicensesObj,
   scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
+  isOptionalDependency = false,
 ) {
   const packageKey = `${packageName}@${version}`;
 
@@ -49,7 +51,10 @@ function scanPackage(
     const localPackageJsonPath = PackageUtils.getPackageJsonPath(packageName);
 
     if (!localPackageJsonPath) {
-      console.warn(`[react-native-legal] skipping ${packageName} could not find package.json`);
+      if (!isOptionalDependency) {
+        console.warn(`[react-native-legal] skipping ${packageName} could not find package.json`);
+      }
+
       return;
     }
 
@@ -77,6 +82,7 @@ function scanPackage(
 
     const dependencies = localPackageJson.dependencies;
     const devDependencies = localPackageJson.devDependencies;
+    const optionalDependencies = localPackageJson.optionalDependencies;
     const isWorkspacePackage = version.startsWith('workspace:');
 
     const scanOptions = scanOptionsFactory({
@@ -95,12 +101,22 @@ function scanPackage(
       // transitive devDependencies
       ...(devDependencies && scanOptions.includeDevDependencies ? Object.entries(devDependencies) : []),
     ].forEach(([depName, depVersion]) => {
-      scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory);
+      scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, false);
+    });
+
+    // transitive optionalDependencies
+    (optionalDependencies && scanOptions.includeOptionalDependencies
+      ? Object.entries(optionalDependencies)
+      : []
+    ).forEach(([depName, depVersion]) => {
+      scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, true);
     });
   } catch (error) {
     console.warn(`[react-native-legal] could not process package.json for ${packageName}`);
   }
 }
+
+type MaybeDependencyMapping = Record<string, string> | undefined;
 
 /**
  * Scans `package.json` and searches for all packages under `dependencies` field. Supports monorepo projects.
@@ -114,8 +130,9 @@ export function scanDependencies(
   scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
 ): AggregatedLicensesObj {
   const appPackageJson = require(path.resolve(appPackageJsonPath));
-  const dependencies: Record<string, string> = appPackageJson.dependencies;
-  const devDependencies: Record<string, string> = appPackageJson.devDependencies;
+  const dependencies: MaybeDependencyMapping = appPackageJson.dependencies;
+  const devDependencies: MaybeDependencyMapping = appPackageJson.devDependencies;
+  const optionalDependencies: MaybeDependencyMapping = appPackageJson.optionalDependencies;
   const result: AggregatedLicensesObj = {};
   const processedPackages = new Set<string>();
 
@@ -127,7 +144,15 @@ export function scanDependencies(
     // devDependencies
     ...(devDependencies && rootScanOptions.includeDevDependencies ? Object.entries(devDependencies) : []),
   ].forEach(([packageName, version]) => {
-    scanPackage(packageName, version, processedPackages, result, scanOptionsFactory);
+    scanPackage(packageName, version, processedPackages, result, scanOptionsFactory, false);
+  });
+
+  // optionalDependencies
+  (optionalDependencies && rootScanOptions.includeOptionalDependencies
+    ? Object.entries(optionalDependencies)
+    : []
+  ).forEach(([depName, depVersion]) => {
+    scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, true);
   });
 
   return result;

@@ -5,8 +5,11 @@ export type ScanPackageOptions = {
   /** Whether transitive dependencies should be scanned */
   includeTransitiveDependencies: boolean;
 
-  /** Whether to include devDependencies in the scan; include*Transitive* options apply */
+  /** Whether to include devDependencies in the scan; includeTransitiveDependencies option applies */
   includeDevDependencies: boolean;
+
+  /** Whether to include optionalDependencies in the scan; includeTransitiveDependencies option applies */
+  includeOptionalDependencies: boolean;
 };
 
 /**
