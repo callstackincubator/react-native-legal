@@ -1,6 +1,6 @@
 {
   "name": "license-kit",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Aggregate license notes of OSS libraries used in your Node.js project",
   "main": "build/index",
   "module": "build/index",
@@ -59,7 +59,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@callstack/react-native-legal-shared": "^0.1.1",
+    "@callstack/react-native-legal-shared": "^0.2.0",
     "commander": "^14.0.0",
     "ts-markdown-builder": "^0.4.1"
   }
