@@ -58,7 +58,7 @@ function scanPackage(
     if (!localPackageJsonPath) {
       // do not warn if the package is an optional dependency, it's normal it may not be installed
       if (!dependencyType.toLowerCase().includes('optional')) {
-        console.warn(`[react-native-legal] skipping ${packageName} could not find package.json`);
+        console.warn(`[react-native-legal] skipping ${requiredVersionPackageKey} could not find package.json`);
       }
 
       return;
