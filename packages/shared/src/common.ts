@@ -288,6 +288,7 @@ export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj)
         tag: '',
         type: licenseObj.type,
         uniqueId: PackageUtils.normalizePackageName(packageKey),
+        website: licenseObj.url,
       };
     })
     .map((jsonPayload) => {
@@ -299,6 +300,7 @@ export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj)
         name: jsonPayload.name,
         tag: jsonPayload.tag,
         uniqueId: jsonPayload.uniqueId,
+        website: jsonPayload.website,
       };
       const licenseJsonPayload: AboutLibrariesLicenseJsonPayload = {
         content: jsonPayload.content,
