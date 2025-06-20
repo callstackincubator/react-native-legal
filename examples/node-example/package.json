@@ -23,5 +23,8 @@
     "jest": "^29.7.0",
     "jest-extended": "^6.0.0",
     "license-kit": "workspace:*"
+  },
+  "optionalDependencies": {
+    "chartjs-plugin-dragdata": "^2.3.1"
   }
 }

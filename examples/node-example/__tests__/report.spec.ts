@@ -8,10 +8,15 @@ import {
   dependencies as sharedDependenciesObj,
   devDependencies as sharedDevDependenciesObj,
 } from '../../../packages/shared/package.json';
-import { dependencies as dependenciesObj, devDependencies as devDependenciesObj } from '../package.json';
+import {
+  dependencies as dependenciesObj,
+  devDependencies as devDependenciesObj,
+  optionalDependencies as optionalDependenciesObj,
+} from '../package.json';
 
 const dependencies = Object.keys(dependenciesObj).sort();
 const devDependencies = Object.keys(devDependenciesObj).sort();
+const optionalDependencies = Object.keys(optionalDependenciesObj).sort();
 const licenseKitDependencies = Object.keys(licenseKitDependenciesObj).sort();
 const licenseKitDevDependencies = Object.keys(licenseKitDevDependenciesObj).sort();
 const sharedDependencies = Object.keys(sharedDependenciesObj).sort();
@@ -45,7 +50,7 @@ describe('license-kit report', () => {
   it('without transitive deps and without dev deps', async () => {
     const json = await runReportCommandForJsonOutput(['--dev-deps-mode', 'none', '--transitive-deps-mode', 'none']);
 
-    expect(Object.keys(json).toSorted()).toEqual(dependencies.toSorted());
+    expect(Object.keys(json).toSorted()).toEqual([...dependencies, ...optionalDependencies].toSorted());
   });
 
   it('without transitive deps and with root-only dev deps', async () => {
@@ -56,7 +61,9 @@ describe('license-kit report', () => {
       'none',
     ]);
 
-    expect(Object.keys(json).toSorted()).toEqual(Array.from(new Set([...dependencies, ...devDependencies])).toSorted());
+    expect(Object.keys(json).toSorted()).toEqual(
+      Array.from(new Set([...dependencies, ...optionalDependencies, ...devDependencies])).toSorted(),
+    );
   });
 
   it('with root-only dev deps and with transitive dependencies of workspace-specifier-only dependencies', async () => {
@@ -68,7 +75,9 @@ describe('license-kit report', () => {
     ]);
 
     expect(Object.keys(json).toSorted()).toEqual(
-      Array.from(new Set([...dependencies, ...devDependencies, ...licenseKitDependencies])).toSorted(),
+      Array.from(
+        new Set([...dependencies, ...devDependencies, ...licenseKitDependencies, ...optionalDependencies]),
+      ).toSorted(),
     );
   });
 
@@ -85,6 +94,10 @@ describe('license-kit report', () => {
     expect(resultKeys.toSorted()).toEqual([
       '@types/geojson',
       '@types/node',
+      'chartjs-plugin-dragdata',
+      'd3-dispatch',
+      'd3-drag',
+      'd3-selection',
       'denque',
       'dhtmlx-gantt',
       'iconv-lite',
@@ -99,8 +112,8 @@ describe('license-kit report', () => {
       'zustand',
     ]);
 
-    expect(resultKeys).not.toIncludeAllMembers(licenseKitDependencies);
-    expect(resultKeys).not.toIncludeAllMembers(licenseKitDevDependencies);
+    expect(resultKeys).not.toIncludeAnyMembers(licenseKitDependencies);
+    expect(resultKeys).not.toIncludeAnyMembers(licenseKitDevDependencies);
   });
 
   it('with root-only dev deps and with transitive dependencies of external dependencies only', async () => {
@@ -149,5 +162,25 @@ describe('license-kit report', () => {
 
     expect(resultKeys).toIncludeAllMembers(sharedDependencies);
     expect(resultKeys).not.toIncludeAllMembers(sharedDevDependencies);
+  });
+
+  it('without optional dependencies', async () => {
+    const json = await runReportCommandForJsonOutput(['--include-optional-deps', 'false']);
+
+    const resultKeys = Object.keys(json);
+
+    // license-kit has a devDependency on tsx, which has an optionalDependency on fsevents
+    expect(resultKeys).not.toContain('fsevents');
+    expect(resultKeys).not.toIncludeAnyMembers(optionalDependencies);
+  });
+
+  it('with default settings (with optional dependencies)', async () => {
+    const json = await runReportCommandForJsonOutput();
+
+    const resultKeys = Object.keys(json);
+
+    // license-kit has a devDependency on tsx, which has an optionalDependency on fsevents
+    expect(resultKeys).toContain('fsevents');
+    expect(resultKeys).toIncludeAnyMembers(optionalDependencies);
   });
 });
