@@ -31,6 +31,32 @@ public class ReactNativeLegalModuleImpl: NSObject {
     }
   }
 
+  @objc public static func getLibraries() -> [String: Any] {
+    guard
+      let settingsBundleUrl = Bundle.main.url(forResource: "Settings", withExtension: "bundle"),
+      let settingsBundle = Bundle(url: settingsBundleUrl),
+      let licensePlistUrl = settingsBundle.url(
+        forResource: "com.mono0926.LicensePlist", withExtension: "plist"),
+      let dictArray = parsePlistToDictArray(fileUrl: licensePlistUrl)
+    else {
+      return [:]
+    }
+
+    let libraries = parseRawLicenseMetadataToArray(
+      rawLicenses: getChildPaneSpecifiers(dictArray: dictArray),
+      licensePlistUrl: licensePlistUrl
+    )
+
+    return [
+      "data": libraries.map({ library in
+        [
+          "id": "library-\(library.name ?? "")", "name": library.name ?? "",
+          "licenses": [["licenseContent": library.content ?? ""]],
+        ]
+      })
+    ]
+  }
+
   private static func getChildPaneSpecifiers(dictArray: [[String: Any]]) -> [[String: Any]] {
     return
       dictArray
