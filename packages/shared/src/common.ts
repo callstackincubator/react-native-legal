@@ -36,6 +36,13 @@ function scanPackage(
     return;
   }
 
+  // If the package is a file: dependency, warn about lack of support
+  if (version.startsWith('file:')) {
+    console.warn(
+      `[react-native-legal] ${packageName} (${version}) is 'file:' dependency. Such packages are not supported yet (see https://callstackincubator.github.io/react-native-legal/docs/programmatic-usage.html#known-limitations).`,
+    );
+  }
+
   processedPackages.add(packageKey);
 
   try {
