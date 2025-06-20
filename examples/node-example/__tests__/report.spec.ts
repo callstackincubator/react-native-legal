@@ -1,4 +1,5 @@
 import child_process from 'node:child_process';
+import { platform } from 'node:os';
 
 import {
   dependencies as licenseKitDependenciesObj,
@@ -180,7 +181,11 @@ describe('license-kit report', () => {
     const resultKeys = Object.keys(json);
 
     // license-kit has a devDependency on tsx, which has an optionalDependency on fsevents
-    expect(resultKeys).toContain('fsevents');
+    if (platform() === 'darwin') {
+      // eslint-disable-next-line jest/no-conditional-expect -- fsevents is macOS-only
+      expect(resultKeys).toContain('fsevents');
+    }
+
     expect(resultKeys).toIncludeAnyMembers(optionalDependencies);
   });
 });
