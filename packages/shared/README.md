@@ -26,10 +26,11 @@ import {
 import * as md from 'ts-markdown-builder';
 
 // apart from dependencies, also include devDependencies, but only from the root package.json;
-// also, include all transitive dependencies
+// also, include all transitive dependencies & optional dependencies
 const optionsFactory: Types.ScanPackageOptionsFactory = ({ isRoot }) => ({
   includeDevDependencies: isRoot,
   includeTransitiveDependencies: true,
+  includeOptionalDependencies: true,
 });
 
 // scan dependencies of a package
