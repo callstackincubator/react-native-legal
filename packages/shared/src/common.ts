@@ -20,15 +20,13 @@ type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: stri
 /**
  * Scans a single package and its dependencies for license information
  *
- * @param packageName - Name of the package to scan
- * @param requiredVersion - Version of the package to scan; this is the version specifier from package.json, e.g. `^1.0.0`, `~2.3.4`, etc.
- * @param processedPackages - Set of already processed packages (avoids cycles)
- * @param result - Aggregated licenses object to store the results; the keys will be in the format of `packageName@version` where version is
- * @param scanOptionsFactory - Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
- * @param isOptionalDependency - Whether the package is an optional dependency, in which case a warning will not be logged if the corresponding package.json is not found; defaults to `false`
- * @param parentPackageRoot - Optional path to the parent package root, has priority over default root to lock for dependencies in;
- * used to discover different versions of the same package installed in nested node_modules, e.g. suppose `X@1`, `Y@1` where `Y@1` -> `X@2`; then, node_modules would have `X@1`,
- * `Y@1` and `X@2` would be installed to `node_modules/Y/node_modules/X@2`
+ * @param packageName Name of the package to scan
+ * @param requiredVersion Version of the package to scan; this is the version specifier from package.json, e.g. `^1.0.0`, `~2.3.4`, etc.
+ * @param processedPackages Set of already processed packages (avoids cycles)
+ * @param result Aggregated licenses object to store the results; the keys will be in the format of `packageName@version` where version is
+ * @param scanOptionsFactory Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
+ * @param isOptionalDependency Whether the package is an optional dependency, in which case a warning will not be logged if the corresponding package.json is not found; defaults to `false`
+ * @param parentPackageRoot Optional path to the parent package root, has priority over default root to lock for dependencies in; used to discover different versions of the same package installed in nested node_modules, e.g. suppose `X@1`, `Y@1` where `Y@1` -> `X@2`; then, node_modules would have `X@1`, `Y@1` and `X@2` would be installed to `node_modules/Y/node_modules/X@2`
  */
 function scanPackage(
   packageName: string,
@@ -148,8 +146,8 @@ type MaybeDependencyMapping = DependencyMapping | undefined;
 /**
  * Scans `package.json` and searches for all packages under `dependencies` field. Supports monorepo projects.
  *
- * @param appPackageJsonPath - Path to the `package.json` file of the application
- * @param scanOptionsFactory - Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
+ * @param appPackageJsonPath Path to the `package.json` file of the application
+ * @param scanOptionsFactory Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
  * @returns Aggregated licenses object containing all scanned dependencies and their license information
  */
 export function scanDependencies(
@@ -195,8 +193,8 @@ export function scanDependencies(
  *
  * To write a file directly, use `writeLicensePlistNPMOutput` function.
  *
- * @param licenses - Scanned NPM licenses
- * @param iosProjectPath - Path to the iOS project directory
+ * @param licenses Scanned NPM licenses
+ * @param iosProjectPath Path to the iOS project directory
  * @see {@link writeLicensePlistNPMOutput}
  */
 export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, iosProjectPath: string): string {
@@ -249,9 +247,9 @@ export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, i
  * | ---- Podfile.lock
  * ```
  *
- * @param licenses - Scanned NPM licenses
- * @param iosProjectPath - Path to the iOS project directory
- * @param plistLikeOutput - Optional pre-generated string output to use instead of generating it using `generateLicensePlistNPMOutput`
+ * @param licenses Scanned NPM licenses
+ * @param iosProjectPath Path to the iOS project directory
+ * @param plistLikeOutput Optional pre-generated string output to use instead of generating it using `generateLicensePlistNPMOutput`
  * @see {@link generateLicensePlistNPMOutput}
  */
 export function writeLicensePlistNPMOutput(
@@ -271,7 +269,7 @@ export function writeLicensePlistNPMOutput(
  *
  * This will take scanned NPM licenses and produce output that can be modified and/or written to the Android project files.
  *
- * @param licenses - Scanned NPM licenses
+ * @param licenses Scanned NPM licenses
  * @returns Array of AboutLibrariesLikePackage objects, each representing a NPM dependency
  * @see {@link writeAboutLibrariesNPMOutput}
  */
@@ -332,9 +330,9 @@ export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj)
  * | ---- settings.gradle
  * ```
  *
- * @param licenses - Scanned NPM licenses
- * @param androidProjectPath - Path to the Android project directory
- * @param aboutLibrariesLikeOutput - Optional pre-generated output to use instead of generating it using `generateAboutLibrariesNPMOutput`
+ * @param licenses Scanned NPM licenses
+ * @param androidProjectPath Path to the Android project directory
+ * @param aboutLibrariesLikeOutput Optional pre-generated output to use instead of generating it using `generateAboutLibrariesNPMOutput`
  * @see {@link generateAboutLibrariesNPMOutput}
  */
 export function writeAboutLibrariesNPMOutput(
