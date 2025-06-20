@@ -7256,6 +7256,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jest@npm:29.5.5":
+  version: 29.5.5
+  resolution: "@types/jest@npm:29.5.5"
+  dependencies:
+    expect: ^29.0.0
+    pretty-format: ^29.0.0
+  checksum: 56e55cde9949bcc0ee2fa34ce5b7c32c2bfb20e53424aa4ff3a210859eeaaa3fdf6f42f81a3f655238039cdaaaf108b054b7a8602f394e6c52b903659338d8c6
+  languageName: node
+  linkType: hard
+
 "@types/jest@npm:^29.2.1":
   version: 29.5.3
   resolution: "@types/jest@npm:29.5.3"
@@ -8464,6 +8474,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-jest@npm:29.7.0, babel-jest@npm:^29.6.3, babel-jest@npm:^29.7.0":
+  version: 29.7.0
+  resolution: "babel-jest@npm:29.7.0"
+  dependencies:
+    "@jest/transform": ^29.7.0
+    "@types/babel__core": ^7.1.14
+    babel-plugin-istanbul: ^6.1.1
+    babel-preset-jest: ^29.6.3
+    chalk: ^4.0.0
+    graceful-fs: ^4.2.9
+    slash: ^3.0.0
+  peerDependencies:
+    "@babel/core": ^7.8.0
+  checksum: ee6f8e0495afee07cac5e4ee167be705c711a8cc8a737e05a587a131fdae2b3c8f9aa55dfd4d9c03009ac2d27f2de63d8ba96d3e8460da4d00e8af19ef9a83f7
+  languageName: node
+  linkType: hard
+
 "babel-jest@npm:^29.2.1":
   version: 29.6.1
   resolution: "babel-jest@npm:29.6.1"
@@ -8478,23 +8505,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.8.0
   checksum: bc46cfba468edde91f34a8292501d4448a39fab72d80d7d95f4349feb114fa21becb01def007d6166de7933ab9633bf5b5e1b72ba6ffeaa991f7abf014a2f61d
-  languageName: node
-  linkType: hard
-
-"babel-jest@npm:^29.6.3, babel-jest@npm:^29.7.0":
-  version: 29.7.0
-  resolution: "babel-jest@npm:29.7.0"
-  dependencies:
-    "@jest/transform": ^29.7.0
-    "@types/babel__core": ^7.1.14
-    babel-plugin-istanbul: ^6.1.1
-    babel-preset-jest: ^29.6.3
-    chalk: ^4.0.0
-    graceful-fs: ^4.2.9
-    slash: ^3.0.0
-  peerDependencies:
-    "@babel/core": ^7.8.0
-  checksum: ee6f8e0495afee07cac5e4ee167be705c711a8cc8a737e05a587a131fdae2b3c8f9aa55dfd4d9c03009ac2d27f2de63d8ba96d3e8460da4d00e8af19ef9a83f7
   languageName: node
   linkType: hard
 
@@ -9287,7 +9297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chartjs-plugin-dragdata@npm:^2.3.1":
+"chartjs-plugin-dragdata@npm:2.3.1":
   version: 2.3.1
   resolution: "chartjs-plugin-dragdata@npm:2.3.1"
   dependencies:
@@ -14061,7 +14071,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-even@npm:^1.0.0":
+"is-even@npm:1.0.0":
   version: 1.0.0
   resolution: "is-even@npm:1.0.0"
   dependencies:
@@ -14897,7 +14907,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-extended@npm:^6.0.0":
+"jest-extended@npm:6.0.0":
   version: 6.0.0
   resolution: "jest-extended@npm:6.0.0"
   dependencies:
@@ -15339,7 +15349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:^29.6.3, jest@npm:^29.7.0":
+"jest@npm:29.7.0, jest@npm:^29.6.3, jest@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest@npm:29.7.0"
   dependencies:
@@ -15723,16 +15733,16 @@ __metadata:
     "@babel/core": 7.27.4
     "@babel/preset-env": 7.27.2
     "@babel/preset-typescript": 7.27.1
-    "@types/jest": ^29.5.5
-    babel-jest: ^29.7.0
-    chartjs-plugin-dragdata: ^2.3.1
+    "@types/jest": 29.5.5
+    babel-jest: 29.7.0
+    chartjs-plugin-dragdata: 2.3.1
     dhtmlx-gantt: 9.0.11
-    is-even: ^1.0.0
-    jest: ^29.7.0
-    jest-extended: ^6.0.0
+    is-even: 1.0.0
+    jest: 29.7.0
+    jest-extended: 6.0.0
     license-kit: "workspace:*"
     mariadb: 3.4.2
-    zustand: ^5.0.5
+    zustand: 5.0.5
   dependenciesMeta:
     chartjs-plugin-dragdata:
       optional: true
@@ -23267,7 +23277,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:^5.0.5":
+"zustand@npm:5.0.5":
   version: 5.0.5
   resolution: "zustand@npm:5.0.5"
   peerDependencies:
