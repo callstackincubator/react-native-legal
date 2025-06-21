@@ -23,7 +23,7 @@ type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: stri
  * @param packageName Name of the package to scan
  * @param requiredVersion Version of the package to scan; this is the version specifier from package.json, e.g. `^1.0.0`, `~2.3.4`, etc.
  * @param processedPackages Set of already processed packages (avoids cycles)
- * @param result Aggregated licenses object to store the results; the keys will be in the format of `packageName@version` where version is
+ * @param result Aggregated licenses object to store the results; the keys will be in the format of `packageName@version` where version is the resolved version of the package
  * @param scanOptionsFactory Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
  * @param isOptionalDependency Whether the package is an optional dependency, in which case a warning will not be logged if the corresponding package.json is not found; defaults to `false`
  * @param parentPackageRoot Optional path to the parent package root, has priority over default root to lock for dependencies in; used to discover different versions of the same package installed in nested node_modules, e.g. suppose `X@1`, `Y@1` where `Y@1` -> `X@2`; then, node_modules would have `X@1`, `Y@1` and `X@2` would be installed to `node_modules/Y/node_modules/X@2`
