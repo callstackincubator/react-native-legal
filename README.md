@@ -71,13 +71,13 @@ npm i --save-dev license-kit
 ### Node.js - API
 
 ```sh
-yarn add @callstack/react-native-legal-shared
+yarn add -D @callstack/react-native-legal-shared
 ```
 
 or
 
 ```sh
-npm i --save @callstack/react-native-legal-shared
+npm i --save-dev @callstack/react-native-legal-shared
 ```
 
 ## Usage

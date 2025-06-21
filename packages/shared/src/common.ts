@@ -3,56 +3,68 @@ import path from 'path';
 
 import glob from 'glob';
 
-import {
-  type AboutLibrariesLibraryJsonPayload,
-  type AboutLibrariesLicenseJsonPayload,
-  type AboutLibrariesLikePackageInfo,
-  type AggregatedLicensesObj,
-  type LicensePlistPayload,
-  type ScanPackageOptionsFactory,
+import type {
+  AboutLibrariesLibraryJsonPayload,
+  AboutLibrariesLicenseJsonPayload,
+  AboutLibrariesLikePackageInfo,
+  AggregatedLicensesObj,
+  DependencyType,
+  LicensePlistPayload,
+  ScanPackageCallContext,
+  ScanPackageOptionsFactory,
 } from './types';
 import { PackageUtils, YamlUtils } from './utils';
+
+type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: string][]; dependencyType: DependencyType };
 
 /**
  * Scans a single package and its dependencies for license information
  *
- * @param packageName - Name of the package to scan
- * @param version - Version of the package to scan
- * @param processedPackages - Set of already processed packages (avoids cycles)
- * @param result - Aggregated licenses object to store the results
- * @param scanOptionsFactory - Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
- * @param isOptionalDependency - Whether the package is an optional dependency, in which case a warning will not be logged if the corresponding package.json is not found; defaults to `false`
+ * @param packageName Name of the package to scan
+ * @param requiredVersion Version of the package to scan; this is the version specifier from package.json, e.g. `^1.0.0`, `~2.3.4`, etc.
+ * @param processedPackages Set of already processed packages (avoids cycles)
+ * @param result Aggregated licenses object to store the results; the keys will be in the format of `packageName@version` where version is
+ * @param scanOptionsFactory Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
+ * @param isOptionalDependency Whether the package is an optional dependency, in which case a warning will not be logged if the corresponding package.json is not found; defaults to `false`
+ * @param parentPackageRoot Optional path to the parent package root, has priority over default root to lock for dependencies in; used to discover different versions of the same package installed in nested node_modules, e.g. suppose `X@1`, `Y@1` where `Y@1` -> `X@2`; then, node_modules would have `X@1`, `Y@1` and `X@2` would be installed to `node_modules/Y/node_modules/X@2`
  */
 function scanPackage(
   packageName: string,
-  version: string,
+  requiredVersion: string,
   processedPackages: Set<string>,
   result: AggregatedLicensesObj,
   scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
-  isOptionalDependency = false,
+  {
+    parentPackageRoot,
+    parentPackageName,
+    dependencyType,
+    parentPackageRequiredVersion,
+    parentPackageResolvedVersion,
+  }: ScanPackageCallContext,
 ) {
-  const packageKey = `${packageName}@${version}`;
+  const requiredVersionPackageKey = `${packageName}@${requiredVersion}`;
 
   // Skip if already processed to avoid circular dependencies
-  if (processedPackages.has(packageKey)) {
+  if (processedPackages.has(requiredVersionPackageKey)) {
     return;
   }
 
   // If the package is a file: dependency, warn about lack of support
-  if (version.startsWith('file:')) {
+  if (requiredVersion.startsWith('file:')) {
     console.warn(
-      `[react-native-legal] ${packageName} (${version}) is 'file:' dependency. Such packages are not supported yet (see https://callstackincubator.github.io/react-native-legal/docs/programmatic-usage.html#known-limitations).`,
+      `[react-native-legal] ${packageName} (${requiredVersion}) is 'file:' dependency. Such packages are not supported yet (see https://callstackincubator.github.io/react-native-legal/docs/programmatic-usage.html#known-limitations).`,
     );
   }
 
-  processedPackages.add(packageKey);
+  processedPackages.add(requiredVersionPackageKey);
 
   try {
-    const localPackageJsonPath = PackageUtils.getPackageJsonPath(packageName);
+    const localPackageJsonPath = PackageUtils.getPackageJsonPath(packageName, parentPackageRoot);
 
     if (!localPackageJsonPath) {
-      if (!isOptionalDependency) {
-        console.warn(`[react-native-legal] skipping ${packageName} could not find package.json`);
+      // do not warn if the package is an optional dependency, it's normal it may not be installed
+      if (!dependencyType.toLowerCase().includes('optional')) {
+        console.warn(`[react-native-legal] skipping ${requiredVersionPackageKey} could not find package.json`);
       }
 
       return;
@@ -69,7 +81,10 @@ function scanPackage(
         ignore: '**/{__tests__,__fixtures__,__mocks__}/**',
       });
 
-      result[packageName] = {
+      const resolvedVersionPackageKey = `${packageName}@${localPackageJson.version}`;
+
+      result[resolvedVersionPackageKey] = {
+        name: packageName,
         author: PackageUtils.parseAuthorField(localPackageJson),
         content: licenseFiles?.[0] ? fs.readFileSync(licenseFiles[0], { encoding: 'utf-8' }) : undefined,
         file: licenseFiles?.[0] ? licenseFiles[0] : undefined,
@@ -77,13 +92,18 @@ function scanPackage(
         type: PackageUtils.parseLicenseField(localPackageJson),
         url: PackageUtils.parseRepositoryFieldToUrl(localPackageJson),
         version: localPackageJson.version,
+        requiredVersion,
+        parentPackageName,
+        parentPackageRequiredVersion,
+        parentPackageResolvedVersion,
+        dependencyType,
       };
     }
 
-    const dependencies = localPackageJson.dependencies;
-    const devDependencies = localPackageJson.devDependencies;
-    const optionalDependencies = localPackageJson.optionalDependencies;
-    const isWorkspacePackage = version.startsWith('workspace:');
+    const dependencies: MaybeDependencyMapping = localPackageJson.dependencies;
+    const devDependencies: MaybeDependencyMapping = localPackageJson.devDependencies;
+    const optionalDependencies: MaybeDependencyMapping = localPackageJson.optionalDependencies;
+    const isWorkspacePackage = requiredVersion.startsWith('workspace:');
 
     const scanOptions = scanOptionsFactory({
       isRoot: false,
@@ -95,34 +115,47 @@ function scanPackage(
       return;
     }
 
-    [
-      // transitive dependencies
-      ...(dependencies ? Object.entries(dependencies) : []),
-      // transitive devDependencies
-      ...(devDependencies && scanOptions.includeDevDependencies ? Object.entries(devDependencies) : []),
-    ].forEach(([depName, depVersion]) => {
-      scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, false);
-    });
+    // helper used for finding nested dependencies installed with different versions for a given package, see docstring of scanPackage
+    const currentPackageRoot = path.dirname(localPackageJsonPath);
 
-    // transitive optionalDependencies
-    (optionalDependencies && scanOptions.includeOptionalDependencies
-      ? Object.entries(optionalDependencies)
-      : []
-    ).forEach(([depName, depVersion]) => {
-      scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, true);
-    });
+    for (const { dependencyType, packages } of [
+      {
+        dependencyType: 'transitiveDependency',
+        packages: dependencies ? Object.entries(dependencies) : [],
+      },
+      {
+        dependencyType: 'transitiveDevDependency',
+        packages: devDependencies && scanOptions.includeDevDependencies ? Object.entries(devDependencies) : [],
+      },
+      {
+        dependencyType: 'transitiveOptionalDependency',
+        packages:
+          optionalDependencies && scanOptions.includeOptionalDependencies ? Object.entries(optionalDependencies) : [],
+      },
+    ] as InternalScanGroupSpecifier[]) {
+      for (const [depName, depVersion] of packages) {
+        scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, {
+          dependencyType,
+          parentPackageRoot: currentPackageRoot,
+          parentPackageName: packageName,
+          parentPackageRequiredVersion: requiredVersion,
+          parentPackageResolvedVersion: localPackageJson.version,
+        });
+      }
+    }
   } catch (error) {
     console.warn(`[react-native-legal] could not process package.json for ${packageName}`);
   }
 }
 
-type MaybeDependencyMapping = Record<string, string> | undefined;
+type DependencyMapping = Record<string, string>;
+type MaybeDependencyMapping = DependencyMapping | undefined;
 
 /**
  * Scans `package.json` and searches for all packages under `dependencies` field. Supports monorepo projects.
  *
- * @param appPackageJsonPath - Path to the `package.json` file of the application
- * @param scanOptionsFactory - Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
+ * @param appPackageJsonPath Path to the `package.json` file of the application
+ * @param scanOptionsFactory Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
  * @returns Aggregated licenses object containing all scanned dependencies and their license information
  */
 export function scanDependencies(
@@ -138,22 +171,27 @@ export function scanDependencies(
 
   const rootScanOptions = scanOptionsFactory({ isRoot: true, isWorkspacePackage: false });
 
-  [
-    // dependencies
-    ...(dependencies ? Object.entries(dependencies) : []),
-    // devDependencies
-    ...(devDependencies && rootScanOptions.includeDevDependencies ? Object.entries(devDependencies) : []),
-  ].forEach(([packageName, version]) => {
-    scanPackage(packageName, version, processedPackages, result, scanOptionsFactory, false);
-  });
-
-  // optionalDependencies
-  (optionalDependencies && rootScanOptions.includeOptionalDependencies
-    ? Object.entries(optionalDependencies)
-    : []
-  ).forEach(([depName, depVersion]) => {
-    scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, true);
-  });
+  for (const { dependencyType, packages } of [
+    {
+      dependencyType: 'dependency',
+      packages: dependencies ? Object.entries(dependencies) : [],
+    },
+    {
+      dependencyType: 'devDependency',
+      packages: devDependencies && rootScanOptions.includeDevDependencies ? Object.entries(devDependencies) : [],
+    },
+    {
+      dependencyType: 'optionalDependency',
+      packages:
+        optionalDependencies && rootScanOptions.includeOptionalDependencies ? Object.entries(optionalDependencies) : [],
+    },
+  ] as InternalScanGroupSpecifier[]) {
+    for (const [depName, depVersion] of packages) {
+      scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, {
+        dependencyType,
+      });
+    }
+  }
 
   return result;
 }
@@ -163,23 +201,23 @@ export function scanDependencies(
  *
  * To write a file directly, use `writeLicensePlistNPMOutput` function.
  *
- * @param licenses - Scanned NPM licenses
- * @param iosProjectPath - Path to the iOS project directory
+ * @param licenses Scanned NPM licenses
+ * @param iosProjectPath Path to the iOS project directory
  * @see {@link writeLicensePlistNPMOutput}
  */
 export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, iosProjectPath: string): string {
   const renames: Record<string, string> = {};
-  const licenseEntries = Object.entries(licenses).map(([dependency, licenseObj]) => {
-    const normalizedName = PackageUtils.normalizePackageName(dependency);
+  const licenseEntries = Object.entries(licenses).map(([packageKey, licenseObj]) => {
+    const normalizedPackageNameWithVersion = PackageUtils.normalizePackageName(packageKey);
 
-    if (dependency !== normalizedName) {
-      renames[normalizedName] = dependency;
+    if (licenseObj.name !== normalizedPackageNameWithVersion) {
+      renames[normalizedPackageNameWithVersion] = licenseObj.name;
     }
 
     const relativeLicenseFile = licenseObj.file ? path.relative(iosProjectPath, licenseObj.file) : undefined;
 
     return {
-      name: normalizedName,
+      name: normalizedPackageNameWithVersion,
       version: licenseObj.version,
       ...(licenseObj.url && { source: licenseObj.url }),
       ...(licenseObj.file
@@ -217,9 +255,9 @@ export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, i
  * | ---- Podfile.lock
  * ```
  *
- * @param licenses - Scanned NPM licenses
- * @param iosProjectPath - Path to the iOS project directory
- * @param plistLikeOutput - Optional pre-generated string output to use instead of generating it using `generateLicensePlistNPMOutput`
+ * @param licenses Scanned NPM licenses
+ * @param iosProjectPath Path to the iOS project directory
+ * @param plistLikeOutput Optional pre-generated string output to use instead of generating it using `generateLicensePlistNPMOutput`
  * @see {@link generateLicensePlistNPMOutput}
  */
 export function writeLicensePlistNPMOutput(
@@ -239,23 +277,24 @@ export function writeLicensePlistNPMOutput(
  *
  * This will take scanned NPM licenses and produce output that can be modified and/or written to the Android project files.
  *
- * @param licenses - Scanned NPM licenses
+ * @param licenses Scanned NPM licenses
  * @returns Array of AboutLibrariesLikePackage objects, each representing a NPM dependency
  * @see {@link writeAboutLibrariesNPMOutput}
  */
 export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj): AboutLibrariesLikePackageInfo[] {
   return Object.entries(licenses)
-    .map(([dependency, licenseObj]) => {
+    .map(([packageKey, licenseObj]) => {
       return {
         artifactVersion: licenseObj.version,
         content: licenseObj.content ?? '',
         description: licenseObj.description ?? '',
         developers: [{ name: licenseObj.author ?? '', organisationUrl: '' }],
         licenses: [PackageUtils.prepareAboutLibrariesLicenseField(licenseObj)],
-        name: dependency,
+        name: licenseObj.name,
         tag: '',
         type: licenseObj.type,
-        uniqueId: PackageUtils.normalizePackageName(dependency),
+        uniqueId: PackageUtils.normalizePackageName(packageKey),
+        website: licenseObj.url,
       };
     })
     .map((jsonPayload) => {
@@ -267,6 +306,7 @@ export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj)
         name: jsonPayload.name,
         tag: jsonPayload.tag,
         uniqueId: jsonPayload.uniqueId,
+        website: jsonPayload.website,
       };
       const licenseJsonPayload: AboutLibrariesLicenseJsonPayload = {
         content: jsonPayload.content,
@@ -276,7 +316,7 @@ export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj)
       };
 
       return {
-        normalizedPackageName: PackageUtils.normalizePackageName(jsonPayload.name),
+        normalizedPackageNameWithVersion: jsonPayload.uniqueId,
         libraryJsonPayload,
         licenseJsonPayload,
       };
@@ -298,9 +338,9 @@ export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj)
  * | ---- settings.gradle
  * ```
  *
- * @param licenses - Scanned NPM licenses
- * @param androidProjectPath - Path to the Android project directory
- * @param aboutLibrariesLikeOutput - Optional pre-generated output to use instead of generating it using `generateAboutLibrariesNPMOutput`
+ * @param licenses Scanned NPM licenses
+ * @param androidProjectPath Path to the Android project directory
+ * @param aboutLibrariesLikeOutput Optional pre-generated output to use instead of generating it using `generateAboutLibrariesNPMOutput`
  * @see {@link generateAboutLibrariesNPMOutput}
  */
 export function writeAboutLibrariesNPMOutput(
@@ -328,8 +368,11 @@ export function writeAboutLibrariesNPMOutput(
     aboutLibrariesLikeOutput = generateAboutLibrariesNPMOutput(licenses);
   }
 
-  aboutLibrariesLikeOutput.forEach(({ normalizedPackageName, libraryJsonPayload, licenseJsonPayload }) => {
-    const libraryJsonFilePath = path.join(aboutLibrariesConfigLibrariesDirPath, `${normalizedPackageName}.json`);
+  aboutLibrariesLikeOutput.forEach(({ normalizedPackageNameWithVersion, libraryJsonPayload, licenseJsonPayload }) => {
+    const libraryJsonFilePath = path.join(
+      aboutLibrariesConfigLibrariesDirPath,
+      `${normalizedPackageNameWithVersion}.json`,
+    );
     const licenseJsonFilePath = path.join(aboutLibrariesConfigLicensesDirPath, `${licenseJsonPayload.hash}.json`);
 
     fs.writeFileSync(libraryJsonFilePath, JSON.stringify(libraryJsonPayload));

@@ -4,24 +4,33 @@ import { platform } from 'node:os';
 import {
   dependencies as licenseKitDependenciesObj,
   devDependencies as licenseKitDevDependenciesObj,
+  version as licenseKitVersion,
 } from '../../../packages/license-kit/package.json';
 import {
   dependencies as sharedDependenciesObj,
   devDependencies as sharedDevDependenciesObj,
 } from '../../../packages/shared/package.json';
 import {
+  dependencyMappingToCorrespondingKey,
+  getDependencyCorrespondingKey,
+  stripVersionSuffixes,
+} from '../__utils__/utils';
+import {
   dependencies as dependenciesObj,
   devDependencies as devDependenciesObj,
   optionalDependencies as optionalDependenciesObj,
 } from '../package.json';
 
-const dependencies = Object.keys(dependenciesObj).sort();
-const devDependencies = Object.keys(devDependenciesObj).sort();
-const optionalDependencies = Object.keys(optionalDependenciesObj).sort();
-const licenseKitDependencies = Object.keys(licenseKitDependenciesObj).sort();
-const licenseKitDevDependencies = Object.keys(licenseKitDevDependenciesObj).sort();
-const sharedDependencies = Object.keys(sharedDependenciesObj).sort();
-const sharedDevDependencies = Object.keys(sharedDevDependenciesObj).sort();
+const dependencies = dependencyMappingToCorrespondingKey(dependenciesObj);
+const devDependencies = dependencyMappingToCorrespondingKey(devDependenciesObj);
+const optionalDependencies = dependencyMappingToCorrespondingKey(optionalDependenciesObj);
+const licenseKitDependencies = dependencyMappingToCorrespondingKey(licenseKitDependenciesObj);
+const licenseKitDevDependencies = dependencyMappingToCorrespondingKey(licenseKitDevDependenciesObj);
+const sharedDependencies = dependencyMappingToCorrespondingKey(sharedDependenciesObj);
+const sharedDevDependencies = dependencyMappingToCorrespondingKey(sharedDevDependenciesObj);
+
+// below: correct the expected license-kit version (expected result) to match the actual version instead of specified version
+devDependencies[Object.keys(devDependenciesObj).indexOf('license-kit')] = `license-kit@${licenseKitVersion}`;
 
 async function runReportCommandForJsonOutput(args: string[] = []) {
   const command = `yarn workspace license-kit-node-example report${args ? ` ${args.join(' ')}` : ''}`;
@@ -39,13 +48,17 @@ describe('license-kit report', () => {
   it('including transitive deps, with dev deps with default settings', async () => {
     const json = await runReportCommandForJsonOutput();
 
-    expect(json['dhtmlx-gantt'].type).toMatch('GPL-2.0');
-    expect(json['is-even'].content).toMatch('MIT License');
-    expect(json['is-even'].type).toMatch('MIT');
-    expect(json.mariadb.content).toMatch('GNU LESSER GENERAL PUBLIC LICENSE');
-    expect(json.mariadb.type).toMatch('LGPL-2.1-or-later');
-    expect(json.zustand.content).toMatch('MIT License');
-    expect(json.zustand.type).toMatch('MIT');
+    const isEvenPackageKey = getDependencyCorrespondingKey(dependenciesObj, 'is-even');
+    const mariadbPackageKey = getDependencyCorrespondingKey(dependenciesObj, 'mariadb');
+    const zustandPackageKey = getDependencyCorrespondingKey(dependenciesObj, 'zustand');
+
+    expect(json[getDependencyCorrespondingKey(dependenciesObj, 'dhtmlx-gantt')].type).toMatch('GPL-2.0');
+    expect(json[isEvenPackageKey].content).toMatch('MIT License');
+    expect(json[isEvenPackageKey].type).toMatch('MIT');
+    expect(json[mariadbPackageKey].content).toMatch('GNU LESSER GENERAL PUBLIC LICENSE');
+    expect(json[mariadbPackageKey].type).toMatch('LGPL-2.1-or-later');
+    expect(json[zustandPackageKey].content).toMatch('MIT License');
+    expect(json[zustandPackageKey].type).toMatch('MIT');
   });
 
   it('without transitive deps and without dev deps', async () => {
@@ -75,10 +88,12 @@ describe('license-kit report', () => {
       'from-workspace-only',
     ]);
 
-    expect(Object.keys(json).toSorted()).toEqual(
-      Array.from(
-        new Set([...dependencies, ...devDependencies, ...licenseKitDependencies, ...optionalDependencies]),
-      ).toSorted(),
+    expect(stripVersionSuffixes(Object.keys(json).toSorted())).toEqual(
+      stripVersionSuffixes(
+        Array.from(
+          new Set([...dependencies, ...devDependencies, ...licenseKitDependencies, ...optionalDependencies]),
+        ).toSorted(),
+      ),
     );
   });
 
@@ -92,7 +107,7 @@ describe('license-kit report', () => {
 
     const resultKeys = Object.keys(json);
 
-    expect(resultKeys.toSorted()).toEqual([
+    expect(stripVersionSuffixes(resultKeys.toSorted())).toEqual([
       '@types/geojson',
       '@types/node',
       'chartjs-plugin-dragdata',
@@ -102,14 +117,15 @@ describe('license-kit report', () => {
       'denque',
       'dhtmlx-gantt',
       'iconv-lite',
+      'is-buffer',
       'is-even',
       'is-number',
       'is-odd',
+      'kind-of',
       'lru-cache',
       'mariadb',
       'safer-buffer',
       'undici-types',
-      'yallist',
       'zustand',
     ]);
 
@@ -127,11 +143,11 @@ describe('license-kit report', () => {
 
     const resultKeys = Object.keys(json);
 
-    expect(resultKeys).toContain('license-kit');
+    expect(resultKeys).toContain(`license-kit@${licenseKitVersion}`);
 
     // this time, the result should also include all dependencies of the direct devDependencies of the root package.json
     expect(resultKeys.length).toBeGreaterThan(200);
-    expect(resultKeys).toIncludeAllMembers([
+    expect(stripVersionSuffixes(resultKeys)).toIncludeAllMembers([
       '@babel/plugin-transform-async-to-generator',
       '@babel/plugin-transform-block-scoped-functions',
       '@babel/plugin-transform-block-scoping',
@@ -151,18 +167,19 @@ describe('license-kit report', () => {
     const json = await runReportCommandForJsonOutput(['--dev-deps-mode', 'root-only', '--transitive-deps-mode', 'all']);
 
     const resultKeys = Object.keys(json);
+    const resultKeysWithoutVersions = stripVersionSuffixes(resultKeys);
 
     // this time, the result should also include all transitive dependencies of direct devDependencies of the root package.json,
     // such as that of license-kit itself (which is a direct devDependency of the root package.json)
     expect(resultKeys.length).toBeGreaterThan(300);
-    expect(resultKeys).toContain('license-kit');
-    expect(resultKeys).toContain('@callstack/react-native-legal-shared');
+    expect(resultKeysWithoutVersions).toContain('license-kit');
+    expect(resultKeysWithoutVersions).toContain('@callstack/react-native-legal-shared');
 
-    expect(resultKeys).toIncludeAllMembers(licenseKitDependencies);
-    expect(resultKeys).not.toIncludeAllMembers(licenseKitDevDependencies);
+    expect(resultKeysWithoutVersions).toIncludeAllMembers(stripVersionSuffixes(licenseKitDependencies));
+    expect(resultKeysWithoutVersions).not.toIncludeAllMembers(stripVersionSuffixes(licenseKitDevDependencies));
 
-    expect(resultKeys).toIncludeAllMembers(sharedDependencies);
-    expect(resultKeys).not.toIncludeAllMembers(sharedDevDependencies);
+    expect(resultKeysWithoutVersions).toIncludeAllMembers(stripVersionSuffixes(sharedDependencies));
+    expect(resultKeysWithoutVersions).not.toIncludeAllMembers(stripVersionSuffixes(sharedDevDependencies));
   });
 
   it('without optional dependencies disabled', async () => {
@@ -171,7 +188,7 @@ describe('license-kit report', () => {
     const resultKeys = Object.keys(json);
 
     // license-kit has a devDependency on tsx, which has an optionalDependency on fsevents
-    expect(resultKeys).not.toContain('fsevents');
+    expect(stripVersionSuffixes(resultKeys)).not.toContain('fsevents');
     expect(resultKeys).not.toIncludeAnyMembers(optionalDependencies);
   });
 
@@ -183,7 +200,7 @@ describe('license-kit report', () => {
     // license-kit has a devDependency on tsx, which has an optionalDependency on fsevents
     if (platform() === 'darwin') {
       // eslint-disable-next-line jest/no-conditional-expect -- fsevents is macOS-only
-      expect(resultKeys).toContain('fsevents');
+      expect(stripVersionSuffixes(resultKeys)).toContain('fsevents');
     }
 
     expect(resultKeys).toIncludeAnyMembers(optionalDependencies);

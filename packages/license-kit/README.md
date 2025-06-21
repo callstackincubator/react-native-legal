@@ -12,7 +12,7 @@ A CLI for managing and analyzing Open Source Software (OSS) licenses in your Nod
 ## Installation
 
 ```bash
-npm install license-kit
+npm install -D license-kit
 ```
 
 ## Quick Start

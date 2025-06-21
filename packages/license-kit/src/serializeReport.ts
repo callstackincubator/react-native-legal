@@ -28,8 +28,8 @@ export function serializeReport({
       return JSON.stringify(generateAboutLibrariesNPMOutput(licenses), null, 2);
 
     case 'text':
-      return Object.entries(licenses)
-        .map(([packageName, { version, author, content, description, file, type, url }]) =>
+      return Object.values(licenses)
+        .map(({ name: packageName, version, author, content, description, file, type, url }) =>
           [
             `${packageName} (${version})`,
             url ? `URL: ${url}` : '',
@@ -48,8 +48,8 @@ export function serializeReport({
     case 'markdown':
       return md
         .joinBlocks(
-          Object.entries(licenses)
-            .flatMap(([packageName, { version, author, content, description, file, type, url }]) => [
+          Object.values(licenses)
+            .flatMap(({ name: packageName, version, author, content, description, file, type, url }) => [
               '\n',
               md.heading(packageName, { level: 2 }),
               '\n',

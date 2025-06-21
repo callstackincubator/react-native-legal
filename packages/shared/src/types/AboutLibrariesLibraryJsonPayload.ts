@@ -6,4 +6,5 @@ export type AboutLibrariesLibraryJsonPayload = {
   name: string;
   tag: string;
   uniqueId: string;
+  website: string | undefined;
 };

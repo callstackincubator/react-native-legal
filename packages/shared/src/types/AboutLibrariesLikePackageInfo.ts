@@ -2,7 +2,7 @@ import type { AboutLibrariesLibraryJsonPayload } from './AboutLibrariesLibraryJs
 import type { AboutLibrariesLicenseJsonPayload } from './AboutLibrariesLicenseJsonPayload';
 
 export type AboutLibrariesLikePackageInfo = {
-  normalizedPackageName: string;
+  normalizedPackageNameWithVersion: string;
   libraryJsonPayload: AboutLibrariesLibraryJsonPayload;
   licenseJsonPayload: AboutLibrariesLicenseJsonPayload;
 };
