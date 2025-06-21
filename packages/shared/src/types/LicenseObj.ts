@@ -31,4 +31,4 @@ export type LicenseObj = {
 
   /** The required version specified in package.json */
   requiredVersion: string;
-} & Pick<ScanPackageCallContext, 'parentPackageName'>;
+} & Pick<ScanPackageCallContext, 'parentPackageName' | 'parentPackageRequiredVersion' | 'parentPackageResolvedVersion'>;

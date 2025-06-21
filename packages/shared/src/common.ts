@@ -34,7 +34,13 @@ function scanPackage(
   processedPackages: Set<string>,
   result: AggregatedLicensesObj,
   scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
-  { parentPackageRoot, parentPackageName, dependencyType }: ScanPackageCallContext,
+  {
+    parentPackageRoot,
+    parentPackageName,
+    dependencyType,
+    parentPackageRequiredVersion,
+    parentPackageResolvedVersion,
+  }: ScanPackageCallContext,
 ) {
   const requiredVersionPackageKey = `${packageName}@${requiredVersion}`;
 
@@ -88,6 +94,8 @@ function scanPackage(
         version: localPackageJson.version,
         requiredVersion,
         parentPackageName,
+        parentPackageRequiredVersion,
+        parentPackageResolvedVersion,
         dependencyType,
       };
     }
