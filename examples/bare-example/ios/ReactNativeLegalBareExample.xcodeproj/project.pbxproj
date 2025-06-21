@@ -301,7 +301,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "${PODS_ROOT}/LicensePlist/license-plist --output-path ./Settings.bundle";
+			shellScript = "${PODS_ROOT}/LicensePlist/license-plist --add-version-numbers --output-path ./Settings.bundle";
 		};
 		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
