@@ -15,19 +15,19 @@ tags:
     times: 4
     commands:
       - swipe:
-          start: 50%, 90%
+          start: 50%, 95%
           end: 50%, 0%
           duration: 50
 - scrollUntilVisible:
     label: Scroll to React Native library
-    element: 'react-native'
+    element: 'react-native (.*)'
     direction: 'DOWN'
     timeout: 100000
     speed: 80
 - takeScreenshot: 'e2e_results/react-native_list_element'
-- tapOn: 'react-native'
+- tapOn: 'react-native (.*)'
 - takeScreenshot: 'e2e_results/react-native_entry'
-- assertVisible: 'react-native'
+- assertVisible: 'react-native (.*)'
 - assertVisible: 'MIT License'
 - assertVisible: 'OSS Notice'
 - tapOn: 'OSS Notice'
