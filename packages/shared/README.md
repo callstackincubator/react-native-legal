@@ -40,7 +40,7 @@ const licenses = scanDependencies(packageJsonPath, optionsFactory);
 const aboutLibrariesCompatibleReport = generateAboutLibrariesNPMOutput(licenses);
 
 // generate LicensePlist-compatible metadata
-const licensePlistReport = generateLicensePlistNPMOutput(licenses);
+const licensePlistReport = generateLicensePlistNPMOutput(licenses, iosProjectPath);
 
 // generate a Markdown report
 const markdownString = md
