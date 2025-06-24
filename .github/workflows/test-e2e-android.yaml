@@ -90,6 +90,7 @@ jobs:
           force-avd-creation: true
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
+          ram-size: '4096M'
           script: ./scripts/e2e_android_emulator_build_and_test.sh
 
       - name: Upload report
