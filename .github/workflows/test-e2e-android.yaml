@@ -90,8 +90,8 @@ jobs:
           force-avd-creation: true
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
-          pre-emulator-launch-script: ./scripts/e2e_android_emulator_build.sh
-          script: ./scripts/e2e_android_emulator_build_and_test.sh
+          pre-emulator-launch-script: ./scripts/e2e_android_emulator_build_app.sh
+          script: ./scripts/e2e_android_emulator_test.sh
 
       - name: Upload report
         if: always()
