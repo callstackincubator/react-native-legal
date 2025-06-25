@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/test-e2e-ios.yaml'
+      - 'examples/bare-example/e2e/checkLicenses/ios.yaml'
       - 'packages/react-native-legal/**/*.[tj]sx?'
       - 'packages/react-native-legal/ios/**'
       - 'packages/shared/**/*.[tj]sx?'
