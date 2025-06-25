@@ -26,6 +26,7 @@ tags:
     timeout: 190000
     centerElement: true
     speed: 70
+    visibilityPercentage: 75
 - takeScreenshot: 'e2e_results/react-native_list_element'
 - assertVisible:
     text: 'Facebook'
