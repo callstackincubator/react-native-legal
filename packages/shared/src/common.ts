@@ -237,6 +237,10 @@ export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, i
     '# END Generated NPM license entries',
   ].join('\n');
 
+  const dummy = 42;
+
+  console.log(dummy);
+
   return yamlContent;
 }
 
