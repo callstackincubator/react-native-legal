@@ -3,6 +3,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
+      "packages/license-kit/visualizer",
       "docs",
       "examples/*"
     ]
