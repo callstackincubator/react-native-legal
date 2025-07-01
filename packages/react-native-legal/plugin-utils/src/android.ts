@@ -1,4 +1,4 @@
-import { MiscUtils } from '@callstack/react-native-legal-shared';
+import { MiscUtils } from '@callstack/licenses-api';
 
 /**
  * Applies Gradle Plugin Portal & AboutLibraries Gradle plugin repositories (if needed) inside root build.gradle

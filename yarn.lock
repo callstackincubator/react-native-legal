@@ -4184,9 +4184,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@callstack/react-native-legal-shared@^0.2.0, @callstack/react-native-legal-shared@workspace:packages/shared":
+"@callstack/licenses-api@^0.2.0, @callstack/licenses-api@workspace:packages/shared":
   version: 0.0.0-use.local
-  resolution: "@callstack/react-native-legal-shared@workspace:packages/shared"
+  resolution: "@callstack/licenses-api@workspace:packages/shared"
   dependencies:
     "@babel/core": 7.27.4
     "@babel/preset-env": 7.27.2
@@ -15753,7 +15753,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "license-kit@workspace:packages/license-kit"
   dependencies:
-    "@callstack/react-native-legal-shared": ^0.2.0
+    "@callstack/licenses-api": ^0.2.0
     "@types/jest": ^29.5.5
     commander: ^14.0.0
     jest: ^29.7.0
@@ -19033,7 +19033,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-legal@workspace:packages/react-native-legal"
   dependencies:
-    "@callstack/react-native-legal-shared": ^0.2.0
+    "@callstack/licenses-api": ^0.2.0
     "@types/glob": ^8.1.0
     "@types/xml2js": ^0.4.11
     expo: ~52.0.36

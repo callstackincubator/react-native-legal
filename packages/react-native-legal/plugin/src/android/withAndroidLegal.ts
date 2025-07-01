@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/react-native-legal-shared';
+import { scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/licenses-api';
 import { type ConfigPlugin, withAndroidManifest } from 'expo/config-plugins';
 
 import { addListActivity } from './addListActivity';

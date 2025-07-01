@@ -1,4 +1,4 @@
-# @callstack/react-native-legal-shared
+# @callstack/licenses-api
 
 ## 0.2.0
 

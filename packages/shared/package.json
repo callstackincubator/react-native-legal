@@ -1,5 +1,5 @@
 {
-  "name": "@callstack/react-native-legal-shared",
+  "name": "@callstack/licenses-api",
   "version": "0.2.0",
   "description": "Shared code for all packages",
   "main": "build/index",
