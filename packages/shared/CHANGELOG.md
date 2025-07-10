@@ -1,5 +1,11 @@
 # @callstack/react-native-legal-shared
 
+## 0.2.1
+
+### Patch Changes
+
+- [#64](https://github.com/callstackincubator/react-native-legal/pull/64) [`293a593`](https://github.com/callstackincubator/react-native-legal/commit/293a593746a2b7fd2261938a8990fb1847efd67a) Thanks [@artus9033](https://github.com/artus9033)! - Rename API package to @callstack/licenses
+
 ## 0.2.0
 
 ### Minor Changes
