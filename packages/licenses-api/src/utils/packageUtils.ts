@@ -94,7 +94,7 @@ export function parseRepositoryFieldToUrl(json: { repository: string | { url?: s
 
 /**
  * Default value consistent with legacy behaviour assumptions for the scan package options factory
- * used so as not to introduce breaking API changes to the shared package
+ * used so as not to introduce breaking API changes
  */
 export const legacyDefaultScanPackageOptionsFactory: ScanPackageOptionsFactory = () => ({
   includeTransitiveDependencies: true,

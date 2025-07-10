@@ -10,7 +10,7 @@ To get started with the project, run `yarn` in the root directory to install the
 yarn
 ```
 
-All packages in this monorepo depend on the [shared package](packages/shared) (`@callstack/licenses`). This package needs to be rebuilt whenever you make changes to it since other packages consume the exported, built JS code with emitted typings. You can do this by running the following command from the root directory, which will start `tsc` in watch mode:
+All packages in this monorepo depend on the [`@callstack/licenses` package](packages/licenses-api). This package needs to be rebuilt whenever you make changes to it since other packages consume the exported, built JS code with emitted typings. You can do this by running the following command from the root directory, which will start `tsc` in watch mode:
 
 ```sh
 yarn workspace @callstack/licenses dev

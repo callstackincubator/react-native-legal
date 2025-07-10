@@ -7,7 +7,7 @@ on:
     paths:
       - '.github/workflows/test-integration-node.yml'
       - 'packages/license-kit/**/*.[tj]sx?'
-      - 'packages/shared/**/*.[tj]sx?'
+      - 'packages/licenses-api/**/*.[tj]sx?'
       - 'examples/node-example/**/*.[tj]sx?'
 
   push:

@@ -18,7 +18,7 @@
       "@theme": ["../node_modules/rspress/theme"]
     }
   },
-  "include": ["docs", "theme", "rspress.config.ts", "../packages/shared/src/"],
+  "include": ["docs", "theme", "rspress.config.ts", "../packages/licenses-api/src/"],
   "mdx": {
     "checkMdx": true
   }

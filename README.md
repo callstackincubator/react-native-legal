@@ -13,7 +13,7 @@
 ![Release](https://github.com/callstackincubator/react-native-legal/actions/workflows/release.yml/badge.svg)
 ![Deploy Docs](https://github.com/callstackincubator/react-native-legal/actions/workflows/deploy-docs.yml/badge.svg)
 ![Integration tests - License Kit (Node)](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-integration-node.yml/badge.svg)
-![Unit tests - @callstack/licenses](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-unit-shared.yml/badge.svg)
+![Unit tests - @callstack/licenses](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-unit-licenses-api.yml/badge.svg)
 ![E2E tests - Android](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-e2e-android.yaml/badge.svg)
 ![E2E tests - iOS](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-e2e-ios.yaml/badge.svg)
 
@@ -86,8 +86,8 @@ This tool is split into 4 parts:
 
 - a React Native library that lets you display native screen with a list of all dependencies and their licenses
 - an [Expo config plugin](https://docs.expo.dev/config-plugins/introduction/?redirected) (for Expo projects) and a [custom community cli plugin](https://github.com/react-native-community/cli/blob/main/docs/plugins.md) (for bare RN projects)
-- a standalone CLI tool that can be used in any Node.js project to generate license metadata
-- a shared package that exposes the core functionality of the license management tool, allowing customization of presentation logic in your Node.js scripts
+- a standalone CLI tool that can be used in any Node.js project to generate license metadata (`license-kit`)
+- a shared package that exposes the core functionality of the license management tool, allowing customization of presentation logic in your Node.js scripts (`@callstack/licenses`)
 
 ### I want to generate licenses in my Expo project <a name="usage-expo"></a>
 

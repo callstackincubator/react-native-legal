@@ -123,7 +123,7 @@ General options that can be passed to the CLI with after any command.
 :::warning
 While the `--dev-deps-mode` option is set to `root-only` by default in the CLI, the programmatic API package has a default value for the optional `scanOptionsFactory` that has `includeDevDependencies` set to `false` by default (equivalent of CLI's `none`).
 
-The reason for this discrepancy is to provide default behaviour backwards compatibility & consistency for the shared package while maintaining usability of the CLI. Sometimes bundlers do not take into account the fact the a dependency is a `devDependency`, which results in them being bundled. Therefore, the CLI by default aggregates their licenses as well.
+The reason for this discrepancy is to provide default behaviour backwards compatibility & consistency for the `@callstack/licenses` package while maintaining usability of the CLI. Sometimes bundlers do not take into account the fact the a dependency is a `devDependency`, which results in them being bundled. Therefore, the CLI by default aggregates their licenses as well.
 
 If you want the same behaviour as in the programmatic API, you can set the `--dm` option to `none` when running the CLI.
 :::
@@ -132,4 +132,4 @@ For more notes on the mechanics of the tool, please see [core additional details
 
 ## Known Limitations
 
-For a list of known limitations, please see the [Known Limitations section](/docs/programmatic-usage#known-limitations) in the shared package's documentation.
+For a list of known limitations, please see the [Known Limitations section](/docs/programmatic-usage#known-limitations) in the `@callstack/licenses` package's documentation.

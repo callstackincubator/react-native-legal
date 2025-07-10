@@ -7,7 +7,7 @@ on:
       - '.github/workflows/lint-ts.yml'
       - 'packages/react-native-legal/**/*.jsx?'
       - 'packages/react-native-legal/**/*.tsx?'
-      - 'packages/shared/**/*.[tj]sx?'
+      - 'packages/licenses-api/**/*.[tj]sx?'
       - 'packages/license-kit/**/*.[tj]sx?'
       - 'examples/**/*.jsx?'
       - 'examples/**/*.tsx?'

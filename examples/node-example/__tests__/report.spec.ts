@@ -9,7 +9,7 @@ import {
 import {
   dependencies as sharedDependenciesObj,
   devDependencies as sharedDevDependenciesObj,
-} from '../../../packages/shared/package.json';
+} from '../../../packages/licenses-api/package.json';
 import {
   dependencyMappingToCorrespondingKey,
   getDependencyCorrespondingKey,

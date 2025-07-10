@@ -9,7 +9,7 @@ on:
       - 'examples/bare-example/e2e/checkLicenses/ios.yaml'
       - 'packages/react-native-legal/**/*.[tj]sx?'
       - 'packages/react-native-legal/ios/**'
-      - 'packages/shared/**/*.[tj]sx?'
+      - 'packages/licenses-api/**/*.[tj]sx?'
       - 'examples/bare-example/**/*.[tj]sx?'
       - 'examples/bare-example/ios/**'
 
