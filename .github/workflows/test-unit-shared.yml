@@ -1,4 +1,4 @@
-name: Unit tests - React Native Legal Shared package
+name: Unit tests - @callstack/licenses
 
 on:
   pull_request:

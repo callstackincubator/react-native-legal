@@ -1,5 +1,9 @@
 # license-kit
 
+![Release](https://github.com/callstackincubator/react-native-legal/actions/workflows/release.yml/badge.svg)
+![Deploy Docs](https://github.com/callstackincubator/react-native-legal/actions/workflows/deploy-docs.yml/badge.svg)
+![Integration tests - License Kit (Node)](https://github.com/callstackincubator/react-native-legal/actions/workflows/test-integration-node.yml/badge.svg)
+
 A CLI for managing and analyzing Open Source Software (OSS) licenses in your Node.js projects. This package helps you aggregate license information and ensure compliance with license requirements.
 
 ## Features
