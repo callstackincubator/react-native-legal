@@ -6,7 +6,7 @@ import { PackageManagerTabs, Badge } from '@theme';
 
 # Programmatic Usage (API)
 
-In case your use case involves programmatic usage of the functionality provided by `license-kit`, you can use the `@callstack/react-native-legal-shared` package. This package exposes the core functionalities of the license management tool, allowing you to integrate it into your Node.js applications.
+In case your use case involves programmatic usage of the functionality provided by `license-kit`, you can use the `@callstack/licenses` package. This package exposes the core functionalities of the license management tool, allowing you to integrate it into your Node.js applications.
 
 ## Installation
 
@@ -14,10 +14,10 @@ To get started, install the package using your preferred package manager:
 
 <PackageManagerTabs
   command={{
-    npm: 'npm install -D @callstack/react-native-legal-shared',
-    pnpm: 'pnpm add -D @callstack/react-native-legal-shared',
-    yarn: 'yarn add -D @callstack/react-native-legal-shared',
-    bun: 'bun add -d @callstack/react-native-legal-shared',
+    npm: 'npm install -D @callstack/licenses',
+    pnpm: 'pnpm add -D @callstack/licenses',
+    yarn: 'yarn add -D @callstack/licenses',
+    bun: 'bun add -d @callstack/licenses',
   }}
 />
 
@@ -31,7 +31,7 @@ import {
   generateLicensePlistNPMOutput,
   scanDependencies,
   Types,
-} from '@callstack/react-native-legal-shared';
+} from '@callstack/licenses';
 import * as md from 'ts-markdown-builder';
 
 // apart from dependencies, also include devDependencies, but only from the root package.json;

@@ -4184,9 +4184,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@callstack/react-native-legal-shared@^0.2.0, @callstack/react-native-legal-shared@workspace:packages/shared":
+"@callstack/licenses@workspace:packages/shared":
   version: 0.0.0-use.local
-  resolution: "@callstack/react-native-legal-shared@workspace:packages/shared"
+  resolution: "@callstack/licenses@workspace:packages/shared"
   dependencies:
     "@babel/core": 7.27.4
     "@babel/preset-env": 7.27.2
@@ -4200,6 +4200,15 @@ __metadata:
     typescript: ^5.8.3
   languageName: unknown
   linkType: soft
+
+"@callstack/react-native-legal-shared@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@callstack/react-native-legal-shared@npm:0.2.0"
+  dependencies:
+    glob: ^7.1.3
+  checksum: 44ae330c8c5942f4f6a3b49f96d20a4f47305e2ef03672036fffaa0f225581dbaa0ca7176d76af6244ed03b49a67e264b6fc54c51bbb90b996ed2e5f8f149d84
+  languageName: node
+  linkType: hard
 
 "@callstack/rspress-theme@npm:^0.0.2":
   version: 0.0.2

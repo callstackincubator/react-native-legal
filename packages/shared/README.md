@@ -1,4 +1,4 @@
-# @callstack/react-native-legal-shared
+# @callstack/licenses
 
 ## Features
 
@@ -9,12 +9,12 @@
 ## Installation
 
 ```bash
-npm install @callstack/react-native-legal-shared
+npm install @callstack/licenses
 ```
 
 ## Programmatic Usage
 
-You can use `@callstack/react-native-legal-shared` programmatically in your Node.js applications. Here's a basic example of how to use it:
+You can use `@callstack/licenses` programmatically in your Node.js applications. Here's a basic example of how to use it:
 
 ```typescript
 import {
@@ -22,7 +22,7 @@ import {
   generateLicensePlistNPMOutput,
   scanDependencies,
   Types,
-} from '@callstack/react-native-legal-shared';
+} from '@callstack/licenses';
 import * as md from 'ts-markdown-builder';
 
 // apart from dependencies, also include devDependencies, but only from the root package.json;

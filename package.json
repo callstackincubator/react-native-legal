@@ -8,7 +8,7 @@
     ]
   },
   "scripts": {
-    "build:library": "yarn workspace @callstack/react-native-legal-shared build && yarn workspace react-native-legal build-plugins && yarn workspace license-kit build-library && yarn workspace react-native-legal build-library",
+    "build:library": "yarn workspace @callstack/licenses build && yarn workspace react-native-legal build-plugins && yarn workspace license-kit build-library && yarn workspace react-native-legal build-library",
     "lint:js": "eslint \"**/*.{js,ts,tsx}\"",
     "typescript": "yarn build:library && tsc --noEmit -p examples/bare-example/tsconfig.json && tsc --noEmit -p examples/expo-example/tsconfig.json",
     "lint:android": "./scripts/lint-android.sh",

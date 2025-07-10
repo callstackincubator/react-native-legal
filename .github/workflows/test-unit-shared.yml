@@ -18,7 +18,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   unit-test-shared:
-    name: Run unit tests for @callstack/react-native-legal-shared
+    name: Run unit tests for @callstack/licenses
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -30,4 +30,4 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Run unit tests
-        run: yarn workspace @callstack/react-native-legal-shared test
+        run: yarn workspace @callstack/licenses test

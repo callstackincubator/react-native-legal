@@ -71,13 +71,13 @@ npm i --save-dev license-kit
 ### Node.js - API
 
 ```sh
-yarn add -D @callstack/react-native-legal-shared
+yarn add -D @callstack/licenses
 ```
 
 or
 
 ```sh
-npm i --save-dev @callstack/react-native-legal-shared
+npm i --save-dev @callstack/licenses
 ```
 
 ## Usage
@@ -181,7 +181,7 @@ For a list of supported flags and the default values, run `npx license-kit --hel
 
 ### I want to customize the presentation of the licenses in my JS/TS project
 
-You can use the `@callstack/react-native-legal-shared` package to access the core functionalities of the license management tool. To do so, please read the [programmatic usage documentation](https://callstackincubator.github.io/react-native-legal/docs/programmatic-usage#usage).
+You can use the `@callstack/licenses` package to access the core functionalities of the license management tool. To do so, please read the [programmatic usage documentation](https://callstackincubator.github.io/react-native-legal/docs/programmatic-usage#usage).
 
 ## Expo
 
