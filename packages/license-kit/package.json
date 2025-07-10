@@ -59,7 +59,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@callstack/react-native-legal-shared": "^0.2.0",
+    "@callstack/licenses": "^0.2.0",
     "commander": "^14.0.0",
     "ts-markdown-builder": "^0.4.1"
   }

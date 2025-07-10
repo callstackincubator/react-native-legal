@@ -1,4 +1,4 @@
-import { type Types as SharedTypes } from '@callstack/react-native-legal-shared';
+import { type Types as SharedTypes } from '@callstack/licenses';
 
 import type { DevDepsMode } from './types/DevDepsMode';
 import type { TransitiveDepsMode } from './types/TransitiveDepsMode';

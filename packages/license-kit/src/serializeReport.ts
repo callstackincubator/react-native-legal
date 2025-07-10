@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { type Types, generateAboutLibrariesNPMOutput } from '@callstack/react-native-legal-shared';
+import { type Types, generateAboutLibrariesNPMOutput } from '@callstack/licenses';
 import * as md from 'ts-markdown-builder';
 
 import type { Format } from './types/Format';

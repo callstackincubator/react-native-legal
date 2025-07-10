@@ -58,7 +58,7 @@
     "react-native-builder-bob": "0.23.1"
   },
   "dependencies": {
-    "@callstack/react-native-legal-shared": "^0.2.0",
+    "@callstack/licenses": "^0.2.0",
     "glob": "^7.1.3",
     "xcode": "^3.0.1",
     "xml2js": "^0.6.2"

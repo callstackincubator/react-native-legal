@@ -4184,7 +4184,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@callstack/licenses@workspace:packages/shared":
+"@callstack/licenses@^0.2.0, @callstack/licenses@workspace:packages/shared":
   version: 0.0.0-use.local
   resolution: "@callstack/licenses@workspace:packages/shared"
   dependencies:
@@ -4200,15 +4200,6 @@ __metadata:
     typescript: ^5.8.3
   languageName: unknown
   linkType: soft
-
-"@callstack/react-native-legal-shared@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@callstack/react-native-legal-shared@npm:0.2.0"
-  dependencies:
-    glob: ^7.1.3
-  checksum: 44ae330c8c5942f4f6a3b49f96d20a4f47305e2ef03672036fffaa0f225581dbaa0ca7176d76af6244ed03b49a67e264b6fc54c51bbb90b996ed2e5f8f149d84
-  languageName: node
-  linkType: hard
 
 "@callstack/rspress-theme@npm:^0.0.2":
   version: 0.0.2
@@ -15762,7 +15753,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "license-kit@workspace:packages/license-kit"
   dependencies:
-    "@callstack/react-native-legal-shared": ^0.2.0
+    "@callstack/licenses": ^0.2.0
     "@types/jest": ^29.5.5
     commander: ^14.0.0
     jest: ^29.7.0
@@ -19042,7 +19033,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-legal@workspace:packages/react-native-legal"
   dependencies:
-    "@callstack/react-native-legal-shared": ^0.2.0
+    "@callstack/licenses": ^0.2.0
     "@types/glob": ^8.1.0
     "@types/xml2js": ^0.4.11
     expo: ~52.0.36

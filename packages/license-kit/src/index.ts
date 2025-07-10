@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
-import { scanDependencies } from '@callstack/react-native-legal-shared';
+import { scanDependencies } from '@callstack/licenses';
 import { Command } from 'commander';
 
 import { version } from '../package.json';

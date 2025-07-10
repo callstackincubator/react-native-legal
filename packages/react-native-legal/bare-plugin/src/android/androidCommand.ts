@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/react-native-legal-shared';
+import { scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/licenses';
 
 import { addListActivity } from './addListActivity';
 import { applyAndConfigureAboutLibrariesPlugin } from './applyAndConfigureAboutLibrariesPlugin';

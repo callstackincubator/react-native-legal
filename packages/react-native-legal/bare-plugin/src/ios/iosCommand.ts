@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { scanDependencies, writeLicensePlistNPMOutput } from '@callstack/react-native-legal-shared';
+import { scanDependencies, writeLicensePlistNPMOutput } from '@callstack/licenses';
 
 import { addSettingsBundle } from './addSettingsBundle';
 import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase';

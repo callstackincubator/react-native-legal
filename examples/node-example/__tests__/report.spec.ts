@@ -173,7 +173,7 @@ describe('license-kit report', () => {
     // such as that of license-kit itself (which is a direct devDependency of the root package.json)
     expect(resultKeys.length).toBeGreaterThan(300);
     expect(resultKeysWithoutVersions).toContain('license-kit');
-    expect(resultKeysWithoutVersions).toContain('@callstack/react-native-legal-shared');
+    expect(resultKeysWithoutVersions).toContain('@callstack/licenses');
 
     expect(resultKeysWithoutVersions).toIncludeAllMembers(stripVersionSuffixes(licenseKitDependencies));
     expect(resultKeysWithoutVersions).not.toIncludeAllMembers(stripVersionSuffixes(licenseKitDevDependencies));
