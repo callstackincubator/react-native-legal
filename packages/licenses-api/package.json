@@ -1,6 +1,6 @@
 {
   "name": "@callstack/licenses",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "API package that exposes functionalities for programmatic scanning of licenses in Node.js projects.",
   "main": "build/index",
   "module": "build/index",

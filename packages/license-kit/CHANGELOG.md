@@ -1,5 +1,14 @@
 # license-kit
 
+## 0.2.1
+
+### Patch Changes
+
+- [#66](https://github.com/callstackincubator/react-native-legal/pull/66) [`9534b4c`](https://github.com/callstackincubator/react-native-legal/commit/9534b4c053cf62d90b2772b5ecf30833bd20ae24) Thanks [@artus9033](https://github.com/artus9033)! - Migrated to new API package - @callstack/licenses
+
+- Updated dependencies [[`9534b4c`](https://github.com/callstackincubator/react-native-legal/commit/9534b4c053cf62d90b2772b5ecf30833bd20ae24)]:
+  - @callstack/licenses@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
