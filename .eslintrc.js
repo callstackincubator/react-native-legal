@@ -2,7 +2,7 @@
 const config = {
   root: true,
   extends: ['@callstack'],
-  ignorePatterns: ['node_modules/', '**/node_modules/', 'lib/', '**/lib/', 'build/', '**/build/'],
+  ignorePatterns: ['node_modules/', '**/node_modules/', 'lib/', '**/lib/', 'build/', '**/build/', 'docs/**'],
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     '@typescript-eslint/consistent-type-imports': ['error'],

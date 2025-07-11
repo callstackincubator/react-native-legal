@@ -1,5 +1,5 @@
+import { Button, HomeFeature, HomeFooter, HomeHero } from '@theme';
 import { usePageData } from 'rspress/runtime';
-import { Button, HomeFeature, HomeFooter, HomeHero } from 'rspress/theme';
 
 export function CustomHomePage() {
   const {
@@ -89,6 +89,7 @@ export function CustomHomePage() {
             window.location.pathname = routePath + (routePath.endsWith('/') ? '' : '/') + 'docs/introduction';
           }}
         >
+          {/* @ts-ignore-next-line -- invalid typings */}
           <Button text="Not sure, which to choose?" theme="alt" type="button" size="medium" />
         </span>
       </div>
