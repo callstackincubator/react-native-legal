@@ -2,6 +2,9 @@
   "name": "docs",
   "version": "1.0.0",
   "private": true,
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
   "scripts": {
     "build": "rspress build",
     "check": "biome check --write",
