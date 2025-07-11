@@ -1,4 +1,4 @@
-import type { PackageManagerTabs } from 'rspress/theme';
+import type { PackageManagerTabs } from '@callstack/rspress-theme';
 
 /**
  * Workaround for the issue with `npx` not being used when the `npm` tab is selected in the `PackageManagerTabs` component.
