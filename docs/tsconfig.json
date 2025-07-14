@@ -15,7 +15,7 @@
     "paths": {
       "@components/*": ["./components/*"],
       "@utils/*": ["./utils/*"],
-      "@theme": ["../node_modules/rspress/theme"]
+      "@theme": ["./theme/index.tsx"]
     }
   },
   "include": ["docs", "theme", "rspress.config.ts", "../packages/licenses-api/src/"],

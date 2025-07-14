@@ -1,5 +1,5 @@
 import {
-  Announcement,
+  // Announcement,
   HomeBanner,
   HomeFeature,
   HomeFooter,
@@ -7,28 +7,45 @@ import {
   OutlineCTA,
   PrevNextPage,
 } from '@callstack/rspress-theme';
-import { HomeLayout as RspressHomeLayout, Layout as RspressLayout } from 'rspress/theme';
+import { useNavigate } from 'rspress/runtime';
+import { Button, HomeLayout as RspressHomeLayout, Layout as RspressLayout } from 'rspress/theme';
 
-// You can customize the default Layout and HomeLayout like this:
 const Layout = () => (
   <RspressLayout
-    beforeNav={<Announcement href="./guide" message="Announcement Test" localStorageKey="" />}
+    // beforeNav={<Announcement href="./guide" message="Announcement Test" localStorageKey="" />}
     afterOutline={<OutlineCTA href="https://callstack.com" />}
   />
 );
 
-const HomeLayout = () => (
-  <RspressHomeLayout
-    afterFeatures={
-      <>
-        <HomeBanner href="https://callstack.com" />
-        <HomeFooter />
-      </>
-    }
-  />
-);
+const HomeLayout = () => {
+  const navigate = useNavigate();
 
-// Export your custom layouts and any components you want available via '@theme'
+  return (
+    <RspressHomeLayout
+      afterFeatures={
+        <>
+          <div className="docs-introduction-cta">
+            <span
+              onClick={() => {
+                navigate('/docs/introduction');
+              }}
+            >
+              {/* @ts-ignore-next-line -- invalid typings */}
+              <Button theme="alt" type="button" size="medium">
+                Not sure, which to choose?
+              </Button>
+            </span>
+          </div>
+
+          <HomeBanner href="https://callstack.com" />
+          <HomeFooter />
+        </>
+      }
+    />
+  );
+};
+
+// custom layouts and any components to be available via '@theme'
 export { Layout, HomeLayout, PrevNextPage, HomeFeature, HomeHero };
-// Don't forget to export the default theme components which are not overridden
+// re-export the default theme components which are not overridden
 export * from 'rspress/theme';

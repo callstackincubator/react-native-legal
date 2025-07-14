@@ -30,12 +30,16 @@
   margin-bottom: 40;
 }
 
-.home-footer-wrapper {
-  position: relative;
-  margin-top: 140;
+/* == Introduction page styles section end == */
+
+/* == Theme styles section start == */
+
+img#logo {
+  width: 1.6rem !important;
+  height: 1.6rem !important;
 }
 
-/* == Introduction page styles section end == */
+/* Theme styles section end == */
 
 /* == Callstack rspress theme styles section start == */
 
