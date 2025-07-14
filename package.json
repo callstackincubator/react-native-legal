@@ -10,6 +10,7 @@
   "scripts": {
     "build:library": "yarn workspace @callstack/licenses build && yarn workspace react-native-legal build-plugins && yarn workspace license-kit build-library && yarn workspace react-native-legal build-library",
     "lint:js": "eslint \"**/*.{js,ts,tsx}\"",
+    "lint:docs": "yarn workspace docs check",
     "typescript": "yarn build:library && tsc --noEmit -p examples/bare-example/tsconfig.json && tsc --noEmit -p examples/expo-example/tsconfig.json",
     "lint:android": "./scripts/lint-android.sh",
     "lint:objc": "./scripts/lint-objc.sh",

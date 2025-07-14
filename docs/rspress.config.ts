@@ -27,7 +27,16 @@ export default defineConfig({
   plugins: [
     pluginCallstackTheme(),
     pluginTypeDoc({
-      entryPoints: [path.join(__dirname, '..', 'packages', 'licenses-api', 'src', 'index.ts')],
+      entryPoints: [
+        path.join(
+          __dirname,
+          '..',
+          'packages',
+          'licenses-api',
+          'src',
+          'index.ts',
+        ),
+      ],
       outDir: 'api',
     }),
   ],

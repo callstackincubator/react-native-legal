@@ -28,6 +28,9 @@
   text-align: center;
   margin-top: 40;
   margin-bottom: 40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* == Introduction page styles section end == */
@@ -39,12 +42,12 @@ img#logo {
   height: 1.6rem !important;
 }
 
-img[class*='heroImage-'] {
+img[class*="heroImage-"] {
   max-height: unset !important;
   height: 100px;
 }
 
-div[class*='container-'] {
+div[class*="container-"] {
   /* so as not to limit the height of the container */
   height: unset !important;
   /* slight paddin from the top */
@@ -56,7 +59,7 @@ div[class*='container-'] {
 /* == Callstack rspress theme styles section start == */
 
 @font-face {
-  font-family: 'Alliance No. 2';
+  font-family: "Alliance No. 2";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -64,7 +67,7 @@ div[class*='container-'] {
 }
 
 @font-face {
-  font-family: 'Alliance No. 2';
+  font-family: "Alliance No. 2";
   font-style: normal;
   font-weight: 500;
   font-display: swap;
