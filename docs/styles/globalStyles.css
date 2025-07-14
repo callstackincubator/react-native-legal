@@ -35,8 +35,20 @@
 /* == Theme styles section start == */
 
 img#logo {
-  width: 1.6rem !important;
+  width: auto !important;
   height: 1.6rem !important;
+}
+
+img[class*='heroImage-'] {
+  max-height: unset !important;
+  height: 100px;
+}
+
+div[class*='container-'] {
+  /* so as not to limit the height of the container */
+  height: unset !important;
+  /* slight paddin from the top */
+  padding-top: 1rem !important;
 }
 
 /* Theme styles section end == */
