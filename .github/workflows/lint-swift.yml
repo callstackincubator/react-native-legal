@@ -12,7 +12,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   lint-swift:
     name: Lint Swift
-    runs-on: ubuntu-latest
+    runs-on: macos-15
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4

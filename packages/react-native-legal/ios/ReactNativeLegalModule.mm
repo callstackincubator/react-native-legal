@@ -22,6 +22,15 @@ RCT_EXPORT_METHOD(launchLicenseListScreen : (NSString *)licenseHeaderText)
   [ReactNativeLegalModuleImpl launchLicenseListScreenWithLicenseHeaderText:licenseHeaderText];
 }
 
+RCT_EXPORT_METHOD(getLibrariesAsync : (RCTPromiseResolveBlock)resolve reject : (RCTPromiseRejectBlock)reject)
+{
+  @try {
+    resolve([ReactNativeLegalModuleImpl getLibraries]);
+  } @catch (NSException *err) {
+    reject(err.name, err.reason, nil);
+  }
+}
+
 #if RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params

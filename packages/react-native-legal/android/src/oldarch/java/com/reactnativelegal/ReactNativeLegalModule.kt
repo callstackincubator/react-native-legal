@@ -18,6 +18,15 @@ class ReactNativeLegalModule(private val reactContext: ReactApplicationContext) 
         )
     }
 
+    @ReactMethod
+    fun getLibrariesAsync(promise: Promise?) {
+        try {
+            promise?.resolve(ReactNativeLegalModuleImpl.getLibraries(reactApplicationContext))
+        } catch (e: Exception) {
+            promise?.reject(e)
+        }
+    }
+
     companion object {
         const val NAME = ReactNativeLegalModuleImpl.NAME
     }
