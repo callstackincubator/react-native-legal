@@ -1,14 +1,17 @@
 import {
-  // Announcement,
+  Announcement,
   HomeBanner,
   HomeFeature,
   HomeFooter,
   HomeHero,
   OutlineCTA,
   PrevNextPage,
+  LinkCard,
+  Button,
+  VersionBadge,
 } from '@callstack/rspress-theme';
 import { useNavigate } from 'rspress/runtime';
-import { Button, HomeLayout as RspressHomeLayout, Layout as RspressLayout } from 'rspress/theme';
+import { HomeLayout as RspressHomeLayout, Layout as RspressLayout } from 'rspress/theme';
 
 const Layout = () => (
   <RspressLayout
@@ -46,6 +49,6 @@ const HomeLayout = () => {
 };
 
 // custom layouts and any components to be available via '@theme'
-export { Layout, HomeLayout, PrevNextPage, HomeFeature, HomeHero };
+export { Layout, HomeLayout, PrevNextPage, HomeFeature, HomeHero, LinkCard, Button, VersionBadge, Announcement };
 // re-export the default theme components which are not overridden
 export * from 'rspress/theme';

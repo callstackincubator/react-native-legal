@@ -1,22 +1,22 @@
-import { LinkCard } from '../theme';
+import { LinkCard } from '@theme';
 
 export function PackagesPresentation() {
   return (
     <div className="flex-intro-cards">
       <LinkCard
-        href="/docs/react-native"
+        href="/react-native-legal/docs/react-native"
         title="React Native"
         description="I'm using React Native, either bare (RN CLI) or with Expo and want to display a licenses screen in my app."
       />
 
       <LinkCard
-        href="/docs/standalone-cli"
+        href="/react-native-legal/docs/standalone-cli"
         title="Node.js CLI"
         description="I'm building a Node.js app or a non-React-Native project and want to generate license reports for my dependencies."
       />
 
       <LinkCard
-        href="/docs/programmatic-usage"
+        href="/react-native-legal/docs/programmatic-usage"
         title="Programmatic API"
         description="I want to use the core functionalities but adjust the presentation of the license report, or process the data in a different way."
       />
