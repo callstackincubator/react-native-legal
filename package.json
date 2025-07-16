@@ -15,6 +15,7 @@
     "lint:android": "./scripts/lint-android.sh",
     "lint:objc": "./scripts/lint-objc.sh",
     "lint:swift": "./scripts/lint-swift.sh",
+    "format:docs": "yarn workspace docs format",
     "format:android": "./scripts/format-android.sh",
     "format:objc": "./scripts/format-objc.sh",
     "format:swift": "./scripts/format-swift.sh",
