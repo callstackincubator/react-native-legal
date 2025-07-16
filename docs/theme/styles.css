@@ -42,7 +42,7 @@ img#logo {
   height: 1.6rem !important;
 }
 
-img[class*="heroImage-"] {
+img[class*='heroImage-'] {
   max-height: unset !important;
   height: 100px;
 }
@@ -52,7 +52,7 @@ img[class*="heroImage-"] {
 /* == Callstack rspress theme styles section start == */
 
 @font-face {
-  font-family: "Alliance No. 2";
+  font-family: 'Alliance No. 2';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -60,7 +60,7 @@ img[class*="heroImage-"] {
 }
 
 @font-face {
-  font-family: "Alliance No. 2";
+  font-family: 'Alliance No. 2';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
