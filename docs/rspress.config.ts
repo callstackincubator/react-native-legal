@@ -9,8 +9,8 @@ export default defineConfig({
   title: 'React Native Legal & License Kit',
   description: 'React Native Legal & License Kit Documentation',
   logoText: 'React Native Legal & License Kit',
-  icon: '/img/notice.png',
-  logo: '/img/notice.png',
+  icon: '/img/rn-legal-logo.svg',
+  logo: '/img/rn-legal-logo.svg',
   themeConfig: {
     socialLinks: [
       {
