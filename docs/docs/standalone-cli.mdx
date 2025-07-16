@@ -1,0 +1,135 @@
+---
+sidebar_position: 3
+---
+
+import { PackageManagerTabs, Badge } from '@theme';
+
+# Standalone CLI (Node.js)
+
+We expose the `license-kit` package as a CLI for managing and analyzing Open Source Software (OSS) licenses in your Node.js projects. This package helps you aggregate license information and ensure compliance with license requirements.
+
+## Installation
+
+To get started, install the package using your preferred package manager:
+
+<PackageManagerTabs
+  command={{
+    npm: 'npm install -D license-kit',
+    pnpm: 'pnpm add -D license-kit',
+    yarn: 'yarn add -D license-kit',
+    bun: 'bun add -d license-kit',
+  }}
+/>
+
+## Features
+
+- 🔍 Scan and aggregate license information from your project dependencies
+- ⚠️ Detect copyleft licenses that might affect your project
+- 📝 Generate license reports in a format of choice (JSON, Markdown, raw text, AboutLibraries-compatible JSON metadata)
+- 🔄 Support for both direct and transitive dependencies
+
+## Quick Start
+
+Run the license check in your project root:
+
+```bash
+npx license-kit report
+```
+
+## Usage
+
+### Basic Usage
+
+```bash
+# Generate licenses report with default settings (JSON, stdout)
+npx license-kit report
+
+# Generate licenses report in Markdown format and write to ./public/licenses.md
+npx license-kit report --format markdown --output ./public/licenses.md
+
+# Write a text report to ./public/licenses.txt of a different project
+npx license-kit report --format markdown --output ../../out/licenses.md --root ../../another-project
+
+# Check for copyleft licenses
+npx license-kit copyleft
+
+# Exit on weak copyleft licenses
+npx license-kit copyleft --error-on-weak
+
+# Print help for the report command
+npx license-kit report --help
+
+# Print help for the copyleft command
+npx license-kit copyleft --help
+```
+
+### Command Line Options
+
+#### Command: `copyleft`
+
+Check for copyleft licenses. Exits with error code (≠ 0) if strong copyleft licenses are found. Can be configured to exit with non-zero exit code if weak copyleft licenses are found as well.
+
+Exit codes:
+
+- `0` - no copyleft licenses found
+- `1` - strong copyleft licenses found
+- `2` - weak copyleft licenses found (if `--error-on-weak` is set)
+
+| Flag / Option                             | Description                                                                                                                                                                                                                                                                                                                                              | Default                   |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `--tm, --transitive-deps-mode [mode]`     | Controls, which transitive dependencies are included: <ul><li>`'all'`</li> <li>`'from-external-only'` (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers)</li> <li>`'from-workspace-only'` (only direct dependencies of direct dependencies specified by `workspace:` specifier)</li> <li>`'none'`</li></ul> | `'all'`                   |
+| `--dm, --dev-deps-mode [mode]`            | <ul><li>`'root-only'` (only direct devDependencies from the scanned project's root package.json)</li> <li>`'none'`</li></ul>                                                                                                                                                                                                                             | `'root-only'`             |
+| `--od, --include-optional-deps [include]` | Whether to include optionalDependencies in the scan; other flags apply                                                                                                                                                                                                                                                                                   | `true`                    |
+| `--root [path]`                           | Path to the root of your project                                                                                                                                                                                                                                                                                                                         | Current working directory |
+| `--error-on-weak`                         | Exit with error code if weak copyleft licenses are found                                                                                                                                                                                                                                                                                                 | `false`                   |
+
+#### Command: `report`
+
+Generates a licenses report in the specified format. The output can be written to `stdout` (default) or a file.
+
+| Flag / Option                             | Description                                                                                                                                                                                                                                                                                                                                              | Default                   |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `--tm, --transitive-deps-mode [mode]`     | Controls, which transitive dependencies are included: <ul><li>`'all'`</li> <li>`'from-external-only'` (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers)</li> <li>`'from-workspace-only'` (only direct dependencies of direct dependencies specified by `workspace:` specifier)</li> <li>`'none'`</li></ul> | `'all'`                   |
+| `--dm, --dev-deps-mode [mode]`            | <ul><li>`'root-only'` (only direct devDependencies from the scanned project's root package.json)</li> <li>`'none'`</li></ul>                                                                                                                                                                                                                             | `'root-only'`             |
+| `--od, --include-optional-deps [include]` | Whether to include optionalDependencies in the scan; other flags apply                                                                                                                                                                                                                                                                                   | `true`                    |
+| `--root [path]`                           | Path to the root of your project                                                                                                                                                                                                                                                                                                                         | Current working directory |
+| `--format [type]`                         | Output format, one of: `'json'`, `'about-json'` (AboutLibraries-compatible), `'text'`, `'markdown'`                                                                                                                                                                                                                                                      | `'json'`                  |
+| `--output [path]`                         | Where to write the output - either `'stdout'` or a path to an output file                                                                                                                                                                                                                                                                                | `'stdout'`                |
+
+#### Command: `help`
+
+Displays help, listing the available commands.
+
+#### General options
+
+General options that can be passed to the CLI with after any command.
+
+| Option      | Description                     |
+| ----------- | ------------------------------- |
+| `--version` | Outputs the version of the CLI. |
+| `--help`    | Displays help for the command.  |
+
+#### No-command options `help`
+
+General options that can be passed to the CLI with after any command.
+
+| Option      | Description                     |
+| ----------- | ------------------------------- |
+| `--version` | Outputs the version of the CLI. |
+| `--help`    | Displays help for the command.  |
+
+## Additional details
+
+:::warning
+While the `--dev-deps-mode` option is set to `root-only` by default in the CLI, the programmatic API package has a default value for the optional `scanOptionsFactory` that has `includeDevDependencies` set to `false` by default (equivalent of CLI's `none`).
+
+The reason for this discrepancy is to provide default behaviour backwards compatibility & consistency for the `@callstack/licenses` package while maintaining usability of the CLI. Sometimes bundlers do not take into account the fact the a dependency is a `devDependency`, which results in them being bundled. Therefore, the CLI by default aggregates their licenses as well.
+
+If you want the same behaviour as in the programmatic API, you can set the `--dm` option to `none` when running the CLI.
+:::
+
+For more notes on the mechanics of the tool, please see [core additional details section](/docs/programmatic-usage#additional-details).
+
+## Known Limitations
+
+For a list of known limitations, please see the [Known Limitations section](/docs/programmatic-usage#known-limitations) in the `@callstack/licenses` package's documentation.

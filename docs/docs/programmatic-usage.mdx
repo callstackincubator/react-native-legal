@@ -1,0 +1,151 @@
+---
+sidebar_position: 4
+---
+
+import { PackageManagerTabs, Badge } from '@theme';
+
+# Programmatic Usage (API)
+
+In case your use case involves programmatic usage of the functionality provided by `license-kit`, you can use the `@callstack/licenses` package. This package exposes the core functionalities of the license management tool, allowing you to integrate it into your Node.js applications.
+
+## Installation
+
+To get started, install the package using your preferred package manager:
+
+<PackageManagerTabs
+  command={{
+    npm: 'npm install -D @callstack/licenses',
+    pnpm: 'pnpm add -D @callstack/licenses',
+    yarn: 'yarn add -D @callstack/licenses',
+    bun: 'bun add -d @callstack/licenses',
+  }}
+/>
+
+## Usage
+
+### Basic Usage
+
+```typescript
+import {
+  generateAboutLibrariesNPMOutput,
+  generateLicensePlistNPMOutput,
+  scanDependencies,
+  Types,
+} from '@callstack/licenses';
+import * as md from 'ts-markdown-builder';
+
+// apart from dependencies, also include devDependencies, but only from the root package.json;
+// also, include all transitive dependencies & optional dependencies
+const optionsFactory: Types.ScanPackageOptionsFactory = ({ isRoot }) => ({
+  includeDevDependencies: isRoot,
+  includeTransitiveDependencies: true,
+  includeOptionalDependencies: true,
+});
+
+// scan dependencies of a package
+const licenses = scanDependencies(packageJsonPath, optionsFactory);
+
+// generate AboutLibraries-compatible JSON metadata
+const aboutLibrariesCompatibleReport = generateAboutLibrariesNPMOutput(licenses);
+
+// generate LicensePlist-compatible metadata
+const licensePlistReport = generateLicensePlistNPMOutput(licenses, iosProjectPath);
+
+// generate a Markdown report
+const markdownString = md
+  .joinBlocks(
+    Object.entries(licenses)
+      .flatMap(([packageKey, { name: packageName, version, author, content, description, file, type, url }]) => [
+        md.heading(packageName, { level: 2 }),
+        '\n',
+        `Version: ${version}<br/>\n`,
+        url ? `URL: ${url}<br/>\n` : '',
+        author ? `Author: ${author}<br/>\n\n` : '',
+        content ?? '',
+        '\n',
+        description ? `Description: ${description}\n` : '',
+        file ? `\nFile: ${file}\n` : '',
+        type ? `Type: ${type}` : '',
+        '\n',
+        md.horizontalRule,
+      ])
+      .join('\n'),
+  )
+  .toString();
+```
+
+### Options
+
+As you can see in the example above, filtering for the packages to be included in the scan for dependencies is based on the passed in `ScanPackageOptionsFactory`. This factory would be invoked for every scanned `package.json` file, including the root and any considered dependencies and - given a `ScanPackageOptionsFactoryPackageInfo` object informing of the context of the package being scanned - should produce an accompanying configuration that would filter this package's dependencies.
+
+This approach gives a programmatic control at an arbitrary level of precision over filtering of dependencies to be included.
+
+As a reference, you can see how this is used in the `license-kit` CLI in [`createScanOptionsFactory` of `scanOptionsUtils.ts`](https://github.com/callstackincubator/react-native-legal/blob/main/packages/license-kit/src/scanOptionsUtils.ts).
+
+### API Documentation
+
+The API documentation is published under: https://callstackincubator.github.io/react-native-legal/api/.
+
+## Additional details
+
+### License Types
+
+The tool recognizes various license types:
+
+- **Strong Copyleft**: Licenses that require derivative works to be released under the same license (e.g., GPL-3.0)
+- **Weak Copyleft**: Licenses that require derivative works to be released under the same license, but with some exceptions (e.g., LGPL-3.0)
+- **Permissive**: Licenses that allow for more flexible use (e.g., MIT, Apache-2.0)
+
+### Monorepo Support
+
+`react-native-legal` scans dependencies from workspace packages with the `workspace:*` notation in your `package.json` in addition to the app's direct dependencies.
+
+:::info
+If a monorepo package is private, its name and license won't be included in the license list, but its dependencies will still be scanned and included.
+:::
+
+### Known Limitations
+
+#### `file:` dependencies
+
+:::warning
+This tool (and in turn, the CLI and RN plugins) do not support `file:` specified dependencies, which is a known limitation. If such packages are scanned and their dependencies (of any type) are not installed in the root `node_modules` directory, such dependencies will not be found and included.
+
+If you would like to have support for this, please start a discussion on Github.
+:::
+
+#### Private packages
+
+All private packages (i.e., packages that have a `private: true` field in their `package.json`) are excluded from the scan. All their dependencies (all kinds of dependencies) also are **not included** in the scan / report. Therefore, all the tooling ignores private packages & their dependencies.
+
+:::warning
+If you are using a private package that introduces dependencies to your bundle / program, remember it itself & its dependencies won't be included.
+:::
+
+### Default `scanOptionsFactory` value
+
+The default value for the optional `scanOptionsFactory` parameter in `scanPackage` & `scanDependencies` functions is set to the following:
+
+```typescript
+{
+  includeTransitiveDependencies: true,
+  includeDevDependencies: false,
+}
+```
+
+Which can be found in [`ScanPackageOptions.ts`](/packages/licenses-api/src/types/ScanPackageOptions.ts).
+
+:::warning
+This default `includeDevDependencies` behaviour is different from the default values of `license-kit` CLI's equivalent flag `--dev-deps-mode`, which is set to `root-only` by default.
+
+To achieve the same default behaviour as in the CLI (`root-only`), set `includeDevDependencies` to `isRoot` in the programmatic API:
+
+```typescript
+const optionsFactory: Types.ScanPackageOptionsFactory = ({ isRoot }) => ({
+  includeDevDependencies: isRoot,
+  includeTransitiveDependencies: ...,
+  includeOptionalDependencies: ...,
+});
+```
+
+:::

@@ -1,0 +1,70 @@
+/* == Introduction page styles section start == */
+
+/* Flex container carrying LinkCard in intro page */
+.flex-intro-cards {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Single LinkCard in intro page */
+.flex-intro-cards div {
+  display: flex;
+  width: calc(max(30%, 250px));
+  height: auto;
+  aspect-ratio: 1;
+}
+
+/* Hide the right-top corner arrow svg of the LinkCard component */
+.flex-intro-cards div > svg {
+  width: 0px !important;
+  height: 0px !important;
+}
+
+.docs-introduction-cta {
+  width: 100%;
+  text-align: center;
+  margin-top: 40;
+  margin-bottom: 40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* == Introduction page styles section end == */
+
+/* == Theme styles section start == */
+
+img#logo {
+  width: auto !important;
+  height: 1.6rem !important;
+}
+
+img[class*="heroImage-"] {
+  max-height: unset !important;
+  height: 100px;
+}
+
+/* Theme styles section end == */
+
+/* == Callstack rspress theme styles section start == */
+
+@font-face {
+  font-family: "Alliance No. 2";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  /* src: url('./fonts/alliance-no-2-regular.ttf') format('truetype'); */
+}
+
+@font-face {
+  font-family: "Alliance No. 2";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  /* src: url('./fonts/alliance-no-2-medium.ttf') format('truetype'); */
+}
+
+/* Callstack rspress theme styles section end */

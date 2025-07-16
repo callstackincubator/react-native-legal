@@ -1,0 +1,98 @@
+---
+sidebar_position: 2
+---
+
+import { PackageManagerTabs, Badge } from '@theme';
+
+# React Native Legal
+
+## Installation
+
+To get started, install the package using your preferred package manager:
+
+<PackageManagerTabs command="install react-native-legal" />
+
+| ![Android example](https://github.com/callstackincubator/react-native-legal/raw/main/static/android-expo.gif) | ![iOS example](https://github.com/callstackincubator/react-native-legal/raw/main/static/ios-bare.gif) | ![AndroidTV example](https://github.com/callstackincubator/react-native-legal/raw/main/static/android-tv.gif) | ![tvOS example](https://github.com/callstackincubator/react-native-legal/raw/main/static/tvos.gif) |
+| :-----------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------: |
+|                                                  **Android**                                                  |                                                **iOS**                                                |                                                 **AndroidTV**                                                 |                                              **tvOS**                                              |
+
+## Setup
+
+The setup process varies depending on whether you are using Expo or a bare React Native project. Follow the steps below based on your project type.
+
+### Expo Projects
+
+If you are using Expo, you need to add the config plugin to your `app.json` or `app.config.js` file:
+
+```diff
+{
+  "expo": {
+++  "plugins": ["react-native-legal"]
+  }
+}
+```
+
+After adding the plugin, rebuild your app using either:
+
+<PackageManagerTabs command="expo prebuild" exec />
+
+or
+
+<PackageManagerTabs command="eas build" exec />
+
+This will ensure the required native dependencies are included.
+
+:::warning
+This library **cannot be used** in [Expo Go](https://expo.dev/go) because it requires custom native code.
+:::
+
+### Bare React Native Projects
+
+For bare React Native projects, you need to run the CLI plugin to generate and include license data. Run the following command from your project root:
+
+<PackageManagerTabs command="react-native legal-generate" exec />
+
+This will extract and prepare license metadata for use in your app.
+
+## Usage
+
+Once the setup is complete, you can easily add a button to your app to display the list of open-source licenses:
+
+```tsx
+import * as React from 'react';
+import { Button, View } from 'react-native';
+import { ReactNativeLegal } from 'react-native-legal';
+
+function launchNotice() {
+  ReactNativeLegal.launchLicenseListScreen('OSS Notice');
+}
+
+function MyComponent() {
+  return (
+    <View>
+      <Button onPress={launchNotice} title="Open source licenses" />
+    </View>
+  );
+}
+```
+
+This will open a native screen listing all detected licenses. The title of the screen can be customized by passing a different string argument to `launchLicenseListScreen()`.
+
+## License Display in Settings <Badge text="iOS" type="info" />
+
+On **iOS**, all detected licenses will also appear in the **Settings app** under the app's information section. This is done to comply with **Apple's guidelines**, which require apps to provide open-source license acknowledgments in a visible location.
+
+## Node.js / Non-RN Projects Support
+
+If you want to use the license management functionality in a Node.js project or any non-React Native application, you can either:
+
+- use the `license-kit` CLI tool, which is a standalone tool that can be used in any Node.js project to generate license metadata - see [this section](/docs/standalone-cli) for more details
+- programmatically use the `@callstack/licenses` package, which exposes the core functionalities of this tool - see [this section](/docs/programmatic-usage) for more details
+
+## Additional details
+
+For more notes on the mechanics of the tool, please see [core additional details section](/docs/programmatic-usage#additional-details).
+
+## Known Limitations
+
+For a list of known limitations, please see the [Known Limitations section](/docs/programmatic-usage#known-limitations) in `@callstack/licenses`'s documentation.
