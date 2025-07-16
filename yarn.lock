@@ -4194,14 +4194,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@callstack/rspress-theme@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "@callstack/rspress-theme@npm:0.1.3"
+"@callstack/rspress-theme@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@callstack/rspress-theme@npm:0.2.0"
   peerDependencies:
     react: ^19.0.0
+    rspress: ^2.0.0-beta.21
   bin:
     rspress-theme: cli.cjs
-  checksum: df1f069944fec178f41957633f6be2f8bdc5bc10a255be6419f00c9f9b8d7f844b78a48e62e6b77c3e3eb08bf80e8bcad7fdbf5a2ec571ced59413daf39693b1
+  checksum: 35a90656d3341fc20fb92b477bfe7d6bc102cd6bd6a59069221c1a0186bf4f7e699b659340cd42d02c83bc24e948908439b468cc1ad2aba48d64fc4a3cc790d8
   languageName: node
   linkType: hard
 
@@ -6014,62 +6015,62 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@module-federation/error-codes@npm:0.15.0":
-  version: 0.15.0
-  resolution: "@module-federation/error-codes@npm:0.15.0"
-  checksum: 883f5e7e4814c4c8f291d2624eb23d7246bb48ccf55071dffd6ecec8568b3c9916076b6ae8cdc3838a997535f3311472a271039547129564978ce0cb1b5815f2
+"@module-federation/error-codes@npm:0.16.0":
+  version: 0.16.0
+  resolution: "@module-federation/error-codes@npm:0.16.0"
+  checksum: f6e8dbd5284f1d052cfbaeffe55869d1278dc54739ef70810c8b660b877932bc95110626f1afd13c8af67b33a0084f0ed8e32faa420f76e5a6c8c0a0056767b2
   languageName: node
   linkType: hard
 
-"@module-federation/runtime-core@npm:0.15.0":
-  version: 0.15.0
-  resolution: "@module-federation/runtime-core@npm:0.15.0"
+"@module-federation/runtime-core@npm:0.16.0":
+  version: 0.16.0
+  resolution: "@module-federation/runtime-core@npm:0.16.0"
   dependencies:
-    "@module-federation/error-codes": 0.15.0
-    "@module-federation/sdk": 0.15.0
-  checksum: 54e5b5443f94ba35ea05b46d58cd539e7116f858de448c7e70bf46d04a71597371fbb3c19f50f31cdbd1a500ed7fe91c9f1fa042be03804b2be78f040a2cd137
+    "@module-federation/error-codes": 0.16.0
+    "@module-federation/sdk": 0.16.0
+  checksum: edfa09365af94f768c97f25ece8442d82cb9a51c77dcc076d72dbd6fc21e5f83c81cf301e8e63cc1bf7bac336eaf4a069c2f4908c510042a217803caca54a1fd
   languageName: node
   linkType: hard
 
-"@module-federation/runtime-tools@npm:0.15.0":
-  version: 0.15.0
-  resolution: "@module-federation/runtime-tools@npm:0.15.0"
+"@module-federation/runtime-tools@npm:0.16.0":
+  version: 0.16.0
+  resolution: "@module-federation/runtime-tools@npm:0.16.0"
   dependencies:
-    "@module-federation/runtime": 0.15.0
-    "@module-federation/webpack-bundler-runtime": 0.15.0
-  checksum: 24124056665426f0fd5647deb2a497ba36603164dc34b81b9bfe143c7cbbf3759af747da9df48286538922d7538bf2c9ff3e7300f9d993a4658c7dd55912c9e4
+    "@module-federation/runtime": 0.16.0
+    "@module-federation/webpack-bundler-runtime": 0.16.0
+  checksum: 7652ec269e19da44cb8be73a3444576ccf1938b223cbbe42f86c126d06a102cfc0632a9e5b43ec50c95a92170f369a33b890e004349c88a5ce3e8146443a4014
   languageName: node
   linkType: hard
 
-"@module-federation/runtime@npm:0.15.0":
-  version: 0.15.0
-  resolution: "@module-federation/runtime@npm:0.15.0"
+"@module-federation/runtime@npm:0.16.0":
+  version: 0.16.0
+  resolution: "@module-federation/runtime@npm:0.16.0"
   dependencies:
-    "@module-federation/error-codes": 0.15.0
-    "@module-federation/runtime-core": 0.15.0
-    "@module-federation/sdk": 0.15.0
-  checksum: 9bcc31d137638a38f1b22d2b520832ef9e28046552e178259b41756300fec4fb943e679fcee9b0e8faafe1380d9853a079ea6afcb7b0faa3c91431098dab282a
+    "@module-federation/error-codes": 0.16.0
+    "@module-federation/runtime-core": 0.16.0
+    "@module-federation/sdk": 0.16.0
+  checksum: b90ac79116aa543d19c34f396728bfa147fe587980418f47a3045f3fc695ee1521181765b7cd14c28e2d628c1fed3fb08dbab7aa67d3e1a404e57f4d4f5d0da0
   languageName: node
   linkType: hard
 
-"@module-federation/sdk@npm:0.15.0":
-  version: 0.15.0
-  resolution: "@module-federation/sdk@npm:0.15.0"
-  checksum: 10c44a719ec78c04425be0557020c024f71dc48ad808c4edf458962b75c5461dd7b7e8c09aaf3eea85c61d827e9a283862b90d8f7b910e6725f2aef598125d26
+"@module-federation/sdk@npm:0.16.0":
+  version: 0.16.0
+  resolution: "@module-federation/sdk@npm:0.16.0"
+  checksum: f4e3d1c8fc2b556a47b02090621ec54c332173382ded96ccf53b9a7b38ac111718dfe61ea84fc6c64ea05f2de1077bb48cfc7cc241ceeef40176b497d3a073b9
   languageName: node
   linkType: hard
 
-"@module-federation/webpack-bundler-runtime@npm:0.15.0":
-  version: 0.15.0
-  resolution: "@module-federation/webpack-bundler-runtime@npm:0.15.0"
+"@module-federation/webpack-bundler-runtime@npm:0.16.0":
+  version: 0.16.0
+  resolution: "@module-federation/webpack-bundler-runtime@npm:0.16.0"
   dependencies:
-    "@module-federation/runtime": 0.15.0
-    "@module-federation/sdk": 0.15.0
-  checksum: dc3a395f8aec70089ef0725cd31b5f8ba8c433ebe77dfeccde99daa69f36141644e548e31b3a07172d4fe492f1a801a360d3fdcf1132f5dbf10e7e1dfc446fd0
+    "@module-federation/runtime": 0.16.0
+    "@module-federation/sdk": 0.16.0
+  checksum: 354fb0a1876cc505d57fcccce19c372f6c2906c5a39b3ebedd7e47b359728e65b14deea689564e35d3d5d2207a9facc88383b7ad68462f1f3d27e339d761004f
   languageName: node
   linkType: hard
 
-"@napi-rs/wasm-runtime@npm:^0.2.11":
+"@napi-rs/wasm-runtime@npm:^0.2.12":
   version: 0.2.12
   resolution: "@napi-rs/wasm-runtime@npm:0.2.12"
   dependencies:
@@ -6565,22 +6566,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rsbuild/core@npm:~1.4.3":
-  version: 1.4.6
-  resolution: "@rsbuild/core@npm:1.4.6"
+"@rsbuild/core@npm:~1.4.6":
+  version: 1.4.7
+  resolution: "@rsbuild/core@npm:1.4.7"
   dependencies:
-    "@rspack/core": 1.4.6
+    "@rspack/core": 1.4.8
     "@rspack/lite-tapable": ~1.0.1
     "@swc/helpers": ^0.5.17
     core-js: ~3.44.0
     jiti: ^2.4.2
   bin:
     rsbuild: bin/rsbuild.js
-  checksum: aa2ff217493d4577d900178d67e54ae68d5e1e6f40276e71dc1a772de21117450e8769899ff5de887a51e6fd7c9e04e410ddbff2c53d0322fcc40cef977f393a
+  checksum: 37fd9c5887e5975ad6af8d828ccc99ae1ab71a239be13812bba5671f68a90c9cc924ec713ffe1f57e2647ce798365605992987ed02940eaa61ef74f29b07fac1
   languageName: node
   linkType: hard
 
-"@rsbuild/plugin-react@npm:~1.3.3":
+"@rsbuild/plugin-react@npm:~1.3.4":
   version: 1.3.4
   resolution: "@rsbuild/plugin-react@npm:1.3.4"
   dependencies:
@@ -6592,92 +6593,92 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rspack/binding-darwin-arm64@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding-darwin-arm64@npm:1.4.6"
+"@rspack/binding-darwin-arm64@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding-darwin-arm64@npm:1.4.8"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@rspack/binding-darwin-x64@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding-darwin-x64@npm:1.4.6"
+"@rspack/binding-darwin-x64@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding-darwin-x64@npm:1.4.8"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@rspack/binding-linux-arm64-gnu@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding-linux-arm64-gnu@npm:1.4.6"
+"@rspack/binding-linux-arm64-gnu@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding-linux-arm64-gnu@npm:1.4.8"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@rspack/binding-linux-arm64-musl@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding-linux-arm64-musl@npm:1.4.6"
+"@rspack/binding-linux-arm64-musl@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding-linux-arm64-musl@npm:1.4.8"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@rspack/binding-linux-x64-gnu@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding-linux-x64-gnu@npm:1.4.6"
+"@rspack/binding-linux-x64-gnu@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding-linux-x64-gnu@npm:1.4.8"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@rspack/binding-linux-x64-musl@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding-linux-x64-musl@npm:1.4.6"
+"@rspack/binding-linux-x64-musl@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding-linux-x64-musl@npm:1.4.8"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@rspack/binding-wasm32-wasi@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding-wasm32-wasi@npm:1.4.6"
+"@rspack/binding-wasm32-wasi@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding-wasm32-wasi@npm:1.4.8"
   dependencies:
-    "@napi-rs/wasm-runtime": ^0.2.11
+    "@napi-rs/wasm-runtime": ^0.2.12
   conditions: cpu=wasm32
   languageName: node
   linkType: hard
 
-"@rspack/binding-win32-arm64-msvc@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding-win32-arm64-msvc@npm:1.4.6"
+"@rspack/binding-win32-arm64-msvc@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding-win32-arm64-msvc@npm:1.4.8"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@rspack/binding-win32-ia32-msvc@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding-win32-ia32-msvc@npm:1.4.6"
+"@rspack/binding-win32-ia32-msvc@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding-win32-ia32-msvc@npm:1.4.8"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@rspack/binding-win32-x64-msvc@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding-win32-x64-msvc@npm:1.4.6"
+"@rspack/binding-win32-x64-msvc@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding-win32-x64-msvc@npm:1.4.8"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@rspack/binding@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/binding@npm:1.4.6"
+"@rspack/binding@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/binding@npm:1.4.8"
   dependencies:
-    "@rspack/binding-darwin-arm64": 1.4.6
-    "@rspack/binding-darwin-x64": 1.4.6
-    "@rspack/binding-linux-arm64-gnu": 1.4.6
-    "@rspack/binding-linux-arm64-musl": 1.4.6
-    "@rspack/binding-linux-x64-gnu": 1.4.6
-    "@rspack/binding-linux-x64-musl": 1.4.6
-    "@rspack/binding-wasm32-wasi": 1.4.6
-    "@rspack/binding-win32-arm64-msvc": 1.4.6
-    "@rspack/binding-win32-ia32-msvc": 1.4.6
-    "@rspack/binding-win32-x64-msvc": 1.4.6
+    "@rspack/binding-darwin-arm64": 1.4.8
+    "@rspack/binding-darwin-x64": 1.4.8
+    "@rspack/binding-linux-arm64-gnu": 1.4.8
+    "@rspack/binding-linux-arm64-musl": 1.4.8
+    "@rspack/binding-linux-x64-gnu": 1.4.8
+    "@rspack/binding-linux-x64-musl": 1.4.8
+    "@rspack/binding-wasm32-wasi": 1.4.8
+    "@rspack/binding-win32-arm64-msvc": 1.4.8
+    "@rspack/binding-win32-ia32-msvc": 1.4.8
+    "@rspack/binding-win32-x64-msvc": 1.4.8
   dependenciesMeta:
     "@rspack/binding-darwin-arm64":
       optional: true
@@ -6699,23 +6700,23 @@ __metadata:
       optional: true
     "@rspack/binding-win32-x64-msvc":
       optional: true
-  checksum: 47665ae74747cee205f96cba18dff90799a9723d310faf16ceceed60235d7da39d12f7cfe81927a26c6a42268aa27eabf3c0ecaa7d24e8563e041624eb91ddee
+  checksum: 2ced03c50caa773468c66986ba505134ad34ca736c7b82b9e0f4b0d5db790a32f74814653879acc5b6942f75d37982cadff474973512ded75ae1ed38b2d3f3ad
   languageName: node
   linkType: hard
 
-"@rspack/core@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@rspack/core@npm:1.4.6"
+"@rspack/core@npm:1.4.8":
+  version: 1.4.8
+  resolution: "@rspack/core@npm:1.4.8"
   dependencies:
-    "@module-federation/runtime-tools": 0.15.0
-    "@rspack/binding": 1.4.6
+    "@module-federation/runtime-tools": 0.16.0
+    "@rspack/binding": 1.4.8
     "@rspack/lite-tapable": 1.0.1
   peerDependencies:
     "@swc/helpers": ">=0.5.1"
   peerDependenciesMeta:
     "@swc/helpers":
       optional: true
-  checksum: 172730e4b8ee9be028f2cf70da82872b3375912696a3eed3fcb48a360a55d269b0b01eefc3bf8ba4f5239dfe442bd984f4832a859eb7578ff08496014b98dd48
+  checksum: be6e2cd26fc24e661a3206461cbab1568b641c17ecca65298815cf622d5da6946d60b9e38bf8161e0cbdb84aa1a41fd0f0cc5d3228850c5f75feb0cc7527e5c8
   languageName: node
   linkType: hard
 
@@ -6742,21 +6743,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rspress/core@npm:2.0.0-beta.20":
-  version: 2.0.0-beta.20
-  resolution: "@rspress/core@npm:2.0.0-beta.20"
+"@rspress/core@npm:2.0.0-beta.21":
+  version: 2.0.0-beta.21
+  resolution: "@rspress/core@npm:2.0.0-beta.21"
   dependencies:
     "@mdx-js/loader": ^3.1.0
     "@mdx-js/mdx": ^3.1.0
     "@mdx-js/react": ^3.1.0
-    "@rsbuild/core": ~1.4.3
-    "@rsbuild/plugin-react": ~1.3.3
+    "@rsbuild/core": ~1.4.6
+    "@rsbuild/plugin-react": ~1.3.4
     "@rspress/mdx-rs": 0.6.6
-    "@rspress/plugin-last-updated": 2.0.0-beta.20
-    "@rspress/plugin-medium-zoom": 2.0.0-beta.20
-    "@rspress/runtime": 2.0.0-beta.20
-    "@rspress/shared": 2.0.0-beta.20
-    "@rspress/theme-default": 2.0.0-beta.20
+    "@rspress/runtime": 2.0.0-beta.21
+    "@rspress/shared": 2.0.0-beta.21
+    "@rspress/theme-default": 2.0.0-beta.21
     "@shikijs/rehype": ^3.4.2
     "@types/unist": ^3.0.3
     "@unhead/react": ^2.0.12
@@ -6767,6 +6766,7 @@ __metadata:
     html-to-text: ^9.0.5
     lodash-es: ^4.17.21
     mdast-util-mdxjs-esm: ^2.0.1
+    medium-zoom: 1.1.0
     picocolors: ^1.1.1
     react: ^19.1.0
     react-dom: ^19.1.0
@@ -6782,7 +6782,7 @@ __metadata:
     unified: ^11.0.5
     unist-util-visit: ^5.0.0
     unist-util-visit-children: ^3.0.0
-  checksum: 81fc107b3adc055718b6f4ee5ae93a7f308bc8fc08d95d24e347f1a8c4f22315582b893346ace9c6042c66d08b6ed850784f61db99111f799db491433d0a7156
+  checksum: 29fd0226f26b9c7c8256d6dc0052a4ee48732e9056a702dc4064230a25d49e5127270c756916a8f11ea953304a54360599c30e844638dd27b7f5b4e887f23ff3
   languageName: node
   linkType: hard
 
@@ -6875,72 +6875,51 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rspress/plugin-last-updated@npm:2.0.0-beta.20":
-  version: 2.0.0-beta.20
-  resolution: "@rspress/plugin-last-updated@npm:2.0.0-beta.20"
+"@rspress/plugin-typedoc@npm:^2.0.0-beta.19":
+  version: 2.0.0-beta.21
+  resolution: "@rspress/plugin-typedoc@npm:2.0.0-beta.21"
   dependencies:
-    "@rspress/shared": 2.0.0-beta.20
-  checksum: 8e220205bc9e740b7e65cd134980fd5945ef678c4578eeb17cee24151b2cba42cc3471b78533cf80d322a985e69995c69b9adcb99622021284c46a2856dc23a1
-  languageName: node
-  linkType: hard
-
-"@rspress/plugin-medium-zoom@npm:2.0.0-beta.20":
-  version: 2.0.0-beta.20
-  resolution: "@rspress/plugin-medium-zoom@npm:2.0.0-beta.20"
-  dependencies:
-    medium-zoom: 1.1.0
-  peerDependencies:
-    "@rspress/runtime": ^2.0.0-beta.20
-  checksum: aec7e824c99a764c7d49c89829c9f87c12a9fc3db1a4eac23cf5129e01f6f5d7730849323ab68be2f4f6d734d25da02c3fce650c01a81ac074bb03719ca8429e
-  languageName: node
-  linkType: hard
-
-"@rspress/plugin-typedoc@npm:^2.0.0-beta.20":
-  version: 2.0.0-beta.20
-  resolution: "@rspress/plugin-typedoc@npm:2.0.0-beta.20"
-  dependencies:
-    "@rspress/shared": 2.0.0-beta.20
     typedoc: 0.24.8
     typedoc-plugin-markdown: 3.17.1
   peerDependencies:
-    rspress: ^2.0.0-beta.20
-  checksum: b42893a6ba73366c445d2393d633989ff381eb0fc6421abffd720797e3b6176418420dc9e9aa0b82238d25efeb7f5dd33363294ac9237f2c8901bcf651c01944
+    rspress: ^2.0.0-beta.21
+  checksum: 3898814534091ffd7707e0b0ddec56f372e15c1818c07d6b1a2aa52087b598b139c97f3700eebe35debda8dbf307d0ecf0a472f5e78219daa224ae4339eb8875
   languageName: node
   linkType: hard
 
-"@rspress/runtime@npm:2.0.0-beta.20":
-  version: 2.0.0-beta.20
-  resolution: "@rspress/runtime@npm:2.0.0-beta.20"
+"@rspress/runtime@npm:2.0.0-beta.21":
+  version: 2.0.0-beta.21
+  resolution: "@rspress/runtime@npm:2.0.0-beta.21"
   dependencies:
-    "@rspress/shared": 2.0.0-beta.20
+    "@rspress/shared": 2.0.0-beta.21
     "@unhead/react": ^2.0.12
     react: ^19.1.0
     react-dom: ^19.1.0
     react-router-dom: ^6.29.0
-  checksum: 42a0576dcd30141fcf61c8d7114ab7736e5b357bd278eb499517389cc40bd3d67fd65b43c746db2d08bb9cf137f10f5d884a5ee72a6757821a67c2bb48d34b33
+  checksum: e83611e798c4c09e933169d7552a0d2227137a472bb010c888438bc4dab2ace143e46ea6fef855ca1cfe7ac40f2ca43b1e9a85d85f1ab6fa8839a52bf8ef2d63
   languageName: node
   linkType: hard
 
-"@rspress/shared@npm:2.0.0-beta.20":
-  version: 2.0.0-beta.20
-  resolution: "@rspress/shared@npm:2.0.0-beta.20"
+"@rspress/shared@npm:2.0.0-beta.21":
+  version: 2.0.0-beta.21
+  resolution: "@rspress/shared@npm:2.0.0-beta.21"
   dependencies:
-    "@rsbuild/core": ~1.4.3
+    "@rsbuild/core": ~1.4.6
     "@shikijs/rehype": ^3.4.2
     gray-matter: 4.0.3
     lodash-es: ^4.17.21
     unified: ^11.0.5
-  checksum: 417ce9e93c2c5facf47f34d7604f774c8ee519b69275601e2c0909583e46d5074a62e8deba03bcd803531e1da55a926225c0b9e381dcb6ef0dbcda93d447b3e8
+  checksum: 27c9041ff9e257636a47b156f5251c36062dcf030bb6c41e44bb9cab489ad6e9d7a1926e72996f2adb8cfa389f64a100cc049f592138c378b2d611ee16fc44a8
   languageName: node
   linkType: hard
 
-"@rspress/theme-default@npm:2.0.0-beta.20":
-  version: 2.0.0-beta.20
-  resolution: "@rspress/theme-default@npm:2.0.0-beta.20"
+"@rspress/theme-default@npm:2.0.0-beta.21":
+  version: 2.0.0-beta.21
+  resolution: "@rspress/theme-default@npm:2.0.0-beta.21"
   dependencies:
     "@mdx-js/react": 2.3.0
-    "@rspress/runtime": 2.0.0-beta.20
-    "@rspress/shared": 2.0.0-beta.20
+    "@rspress/runtime": 2.0.0-beta.21
+    "@rspress/shared": 2.0.0-beta.21
     "@unhead/react": ^2.0.12
     body-scroll-lock: 4.0.0-beta.0
     copy-to-clipboard: ^3.3.3
@@ -6952,7 +6931,7 @@ __metadata:
     react: ^19.1.0
     react-dom: ^19.1.0
     shiki: ^3.4.2
-  checksum: 06d30215ee97fc18a148e7fd8095aecf6d4069bd93e862d082b98b6ea6d5e52c52fb02e75ae17ff047c3917ac9a48b5bd4c2bfaead8585e6da8d613a854495a2
+  checksum: b7fb21b75f86bbed7119c82b5680d1a1b9e38632533938a106bd9f5cce01b666bc2dbe65223585384f8ae8d8f5ab779de3dbc59789ca98efae819e25a1ff5cae
   languageName: node
   linkType: hard
 
@@ -10425,10 +10404,10 @@ __metadata:
   resolution: "docs@workspace:docs"
   dependencies:
     "@biomejs/biome": ^1.9.4
-    "@callstack/rspress-theme": ^0.1.3
-    "@rspress/plugin-typedoc": ^2.0.0-beta.20
+    "@callstack/rspress-theme": ^0.2.0
+    "@rspress/plugin-typedoc": ^2.0.0-beta.19
     "@types/node": ^18.11.17
-    rspress: ^2.0.0-beta.20
+    rspress: ^2.0.0-beta.19
   languageName: unknown
   linkType: soft
 
@@ -19867,19 +19846,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rspress@npm:^2.0.0-beta.20":
-  version: 2.0.0-beta.20
-  resolution: "rspress@npm:2.0.0-beta.20"
+"rspress@npm:^2.0.0-beta.19":
+  version: 2.0.0-beta.21
+  resolution: "rspress@npm:2.0.0-beta.21"
   dependencies:
-    "@rsbuild/core": ~1.4.3
-    "@rspress/core": 2.0.0-beta.20
-    "@rspress/shared": 2.0.0-beta.20
+    "@rsbuild/core": ~1.4.6
+    "@rspress/core": 2.0.0-beta.21
+    "@rspress/shared": 2.0.0-beta.21
     cac: ^6.7.14
     chokidar: ^3.6.0
     picocolors: ^1.1.1
   bin:
     rspress: bin/rspress.js
-  checksum: 51eeb03e065006c19ab52d8b028962f34d02049283d36f007a3b39f0591cb621e3f3294d01b26bfa1f5609c30e224eb0030cd805a89f16fde35f9c5bcc363c24
+  checksum: 9b6f033bb195dc08d8d0af1726e545674f6591313e6bbca3eb6631bfa5519b3b4f9086bd7550518a83aa6b0f84f974a193bf3a1f1510c207b025ea6de74430b7
   languageName: node
   linkType: hard
 

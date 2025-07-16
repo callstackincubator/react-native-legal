@@ -47,13 +47,6 @@ img[class*="heroImage-"] {
   height: 100px;
 }
 
-div[class*="container-"] {
-  /* so as not to limit the height of the container */
-  height: unset !important;
-  /* slight paddin from the top */
-  padding-top: 1rem !important;
-}
-
 /* Theme styles section end == */
 
 /* == Callstack rspress theme styles section start == */
