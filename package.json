@@ -4,7 +4,8 @@
     "packages": [
       "packages/*",
       "docs",
-      "examples/*"
+      "examples/*",
+      "examples/packages/*"
     ]
   },
   "scripts": {

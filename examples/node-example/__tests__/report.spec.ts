@@ -21,7 +21,10 @@ import {
   optionalDependencies as optionalDependenciesObj,
 } from '../package.json';
 
-const dependencies = dependencyMappingToCorrespondingKey(dependenciesObj);
+// do not expect the private test package to be in the assertions baseline, it shall be excluded
+const dependencies = dependencyMappingToCorrespondingKey(dependenciesObj).filter(
+  (dep) => dep !== '@callstack/example-private-package@workspace:*',
+);
 const devDependencies = dependencyMappingToCorrespondingKey(devDependenciesObj);
 const optionalDependencies = dependencyMappingToCorrespondingKey(optionalDependenciesObj);
 const licenseKitDependencies = dependencyMappingToCorrespondingKey(licenseKitDependenciesObj);
@@ -78,6 +81,12 @@ describe('license-kit report', () => {
     expect(Object.keys(json).toSorted()).toEqual(
       Array.from(new Set([...dependencies, ...optionalDependencies, ...devDependencies])).toSorted(),
     );
+  });
+
+  it("does not include private packages' licenses", async () => {
+    const json = await runReportCommandForJsonOutput();
+
+    expect(Object.keys(json).toSorted()).not.toIncludeAllMembers(['@callstack/example-private-package']);
   });
 
   it('with root-only dev deps and with transitive dependencies of workspace-specifier-only dependencies', async () => {

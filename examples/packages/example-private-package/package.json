@@ -1,0 +1,5 @@
+{
+  "name": "@callstack/example-private-package",
+  "packageManager": "yarn@3.6.1",
+  "private": true
+}

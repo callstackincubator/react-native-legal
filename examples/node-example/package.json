@@ -9,6 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@callstack/example-private-package": "workspace:*",
     "dhtmlx-gantt": "9.0.11",
     "is-even": "1.0.0",
     "mariadb": "3.4.2",

@@ -4177,6 +4177,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@callstack/example-private-package@workspace:*, @callstack/example-private-package@workspace:examples/packages/example-private-package":
+  version: 0.0.0-use.local
+  resolution: "@callstack/example-private-package@workspace:examples/packages/example-private-package"
+  languageName: unknown
+  linkType: soft
+
 "@callstack/licenses@^0.2.1, @callstack/licenses@workspace:packages/licenses-api":
   version: 0.0.0-use.local
   resolution: "@callstack/licenses@workspace:packages/licenses-api"
@@ -15702,6 +15708,7 @@ __metadata:
     "@babel/core": 7.27.4
     "@babel/preset-env": 7.27.2
     "@babel/preset-typescript": 7.27.1
+    "@callstack/example-private-package": "workspace:*"
     "@types/jest": 29.5.5
     babel-jest: 29.7.0
     chartjs-plugin-dragdata: 2.3.1
