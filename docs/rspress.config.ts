@@ -8,7 +8,6 @@ export default defineConfig({
   root: path.join(__dirname, 'docs'),
   title: 'React Native Legal & License Kit',
   description: 'React Native Legal & License Kit Documentation',
-  logoText: 'React Native Legal & License Kit',
   icon: '/img/rn-legal-logo.svg',
   logo: '/img/rn-legal-logo.svg',
   themeConfig: {

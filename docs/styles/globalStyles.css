@@ -35,20 +35,6 @@
 
 /* == Introduction page styles section end == */
 
-/* == Theme styles section start == */
-
-img#logo {
-  width: auto !important;
-  height: 1.6rem !important;
-}
-
-img[class*="heroImage-"] {
-  max-height: unset !important;
-  height: 100px;
-}
-
-/* Theme styles section end == */
-
 /* == Callstack rspress theme styles section start == */
 
 @font-face {
