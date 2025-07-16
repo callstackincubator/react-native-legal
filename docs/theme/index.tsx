@@ -12,6 +12,7 @@ import {
 } from '@callstack/rspress-theme';
 import { useNavigate } from 'rspress/runtime';
 import {
+  Link,
   HomeLayout as RspressHomeLayout,
   Layout as RspressLayout,
 } from 'rspress/theme';
@@ -31,9 +32,11 @@ const HomeLayout = () => {
       afterFeatures={
         <>
           <div className="docs-introduction-cta">
-            <Button theme="alt" type="button" href="/docs/introduction">
-              Not sure, which to choose?
-            </Button>
+            <Link href="/docs/introduction">
+              <Button theme="alt" type="button">
+                Not sure, which to choose?
+              </Button>
+            </Link>
           </div>
 
           <HomeBanner href="https://callstack.com" />
