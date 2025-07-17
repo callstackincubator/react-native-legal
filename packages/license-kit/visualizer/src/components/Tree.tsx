@@ -2,11 +2,25 @@
 
 import type { Types } from '@callstack/licenses';
 import { layout as dagreLayout } from '@dagrejs/dagre';
-import { useTheme } from '@mui/material';
+import {
+  useTheme,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  IconButton,
+  Box,
+  Paper,
+  Tooltip,
+  Button,
+  Typography,
+  Stack,
+  Divider,
+} from '@mui/material';
+import { ChevronLeft, ChevronRight, Analytics, ExpandMore, BarChart } from '@mui/icons-material';
 import { useWindowSize } from '@uidotdev/usehooks';
 import * as d3 from 'd3';
 import { useSnackbar } from 'notistack';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { tss } from 'tss-react/mui';
 
 import type { TextCoordFactory } from '@/types/TextCoordFactory';
@@ -15,12 +29,28 @@ import {
   nameLabelYCoordFactory,
   versionLabelYCoordFactory,
 } from '@/utils/textCoordFactories';
-import { DEFAULT_RADIUS, HOVER_RADIUS, INACTIVE_HOVER_MODE_OPACITY } from '@/constants';
+import {
+  DEFAULT_RADIUS,
+  HOVER_RADIUS,
+  INACTIVE_HOVER_MODE_OPACITY,
+  LABEL_FONT_SIZE,
+  ROOT_PACKAGE_KEY,
+  SIDEBAR_COLLAPSED_WIDTH,
+  SIDEBAR_EXPANDED_WIDTH,
+} from '@/constants';
 import { useTextGroupFactory } from '@/hooks/useTextGroupFactory';
 import { buildHierarchy } from '@/utils/buildHierarchy';
+import { analyzeLicenses } from '@/utils/licenseAnalysis';
+import { LicenseCategory } from '@/types/LicenseCategory';
+import Analysis from './tabs/Analysis';
+import { useVisualizerStore } from '@/store/visualizerStore';
+import { UpdatingHeading } from './UpdatingHeading';
+import { buildPackageKey } from '@/utils/packageUtils';
+import { getLicenseWarningColor } from '@/utils/colorUtils';
+import Charts from './tabs/Charts';
 
 export type Props = {
-  data: Types.AggregatedLicensesObj;
+  data: Types.AggregatedLicensesMapping;
 };
 
 export default function Tree({ data }: Props) {
@@ -28,46 +58,54 @@ export default function Tree({ data }: Props) {
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const { classes } = useStyles();
+  const { reportName, loadedAt } = useVisualizerStore();
+
+  const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { graph, incomplete: treeIncomplete } = useMemo(() => buildHierarchy(data), [data]);
+  const licenseAnalysis = useMemo(() => analyzeLicenses(data), [data]);
 
   const prepareTextGroupsWithBackgrounds = useTextGroupFactory(graph);
 
   useEffect(() => {
-    enqueueSnackbar({
-      message:
-        'Stopped parsing the tree early due to excessive depth. This is likely a bug. The tree may be INCOMPLETE.',
-      variant: 'warning',
-    });
+    if (treeIncomplete) {
+      enqueueSnackbar({
+        message:
+          'Stopped parsing the tree early due to excessive depth. This is likely a bug. The tree may be INCOMPLETE.',
+        variant: 'warning',
+      });
+    }
   }, [enqueueSnackbar, treeIncomplete]);
 
-  const { selectedNodeStrokeColor, linkColor, libNameTextColor, licenseTextColor } = useMemo(
+  const { selectedNodeStrokeColor, linkColor, labelTextColor, licenseTextColor } = useMemo(
     () =>
       theme.palette.mode === 'dark'
         ? {
             selectedNodeStrokeColor: '#fff',
             linkColor: '#999',
-            libNameTextColor: '#fff',
+            labelTextColor: '#fff',
             licenseTextColor: '#fff',
           }
         : {
             selectedNodeStrokeColor: '#000',
             linkColor: '#666',
-            libNameTextColor: '#000',
+            labelTextColor: '#000',
             licenseTextColor: '#000',
           },
     [theme.palette.mode],
   );
 
+  const toggleSidebar = () => {
+    setSidebarExpanded(!sidebarExpanded);
+  };
+
   useEffect(() => {
     if (!width || !height || !svgRef.current) {
       return;
     }
-
-    const fillColorScaleByDepth = d3.scaleOrdinal(d3.schemeCategory10);
 
     const nonLeaveNodes = graph.nodes().filter((d) => graph.node(d).children.length > 0);
     const totalNonLeaves = nonLeaveNodes.length;
@@ -80,14 +118,32 @@ export default function Tree({ data }: Props) {
       i++;
     });
 
-    function nodeStrokeFactory(d: Types.LicenseObj) {
-      return d.parentPackageName ? borderColorScaleByParentMapping[d.parentPackageName] : selectedNodeStrokeColor;
+    function nodeStrokeFactory(d: Types.License) {
+      return d.parentPackages.length
+        ? borderColorScaleByParentMapping[d.parentPackages[0].name]
+        : selectedNodeStrokeColor;
+    }
+
+    /**
+     * Creates a fill color factory for the license, based on the license category.
+     * @param packageKey the package key
+     * @returns the fill color for the license
+     */
+    function nodeFillFactory(packageKey: string) {
+      const category = licenseAnalysis.categorizedLicenses[packageKey];
+      const warningColor = getLicenseWarningColor(category);
+
+      if (warningColor) {
+        return warningColor.main;
+      }
+
+      return theme.palette.success.main;
     }
 
     const svg = d3.select(svgRef.current),
       inner = svg.select('g');
 
-    // Set some general styles
+    // general styling
     graph.nodes().forEach(function (v) {
       const node = graph.node(v);
 
@@ -108,12 +164,12 @@ export default function Tree({ data }: Props) {
       .scaleExtent([0.1, 20])
       .on('zoom', function () {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore-next-line
+        // @ts-expect-error
         inner.attr('transform', d3.zoomTransform(this));
       });
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore-next-line
+    // @ts-expect-error
     svg.call(zoom).on('wheel.zoom', (event: WheelEvent) => {
       event.preventDefault();
 
@@ -121,11 +177,11 @@ export default function Tree({ data }: Props) {
 
       if (event.ctrlKey) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore-next-line
+        // @ts-expect-error
         zoom.scaleTo(svg, currentZoom * Math.pow(2.0, -event.deltaY / 100.0), d3.pointer(event));
       } else {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore-next-line
+        // @ts-expect-error
         zoom.translateBy(svg, -(event.deltaX / currentZoom), -(event.deltaY / currentZoom));
       }
     });
@@ -140,9 +196,10 @@ export default function Tree({ data }: Props) {
         return {
           name: node.meta.name,
           version: node.meta.version,
-          depth: node.depth,
+          depth: node.rank,
           x: node.x,
           y: node.y,
+          licenseCategory: licenseAnalysis.categorizedLicenses[v],
         };
       });
 
@@ -162,15 +219,15 @@ export default function Tree({ data }: Props) {
       console.table(edges);
     }
 
-    // Center the graph
+    // center the graph
     const initialScale = 0.75;
 
     svg.call(
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore-next-line
+      // @ts-expect-error
       zoom.transform,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore-next-line
+      // @ts-expect-error
       d3.zoomIdentity.translate((svg.attr('width') - graph.graph().width * initialScale) / 2, 20).scale(initialScale),
     );
 
@@ -195,56 +252,77 @@ export default function Tree({ data }: Props) {
       .attr('cx', (d) => graph.node(d)?.x ?? null)
       .attr('cy', (d) => graph.node(d)?.y ?? null)
       .attr('r', DEFAULT_RADIUS)
-      .style('fill', (d) => fillColorScaleByDepth(graph.node(d)?.depth.toString() ?? '0'))
+      .style('fill', (d) => nodeFillFactory(d))
       .attr('stroke', (d) => nodeStrokeFactory(graph.node(d)?.meta ?? {}))
       .attr('stroke-width', 2)
       .attr('cursor', 'pointer')
       .on('mouseover', (event, d) => {
         const t = d3.transition().duration(200);
         const thisNode = graph.node(d);
+        // const category = licenseAnalysis.categorizedLicenses[d];
+
+        // TODO: add a popup here
 
         d3.select<SVGCircleElement, string>(event.currentTarget)
+          .raise()
           .transition(t)
           .attr('r', HOVER_RADIUS)
           .attr('stroke-width', 3)
           .attr('stroke', selectedNodeStrokeColor)
           // below: fix for fast mouse change between nodes from different rows
-          .filter((key) => key === thisNode.meta.key)
+          .filter((key) => key === d)
           .style('opacity', () => 1);
 
         links
           .transition(t)
-          .style('opacity', (link) => (link.v === thisNode.meta.parentPackageKey ? 1 : INACTIVE_HOVER_MODE_OPACITY));
+          .style('opacity', (link) =>
+            thisNode.meta.parentPackageKeys.find((key) => key === link.v || key === link.w)
+              ? 1
+              : INACTIVE_HOVER_MODE_OPACITY,
+          );
 
-        for (const [texts, yCoordFactory, up] of [
-          [labelGroups, nameLabelYCoordFactory, true],
-          [versionLabelGroups, versionLabelYCoordFactory, true],
-          [licenseLabelGroups, licenseLabelYCoordFactory, false],
+        for (const [texts, yCoordFactory, direction] of [
+          [labelGroups, nameLabelYCoordFactory, 'up'],
+          [versionLabelGroups, versionLabelYCoordFactory, null],
+          [licenseLabelGroups, licenseLabelYCoordFactory, 'down'],
         ] as [
           texts: d3.Selection<SVGGElement, string, d3.BaseType, unknown>,
-          factory: TextCoordFactory,
-          up: boolean,
+          yCoordFactory: TextCoordFactory,
+          direction: 'up' | 'down' | null,
         ][]) {
+          texts.filter((pred) => pred === d).raise();
+
+          texts.select('rect').transition(t).style('fill-opacity', 1);
+
           texts.transition(t).style('opacity', (pred) => {
             const predNode = graph.node(pred as string);
 
-            return predNode.meta.parentPackageKey === thisNode.meta.parentPackageKey ||
-              predNode.meta.key === thisNode.meta.parentPackageKey
+            return thisNode.meta.parentPackageKeys.includes(predNode.meta.key) ||
+              predNode.meta.parentPackageKeys.find((key) => thisNode.meta.parentPackageKeys.includes(key))
               ? 1
               : INACTIVE_HOVER_MODE_OPACITY;
           });
 
-          texts.transition(t).attr('transform', (pred) => {
-            const node = graph.node(pred);
+          if (direction) {
+            texts.transition(t).attr('transform', (pred) => {
+              const node = graph.node(pred);
 
-            const x = node?.x ?? 0;
-            const y =
-              node.meta === thisNode.meta
-                ? yCoordFactory(node) + ((up ? -1 : 1) * HOVER_RADIUS) / 2
-                : yCoordFactory(node);
+              const x = node?.x ?? 0;
+              const y =
+                node.meta === thisNode.meta
+                  ? yCoordFactory(node) + ((direction === 'up' ? -1 : 1) * HOVER_RADIUS) / 4
+                  : yCoordFactory(node);
 
-            return `translate(${x}, ${y})`;
-          });
+              return `translate(${x}, ${y})`;
+            });
+          }
+
+          texts
+            .transition(t)
+            .select('text')
+            .attr('font-size', (d) =>
+              d === thisNode.meta.key ? `${LABEL_FONT_SIZE * 1.5}px` : `${LABEL_FONT_SIZE}px`,
+            );
         }
 
         nodes
@@ -253,8 +331,8 @@ export default function Tree({ data }: Props) {
           .style('opacity', (pred) => {
             const predNode = graph.node(pred as string);
 
-            return predNode.meta.parentPackageKey === thisNode.meta.parentPackageKey ||
-              predNode.meta.key === thisNode.meta.parentPackageKey
+            return thisNode.meta.parentPackageKeys.includes(predNode.meta.key) ||
+              predNode.meta.parentPackageKeys.find((key) => thisNode.meta.parentPackageKeys.includes(key))
               ? 1
               : INACTIVE_HOVER_MODE_OPACITY;
           });
@@ -264,25 +342,23 @@ export default function Tree({ data }: Props) {
 
         links.transition(t).style('opacity', 1);
 
-        labelGroups.transition(t).style('opacity', 1);
-        versionLabelGroups.transition(t).style('opacity', 1);
-        licenseLabelGroups.transition(t).style('opacity', 1);
+        for (const [texts, yCoordFactory] of [
+          [labelGroups, nameLabelYCoordFactory],
+          [versionLabelGroups, versionLabelYCoordFactory],
+          [licenseLabelGroups, licenseLabelYCoordFactory],
+        ] as [texts: d3.Selection<SVGGElement, string, d3.BaseType, unknown>, yCoordFactory: TextCoordFactory][]) {
+          texts.transition(t).attr('transform', (pred) => {
+            const node = graph.node(pred);
 
-        labelGroups.transition(t).attr('transform', (pred) => {
-          const node = graph.node(pred);
+            return `translate(${node.x}, ${yCoordFactory(node)})`;
+          });
 
-          return `translate(${node.x}, ${nameLabelYCoordFactory(node)})`;
-        });
-        versionLabelGroups.transition(t).attr('transform', (pred) => {
-          const node = graph.node(pred);
+          texts.transition(t).style('opacity', 1);
+        }
 
-          return `translate(${node.x}, ${versionLabelYCoordFactory(node)})`;
-        });
-        licenseLabelGroups.transition(t).attr('transform', (pred) => {
-          const node = graph.node(pred);
-
-          return `translate(${node.x}, ${licenseLabelYCoordFactory(node)})`;
-        });
+        for (const texts of [labelGroups, versionLabelGroups, licenseLabelGroups]) {
+          texts.transition(t).select('text').attr('font-size', `${LABEL_FONT_SIZE}px`);
+        }
 
         nodes
           .transition(t)
@@ -304,17 +380,31 @@ export default function Tree({ data }: Props) {
         const y = nameLabelYCoordFactory(node);
 
         return `translate(${x}, ${y})`;
-      });
+      })
+      .style('pointer-events', 'none');
 
-    prepareTextGroupsWithBackgrounds(labelGroups, (group, meta) =>
-      group
+    prepareTextGroupsWithBackgrounds(labelGroups, (group, meta) => {
+      const packageKey = buildPackageKey(meta);
+      const category = licenseAnalysis.categorizedLicenses[packageKey];
+
+      const notIsPermissive = category !== LicenseCategory.PERMISSIVE;
+
+      const text = group
         .append('text')
         .attr('text-anchor', 'middle')
-        .attr('font-size', '12px')
-        .attr('fill', libNameTextColor)
-        .text(meta.name)
-        .style('pointer-events', 'none'),
-    );
+        .attr('font-size', `${LABEL_FONT_SIZE}px`)
+        .attr('fill', labelTextColor)
+        .attr('stroke', labelTextColor)
+        .attr('stroke-width', 0.2)
+        .text(notIsPermissive ? `${meta.name} ⚠️` : meta.name)
+        .style('pointer-events', 'none');
+
+      if (notIsPermissive) {
+        text.attr('font-weight', 'bold');
+      }
+
+      return text;
+    });
 
     const versionLabelGroups = inner
       .selectAll('g.version-label')
@@ -330,14 +420,31 @@ export default function Tree({ data }: Props) {
         return `translate(${x}, ${y})`;
       });
 
-    prepareTextGroupsWithBackgrounds(versionLabelGroups, (group, meta) =>
-      group
-        .append('text')
-        .attr('text-anchor', 'middle')
-        .attr('font-size', '12px')
-        .attr('fill', libNameTextColor)
-        .text(meta.version)
-        .style('pointer-events', 'none'),
+    prepareTextGroupsWithBackgrounds(
+      versionLabelGroups,
+      (group, meta) =>
+        group
+          .append('text')
+          .attr('text-anchor', 'middle')
+          .attr('font-size', `${LABEL_FONT_SIZE}px`)
+          .attr('fill', licenseTextColor)
+          .attr('stroke', theme.palette.getContrastText(licenseTextColor))
+          .attr('stroke-width', 0.2)
+          .text(meta.version)
+          .style('pointer-events', 'none'),
+      {
+        rectFillFactory: (meta) => {
+          const packageKey = buildPackageKey(meta);
+          const category =
+            packageKey === ROOT_PACKAGE_KEY
+              ? LicenseCategory.PERMISSIVE
+              : licenseAnalysis.categorizedLicenses[packageKey];
+          const warningColor = getLicenseWarningColor(category);
+
+          return warningColor?.main;
+        },
+        backgroundRectAlpha: 1.0,
+      },
     );
 
     const licenseLabelGroups = inner
@@ -352,42 +459,189 @@ export default function Tree({ data }: Props) {
         const y = licenseLabelYCoordFactory(node);
 
         return `translate(${x}, ${y})`;
+      })
+      .attr('fill', (d) => {
+        const category = licenseAnalysis.categorizedLicenses[d];
+        const warningColor = getLicenseWarningColor(category);
+
+        return warningColor?.main ?? licenseTextColor;
       });
 
-    prepareTextGroupsWithBackgrounds(licenseLabelGroups, (group, meta) =>
-      group
+    prepareTextGroupsWithBackgrounds(licenseLabelGroups, (group, meta) => {
+      const packageKey = buildPackageKey(meta);
+      const category = licenseAnalysis.categorizedLicenses[packageKey];
+      const warningColor = getLicenseWarningColor(category);
+      const textColor = (theme.palette.mode === 'dark' ? warningColor?.light : warningColor?.dark) ?? licenseTextColor;
+
+      return group
         .append('text')
         .attr('text-anchor', 'middle')
-        .attr('font-size', '12px')
-        .attr('fill', libNameTextColor)
+        .attr('font-size', `${LABEL_FONT_SIZE}px`)
+        .attr('fill', textColor)
+        .attr('stroke', theme.palette.getContrastText(theme.palette.background.default))
+        .attr('stroke-width', 0.2)
         .text(meta.type ?? '(unknown)')
-        .style('pointer-events', 'none'),
-    );
+        .style('pointer-events', 'none');
+    });
   }, [
     width,
     height,
     data,
     linkColor,
-    libNameTextColor,
+    labelTextColor,
+    getLicenseWarningColor,
+    theme,
+    reportName,
+    loadedAt,
     licenseTextColor,
     selectedNodeStrokeColor,
     graph,
     prepareTextGroupsWithBackgrounds,
+    licenseAnalysis,
+    enqueueSnackbar,
+    theme.palette,
   ]);
 
   return (
-    <div ref={containerRef} className={classes.container}>
-      <svg className={classes.svg} ref={svgRef}>
-        <g />
-      </svg>
+    <div className={classes.mainContainer}>
+      {/* sidebar */}
+      <Paper
+        elevation={3}
+        className={classes.sidebar}
+        style={{
+          width: sidebarExpanded ? SIDEBAR_EXPANDED_WIDTH : SIDEBAR_COLLAPSED_WIDTH,
+        }}
+      >
+        {/* toggle sidebar trigger button */}
+        <Stack direction="column" className={classes.sidebarHeader}>
+          <Box className={classes.toggleContainer}>
+            <pre className={classes.sidebarHeading}>license-kit visualize</pre>
+
+            <Tooltip title={sidebarExpanded ? 'Collapse Statistics' : 'Expand Statistics'}>
+              <IconButton onClick={toggleSidebar} className={classes.toggleButton} color="primary">
+                {sidebarExpanded ? <ChevronLeft /> : <ChevronRight />}
+              </IconButton>
+            </Tooltip>
+          </Box>
+
+          {sidebarExpanded && <UpdatingHeading reportName={reportName} loadedAt={loadedAt} />}
+        </Stack>
+
+        {/* collapsed sidebar */}
+        {!sidebarExpanded && (
+          <Stack className={classes.collapsedContent} spacing={1}>
+            <Tooltip title="Analysis" placement="right" arrow>
+              <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
+                {licenseAnalysis.permissivenessScore}
+
+                <Analytics />
+              </Button>
+            </Tooltip>
+
+            <Divider orientation="horizontal" flexItem />
+
+            <Tooltip title="Report" placement="right" arrow>
+              <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
+                <BarChart />
+              </Button>
+            </Tooltip>
+          </Stack>
+        )}
+
+        {/* expanded sidebar */}
+        {sidebarExpanded && (
+          <>
+            <Accordion defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMore />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Analytics />
+
+                  <Typography variant="body2">Analysis ({licenseAnalysis.permissivenessScore})</Typography>
+                </Box>
+              </AccordionSummary>
+
+              <AccordionDetails>
+                <Box className={classes.statsContent}>
+                  <Analysis analysis={licenseAnalysis} />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMore />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <BarChart />
+
+                  <Typography variant="body2">Statistics</Typography>
+                </Box>
+              </AccordionSummary>
+
+              <AccordionDetails>
+                <Box className={classes.statsContent}>
+                  <Charts analysis={licenseAnalysis} />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+          </>
+        )}
+      </Paper>
+
+      <div ref={containerRef} className={classes.container}>
+        <svg className={classes.svg} ref={svgRef}>
+          <g />
+        </svg>
+      </div>
     </div>
   );
 }
 
-const useStyles = tss.create(() => ({
-  container: {
+const useStyles = tss.create(({ theme }) => ({
+  mainContainer: {
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+  },
+  sidebar: {
+    flexShrink: 0,
+    height: '100%',
+    overflow: 'hidden',
+    borderRadius: 0,
+    borderRight: `1px solid ${theme.palette.divider}`,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  sidebarHeader: {
+    padding: theme.spacing(1),
+    minHeight: 48,
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    paddingLeft: theme.spacing(2),
+  },
+  toggleContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  toggleButton: {
+    padding: theme.spacing(1),
+  },
+  collapsedContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: theme.spacing(2, 1),
+  },
+  statsContent: {
     flex: 1,
     overflow: 'auto',
+  },
+  container: {
+    flex: 1,
+    overflow: 'hidden',
     display: 'flex',
     width: '100%',
     height: '100%',
@@ -395,5 +649,9 @@ const useStyles = tss.create(() => ({
   svg: {
     display: 'flex',
     flex: 1,
+  },
+  sidebarHeading: {
+    flex: 1,
+    textAlign: 'start',
   },
 }));

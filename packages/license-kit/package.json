@@ -17,6 +17,7 @@
   "files": [
     "src",
     "build",
+    "visualizer-build",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
@@ -52,9 +53,10 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
+    "@callstack/license-kit-visualizer": "workspace:^",
+    "@types/express": "^5.0.3",
     "@types/jest": "^29.5.5",
     "jest": "^29.7.0",
-    "license-kit-visualizer": "workspace:^",
     "rimraf": "^6.0.1",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
@@ -62,6 +64,10 @@
   "dependencies": {
     "@callstack/licenses": "^0.2.1",
     "commander": "^14.0.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "next": "^15.3.4",
+    "open": "^10.1.2",
     "ts-markdown-builder": "^0.4.1"
   }
 }

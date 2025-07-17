@@ -2,7 +2,7 @@
  * https://spdx.org/licenses
  */
 
-export const STRONG_COPYLEFT_LICENSES = [
+export const STRONG_COPYLEFT_LICENSES = new Set([
   'GPL',
   'GPL-1.0',
   'GPL-1.0+',
@@ -25,8 +25,9 @@ export const STRONG_COPYLEFT_LICENSES = [
   'OSL-2.0',
   'OSL-2.1',
   'OSL-3.0',
-];
-export const WEAK_COPYLEFT_LICENSES = [
+]);
+
+export const WEAK_COPYLEFT_LICENSES = new Set([
   'CDDL-1.0',
   'CDDL-1.1',
   'EPL-1.0',
@@ -46,7 +47,7 @@ export const WEAK_COPYLEFT_LICENSES = [
   'LGPL-3.0-or-later',
   'MPL-1.1',
   'MPL-2.0',
-];
+]);
 
 /**
  * The characters printed as prefix of any sublisting in a help message decsribing usage of flags or commands;

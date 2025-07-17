@@ -19,8 +19,15 @@ export function useTextGroupFactory(graph: graphlib.Graph<TreeNode>) {
     textGroups: d3.Selection<SVGGElement, string, d3.BaseType, unknown>,
     textFactory: (
       group: d3.Selection<SVGGElement, unknown, null, undefined>,
-      meta: Types.LicenseObj,
+      meta: Types.License,
     ) => d3.Selection<SVGTextElement, unknown, null, undefined>,
+    {
+      rectFillFactory,
+      backgroundRectAlpha = 0.65,
+    }: {
+      rectFillFactory?: (meta: Types.License) => string | null | undefined;
+      backgroundRectAlpha?: number;
+    } = {},
   ) => {
     textGroups.each(function (d) {
       const group = d3.select(this);
@@ -40,8 +47,10 @@ export function useTextGroupFactory(graph: graphlib.Graph<TreeNode>) {
         .attr('y', bbox.y - 2)
         .attr('width', bbox.width + 8)
         .attr('height', bbox.height + 4)
-        .attr('fill', theme.palette.background.paper)
-        .attr('rx', 10);
+        .attr('fill', rectFillFactory?.(meta) ?? theme.palette.background.paper)
+        .attr('fill-opacity', backgroundRectAlpha)
+        .attr('rx', 10)
+        .style('pointer-events', 'none');
     });
   };
 }

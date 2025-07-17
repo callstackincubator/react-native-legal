@@ -1,11 +1,11 @@
 'use client';
 
 import { NoteAdd } from '@mui/icons-material';
-import { Avatar, Stack, alpha, useTheme } from '@mui/material';
+import { Avatar, CircularProgress, Stack, Typography, alpha, useTheme } from '@mui/material';
 import { motion } from 'motion/react';
 import { useSnackbar } from 'notistack';
 import type { PropsWithChildren } from 'react';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useRef, useState } from 'react';
 import { tss } from 'tss-react/mui';
 
@@ -25,6 +25,8 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [reportLoadError, setReportLoadError] = useState<Error | string | null>(null);
 
   const handleFile = (file: File) => {
@@ -46,7 +48,7 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
 
         const json = JSON.parse(reader.result as string);
 
-        setReport(json);
+        setReport(json, file.name);
       } catch (error) {
         console.error('Error parsing JSON file:', error);
 
@@ -56,15 +58,20 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
         });
 
         setReportLoadError(error as Error | string);
+      } finally {
+        setLoading(false);
       }
     };
 
+    setLoading(true);
     reader.readAsText(file);
   };
 
   const handleDrop: React.DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
+    dragOverCounter.current = 0;
     setIsDragOver(false);
+    setIsHovered(false);
 
     if (e.dataTransfer.files.length > 0) {
       handleFile(e.dataTransfer.files[0]);
@@ -77,25 +84,49 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
     }
   };
 
+  const isHoveredVisualState = useMemo(
+    () => isDragOver || (!report && !loading && isHovered),
+    [isDragOver, isHovered, report],
+  );
+
+  // handle moving dragged file over the children of this drop zone
+  const dragOverCounter = useRef(0);
+
   return (
     <motion.div
       className={cx(classes.dropZone, report === null && classes.emptyDropZone)}
       onDragEnter={(e) => {
-        e.preventDefault();
+        dragOverCounter.current++;
         setIsDragOver(true);
+        e.preventDefault();
+
+        return true;
       }}
-      onDragOver={(e) => e.preventDefault()}
-      onDragLeave={() => setIsDragOver(false)}
+      onDragOver={(e) => {
+        e.preventDefault();
+
+        return true;
+      }}
+      onDragLeave={() => {
+        dragOverCounter.current = Math.max(0, dragOverCounter.current - 1);
+        setIsDragOver(dragOverCounter.current > 0);
+      }}
+      onMouseOver={() => setIsHovered(true)}
+      onMouseOut={() => setIsHovered(false)}
       onDrop={handleDrop}
       onClick={() => {
+        dragOverCounter.current = 0;
+        setIsDragOver(false);
+        setIsHovered(false);
+
         if (!report) {
           inputRef.current?.click();
         }
       }}
       variants={{
         hovered: {
-          borderWidth: 5,
-          borderRadius: 40,
+          borderWidth: 4,
+          borderRadius: report ? 0 : 40,
           backgroundColor: alpha(palette.secondary.light, 0.35),
           borderStyle: 'dashed',
         },
@@ -105,15 +136,18 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
           backgroundColor: alpha(palette.secondary.light, 0.05),
           borderStyle: 'solid',
         },
-        defaultReport: {},
+        defaultReport: {
+          borderWidth: 4,
+          borderStyle: 'solid',
+        },
       }}
       style={{
-        borderColor: palette.secondary.main,
+        borderColor: isHoveredVisualState ? palette.secondary.main : report ? 'transparent' : palette.secondary.main,
       }}
       transition={{
         type: 'tween',
       }}
-      animate={isDragOver ? 'hovered' : report ? 'defaultReport' : 'defaultNoReport'}
+      animate={isHoveredVisualState ? 'hovered' : report ? 'defaultReport' : 'defaultNoReport'}
     >
       <input
         type="file"
@@ -123,7 +157,13 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
         onChange={handleChange}
       />
 
-      {report ? (
+      {loading ? (
+        <Stack alignItems="center" gap={2} justifyContent="center" direction="column">
+          <CircularProgress disableShrink />
+
+          <Typography>Loading report, this may take some time based on the size of your project...</Typography>
+        </Stack>
+      ) : report ? (
         children
       ) : (
         <Stack alignItems="center">
