@@ -7,9 +7,10 @@ import type {
   AboutLibrariesLibraryJsonPayload,
   AboutLibrariesLicenseJsonPayload,
   AboutLibrariesLikePackageInfo,
-  AggregatedLicensesObj,
+  AggregatedLicensesMapping,
   DependencyType,
   LicensePlistPayload,
+  ParentPackageInfo,
   ScanPackageCallContext,
   ScanPackageOptionsFactory,
 } from './types';
@@ -32,7 +33,7 @@ function scanPackage(
   packageName: string,
   requiredVersion: string,
   processedPackages: Set<string>,
-  result: AggregatedLicensesObj,
+  result: AggregatedLicensesMapping,
   scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
   {
     parentPackageRoot,
@@ -83,21 +84,37 @@ function scanPackage(
 
       const resolvedVersionPackageKey = `${packageName}@${localPackageJson.version}`;
 
-      result[resolvedVersionPackageKey] = {
-        name: packageName,
-        author: PackageUtils.parseAuthorField(localPackageJson),
-        content: licenseFiles?.[0] ? fs.readFileSync(licenseFiles[0], { encoding: 'utf-8' }) : undefined,
-        file: licenseFiles?.[0] ? licenseFiles[0] : undefined,
-        description: localPackageJson.description,
-        type: PackageUtils.parseLicenseField(localPackageJson),
-        url: PackageUtils.parseRepositoryFieldToUrl(localPackageJson),
-        version: localPackageJson.version,
-        requiredVersion,
-        parentPackageName,
-        parentPackageRequiredVersion,
-        parentPackageResolvedVersion,
-        dependencyType,
-      };
+      let parentPackageInfo: ParentPackageInfo | undefined;
+      if (parentPackageName && parentPackageRequiredVersion && parentPackageResolvedVersion) {
+        parentPackageInfo = {
+          name: parentPackageName,
+          requiredVersion: parentPackageRequiredVersion,
+          resolvedVersion: parentPackageResolvedVersion,
+        };
+      }
+
+      if (parentPackageInfo && resolvedVersionPackageKey in result) {
+        result[resolvedVersionPackageKey].parentPackages = [
+          ...(result[resolvedVersionPackageKey].parentPackages ?? []),
+          parentPackageInfo,
+        ];
+      } else {
+        result[resolvedVersionPackageKey] = {
+          name: packageName,
+          author: PackageUtils.parseAuthorField(localPackageJson),
+          content: licenseFiles?.[0] ? fs.readFileSync(licenseFiles[0], { encoding: 'utf-8' }) : undefined,
+          file: licenseFiles?.[0] ? licenseFiles[0] : undefined,
+          description: localPackageJson.description,
+          type: PackageUtils.parseLicenseField(localPackageJson),
+          url: PackageUtils.parseRepositoryFieldToUrl(localPackageJson),
+          version: localPackageJson.version,
+          requiredVersion,
+          parentPackages: parentPackageInfo ? [parentPackageInfo] : [],
+          parentPackageRequiredVersion,
+          parentPackageResolvedVersion,
+          dependencyType,
+        };
+      }
     }
 
     const dependencies: MaybeDependencyMapping = localPackageJson.dependencies;
@@ -161,12 +178,12 @@ type MaybeDependencyMapping = DependencyMapping | undefined;
 export function scanDependencies(
   appPackageJsonPath: string,
   scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
-): AggregatedLicensesObj {
+): AggregatedLicensesMapping {
   const appPackageJson = require(path.resolve(appPackageJsonPath));
   const dependencies: MaybeDependencyMapping = appPackageJson.dependencies;
   const devDependencies: MaybeDependencyMapping = appPackageJson.devDependencies;
   const optionalDependencies: MaybeDependencyMapping = appPackageJson.optionalDependencies;
-  const result: AggregatedLicensesObj = {};
+  const result: AggregatedLicensesMapping = {};
   const processedPackages = new Set<string>();
 
   const rootScanOptions = scanOptionsFactory({ isRoot: true, isWorkspacePackage: false });
@@ -205,24 +222,22 @@ export function scanDependencies(
  * @param iosProjectPath Path to the iOS project directory
  * @see {@link writeLicensePlistNPMOutput}
  */
-export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, iosProjectPath: string): string {
+export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesMapping, iosProjectPath: string): string {
   const renames: Record<string, string> = {};
-  const licenseEntries = Object.entries(licenses).map(([packageKey, licenseObj]) => {
+  const licenseEntries = Object.entries(licenses).map(([packageKey, license]) => {
     const normalizedPackageNameWithVersion = PackageUtils.normalizePackageName(packageKey);
 
-    if (licenseObj.name !== normalizedPackageNameWithVersion) {
-      renames[normalizedPackageNameWithVersion] = licenseObj.name;
+    if (license.name !== normalizedPackageNameWithVersion) {
+      renames[normalizedPackageNameWithVersion] = license.name;
     }
 
-    const relativeLicenseFile = licenseObj.file ? path.relative(iosProjectPath, licenseObj.file) : undefined;
+    const relativeLicenseFile = license.file ? path.relative(iosProjectPath, license.file) : undefined;
 
     return {
       name: normalizedPackageNameWithVersion,
-      version: licenseObj.version,
-      ...(licenseObj.url && { source: licenseObj.url }),
-      ...(licenseObj.file
-        ? { file: relativeLicenseFile }
-        : { body: licenseObj.content ?? licenseObj.type ?? 'UNKNOWN' }),
+      version: license.version,
+      ...(license.url && { source: license.url }),
+      ...(license.file ? { file: relativeLicenseFile } : { body: license.content ?? license.type ?? 'UNKNOWN' }),
     } as LicensePlistPayload;
   });
 
@@ -261,7 +276,7 @@ export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesObj, i
  * @see {@link generateLicensePlistNPMOutput}
  */
 export function writeLicensePlistNPMOutput(
-  licenses: AggregatedLicensesObj,
+  licenses: AggregatedLicensesMapping,
   iosProjectPath: string,
   plistLikeOutput?: string,
 ) {
@@ -281,20 +296,20 @@ export function writeLicensePlistNPMOutput(
  * @returns Array of AboutLibrariesLikePackage objects, each representing a NPM dependency
  * @see {@link writeAboutLibrariesNPMOutput}
  */
-export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj): AboutLibrariesLikePackageInfo[] {
+export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesMapping): AboutLibrariesLikePackageInfo[] {
   return Object.entries(licenses)
-    .map(([packageKey, licenseObj]) => {
+    .map(([packageKey, license]) => {
       return {
-        artifactVersion: licenseObj.version,
-        content: licenseObj.content ?? '',
-        description: licenseObj.description ?? '',
-        developers: [{ name: licenseObj.author ?? '', organisationUrl: '' }],
-        licenses: [PackageUtils.prepareAboutLibrariesLicenseField(licenseObj)],
-        name: licenseObj.name,
+        artifactVersion: license.version,
+        content: license.content ?? '',
+        description: license.description ?? '',
+        developers: [{ name: license.author ?? '', organisationUrl: '' }],
+        licenses: [PackageUtils.prepareAboutLibrariesLicenseField(license)],
+        name: license.name,
         tag: '',
-        type: licenseObj.type,
+        type: license.type,
         uniqueId: PackageUtils.normalizePackageName(packageKey),
-        website: licenseObj.url,
+        website: license.url,
       };
     })
     .map((jsonPayload) => {
@@ -344,7 +359,7 @@ export function generateAboutLibrariesNPMOutput(licenses: AggregatedLicensesObj)
  * @see {@link generateAboutLibrariesNPMOutput}
  */
 export function writeAboutLibrariesNPMOutput(
-  licenses: AggregatedLicensesObj,
+  licenses: AggregatedLicensesMapping,
   androidProjectPath: string,
   aboutLibrariesLikeOutput?: AboutLibrariesLikePackageInfo[],
 ) {

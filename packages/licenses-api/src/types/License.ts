@@ -1,7 +1,8 @@
 import type { DependencyType } from './DependencyType';
+import type { ParentPackageInfo } from './ParentPackageInfo';
 import type { ScanPackageCallContext } from './ScanPackageCallContext';
 
-export type LicenseObj = {
+export type License = {
   /** Package name */
   name: string;
 
@@ -31,4 +32,10 @@ export type LicenseObj = {
 
   /** The required version specified in package.json */
   requiredVersion: string;
-} & Pick<ScanPackageCallContext, 'parentPackageName' | 'parentPackageRequiredVersion' | 'parentPackageResolvedVersion'>;
+
+  /**
+   * The name(s) of the package(s) that introduced the package as a dependency (of any type);
+   * empty array if the package is a dependency of the root package
+   */
+  parentPackages: ParentPackageInfo[];
+} & Pick<ScanPackageCallContext, 'parentPackageRequiredVersion' | 'parentPackageResolvedVersion'>;

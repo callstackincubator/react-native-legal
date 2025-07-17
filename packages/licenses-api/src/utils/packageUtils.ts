@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import type { LicenseObj, ScanPackageOptionsFactory } from '../types';
+import type { License, ScanPackageOptionsFactory } from '../types';
 
 import { sha512 } from './miscUtils';
 import { normalizeRepositoryUrl } from './repositoryUtils';
@@ -54,7 +54,7 @@ export function normalizePackageName(packageName: string): string {
   return packageName.replace('/', '_');
 }
 
-export function prepareAboutLibrariesLicenseField(license: LicenseObj) {
+export function prepareAboutLibrariesLicenseField(license: License) {
   if (!license.type) {
     return '';
   }
