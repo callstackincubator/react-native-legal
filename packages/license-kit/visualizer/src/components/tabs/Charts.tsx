@@ -251,9 +251,9 @@ export default function Charts({ analysis }: ChartsProps) {
   return (
     <Box className={classes.container}>
       <Box className={classes.gridContainer}>
-        <Box className={classes.licensesContainer}>
+        <Box className={classes.groupContainer}>
           <Typography variant="subtitle1" gutterBottom>
-            License Categories Breakdown
+            License types in categories
           </Typography>
 
           {/* log scale switch */}
@@ -268,23 +268,23 @@ export default function Charts({ analysis }: ChartsProps) {
           </Box>
         </Box>
 
-        <Box className={classes.licensesContainer}>
+        <Box className={classes.groupContainer}>
           <Typography variant="subtitle1" gutterBottom>
-            License Distribution Overview
-          </Typography>
-
-          <Box sx={{ height: 400, position: 'relative' }}>
-            <Radar data={radarData} options={radarOptions} />
-          </Box>
-        </Box>
-
-        <Box className={classes.licensesContainer}>
-          <Typography variant="subtitle1" gutterBottom>
-            Licenses distribution
+            License type distribution
           </Typography>
 
           <Box sx={{ height: 400, position: 'relative' }}>
             <Pie data={licenseNamesChartData} options={licenseNamesChartOptions} />
+          </Box>
+        </Box>
+
+        <Box className={classes.groupContainer}>
+          <Typography variant="subtitle1" gutterBottom>
+            License category distribution
+          </Typography>
+
+          <Box sx={{ height: 400, position: 'relative' }}>
+            <Radar data={radarData} options={radarOptions} />
           </Box>
         </Box>
       </Box>

@@ -1,3 +1,4 @@
+import { watch } from 'node:fs';
 import { type Server } from 'node:http';
 import path from 'node:path';
 import { parse } from 'node:url';
@@ -8,7 +9,14 @@ import helmet from 'helmet';
 import next from 'next';
 import open from 'open';
 
-import { curryCommonScanOptions, curryReportOptions, validateCommonScanOptions } from '../utils/commandUtils';
+import { type LicensesMappingResult, generateLicensesMapping } from '../logic/generateLicensesMapping';
+import {
+  curryCommonScanOptions,
+  curryReportOptions,
+  validateCommonReportOptions,
+  validateCommonScanOptions,
+} from '../utils/commandUtils';
+import { getLockfilePath, getPackageLockChecksum } from '../utils/projectUtils';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -40,6 +48,7 @@ export default function visualizeCommandSetup(program: Command): Command {
       ),
   ).action(async (options) => {
     validateCommonScanOptions(options);
+    validateCommonReportOptions(options);
 
     const expressApp = express();
 
@@ -51,9 +60,59 @@ export default function visualizeCommandSetup(program: Command): Command {
 
     const eventClients: Set<express.Response> = new Set();
 
+    /** Logic - begin */
+
+    let lastScanPackageJsonChecksum: string | null = null;
+    let lastScanResult: LicensesMappingResult | null = null;
+
+    function updateLastScanResultIfNeeded() {
+      let result: LicensesMappingResult;
+      const currentPackageJsonChecksum = getPackageLockChecksum(options);
+
+      if (lastScanResult && lastScanPackageJsonChecksum === currentPackageJsonChecksum) {
+        result = lastScanResult;
+
+        return false;
+      } else {
+        if (lastScanResult) {
+          console.log(
+            `Project's root ${path.basename(
+              getLockfilePath(options),
+            )} changed (new checksum: ${currentPackageJsonChecksum}), re-generating report...`,
+          );
+        } else {
+          console.log('Generating report for the first time, please stand by...');
+        }
+
+        result = generateLicensesMapping(options);
+
+        console.log('Report generated');
+
+        lastScanResult = result;
+        lastScanPackageJsonChecksum = currentPackageJsonChecksum;
+
+        return true;
+      }
+    }
+
+    /** Logic - end */
+
     /** API routes - begin */
 
-    expressApp.get('/events', (req, res) => {
+    expressApp.get('/api/report', (req, res) => {
+      if (!lastScanResult) {
+        updateLastScanResultIfNeeded();
+      }
+
+      const { licenses, projectName } = lastScanResult!;
+
+      res.json({
+        report: licenses,
+        projectName,
+      });
+    });
+
+    expressApp.get('/api/events', (req, res) => {
       res.set({
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
@@ -61,7 +120,7 @@ export default function visualizeCommandSetup(program: Command): Command {
       });
       res.flushHeaders();
 
-      eventClients.add;
+      eventClients.add(res);
 
       req.on('close', () => {
         res.end();
@@ -70,10 +129,38 @@ export default function visualizeCommandSetup(program: Command): Command {
 
     /** API routes - end */
 
+    /** Lockfile watcher - begin */
+
+    const lockfilePath = getLockfilePath(options);
+
+    console.log(`Watching '${lockfilePath}' file for changes`);
+
+    const packageJsonWatcher = watch(lockfilePath, (event) => {
+      if (event === 'change') {
+        const didChange = updateLastScanResultIfNeeded();
+
+        if (didChange) {
+          console.log('Sending report updates to clients over SSE');
+
+          eventClients.forEach((client) => {
+            client.write(
+              `event: message\ndata: ${JSON.stringify({
+                type: 'UPDATE',
+                report: lastScanResult!.licenses,
+                projectName: lastScanResult!.projectName,
+              })}\n\n`,
+            );
+          });
+        }
+      }
+    });
+
+    /** Lockfile watcher - end */
+
     let server: Server;
     await new Promise<void>((resolve) => {
       server = expressApp.listen(options.port as number, options.host as string, async () => {
-        console.log(`Server running at http://${options.host}:${options.port}`);
+        console.log('Preparing GUI server...');
 
         // Next app
         const visualizerNextAppDir = path.join(__dirname, '..', '..', ...(isDev ? ['visualizer'] : []));
@@ -93,6 +180,8 @@ export default function visualizeCommandSetup(program: Command): Command {
         expressApp.use((req, res) => {
           visualizerReqHandler(req, res, parse(req.url!, true));
         });
+
+        console.log(`Server running at http://${options.host}:${options.port}\n`);
 
         // open the browser automatically
         if (options.autoOpen) {
@@ -115,11 +204,17 @@ export default function visualizeCommandSetup(program: Command): Command {
       };
     })();
 
+    function shutdown() {
+      eventClients.forEach((client) => client.end());
+      server?.close();
+      packageJsonWatcher.close();
+      process.exit(0);
+    }
+
     process.on('SIGINT', () => {
       threadBlocker.resolve();
 
-      eventClients.forEach((client) => client.end());
-      process.exit(0);
+      shutdown();
     });
 
     process.stdin.setRawMode(true);
@@ -140,8 +235,6 @@ export default function visualizeCommandSetup(program: Command): Command {
 
     console.log('Stopping the server...');
 
-    eventClients.forEach((client) => client.end());
-    server!.close();
-    process.exit(0);
+    shutdown();
   });
 }

@@ -40,7 +40,7 @@ export const useTabsStyles = tss.create(({ theme }) => ({
     alignItems: 'center',
     padding: theme.spacing(0.5),
   },
-  licensesContainer: {
+  groupContainer: {
     display: 'flex',
     flexDirection: 'column',
     flex: 1,

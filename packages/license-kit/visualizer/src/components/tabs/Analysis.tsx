@@ -127,7 +127,7 @@ export default function Analysis({ analysis }: AnalysisProps) {
         </Box>
 
         {/* all licenses */}
-        <Box className={classes.licensesContainer}>
+        <Box className={classes.groupContainer}>
           <Typography variant="subtitle1" gutterBottom>
             Discovered license types
           </Typography>

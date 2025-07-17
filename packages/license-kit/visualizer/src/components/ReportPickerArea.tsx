@@ -1,7 +1,7 @@
 'use client';
 
 import { NoteAdd } from '@mui/icons-material';
-import { Avatar, CircularProgress, Stack, Typography, alpha, useTheme } from '@mui/material';
+import { Avatar, Box, Button, CircularProgress, Stack, Typography, alpha, useTheme } from '@mui/material';
 import { motion } from 'motion/react';
 import { useSnackbar } from 'notistack';
 import type { PropsWithChildren } from 'react';
@@ -10,6 +10,7 @@ import { useRef, useState } from 'react';
 import { tss } from 'tss-react/mui';
 
 import { useVisualizerStore } from '@/store/visualizerStore';
+import EventSourceHandler from './logic/EventSourceHandler';
 
 export type ReportPickerAreaProps = PropsWithChildren;
 
@@ -18,7 +19,7 @@ const MotionAvatar = motion.create(Avatar);
 export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
   const { enqueueSnackbar } = useSnackbar();
   const { classes, cx } = useStyles();
-  const { report, setReport } = useVisualizerStore();
+  const { report, setReport, setAutoLoadFromServer } = useVisualizerStore();
 
   const { palette } = useTheme();
 
@@ -26,6 +27,7 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isAutoLoadHovered, setIsAutoLoadHovered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [reportLoadError, setReportLoadError] = useState<Error | string | null>(null);
 
@@ -48,6 +50,7 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
 
         const json = JSON.parse(reader.result as string);
 
+        setAutoLoadFromServer(false);
         setReport(json, file.name);
       } catch (error) {
         console.error('Error parsing JSON file:', error);
@@ -85,8 +88,8 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
   };
 
   const isHoveredVisualState = useMemo(
-    () => isDragOver || (!report && !loading && isHovered),
-    [isDragOver, isHovered, report],
+    () => isDragOver || (!report && !loading && isHovered && !isAutoLoadHovered),
+    [isDragOver, isHovered, report, isAutoLoadHovered],
   );
 
   // handle moving dragged file over the children of this drop zone
@@ -149,6 +152,8 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
       }}
       animate={isHoveredVisualState ? 'hovered' : report ? 'defaultReport' : 'defaultNoReport'}
     >
+      <EventSourceHandler />
+
       <input
         type="file"
         accept=".json,application/json"
@@ -183,6 +188,54 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
             to select a file.
           </span>
 
+          <p>or</p>
+
+          <Box
+            onMouseOver={() => setIsAutoLoadHovered(true)}
+            onMouseOut={() => setIsAutoLoadHovered(false)}
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+            className={classes.reenablePointerEvents}
+          >
+            <Button
+              size="large"
+              onClick={() => {
+                setAutoLoadFromServer(true);
+                setLoading(true);
+
+                fetch(`${window.location.origin}/api/report`)
+                  .then((response) => response.json())
+                  .then((data) => {
+                    setReport(data.report, data.name);
+                  })
+                  .catch((error) => {
+                    console.error('Error auto-loading report:', error);
+
+                    enqueueSnackbar({
+                      message: 'Failed to auto-load report. Please try again.',
+                      variant: 'error',
+                    });
+
+                    setAutoLoadFromServer(false);
+                  })
+                  .finally(() => {
+                    setLoading(false);
+                  });
+              }}
+              variant="outlined"
+              className={cx(
+                classes.helpText,
+                classes.inlineFlexChildren,
+                classes.honorWhiteSpace,
+                classes.reenablePointerEvents,
+                classes.autoLoadButton,
+              )}
+            >
+              Auto-load from the server
+            </Button>
+          </Box>
+
           {reportLoadError && (
             <pre>{typeof reportLoadError === 'string' ? reportLoadError : reportLoadError.message}</pre>
           )}
@@ -192,7 +245,7 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
   );
 }
 
-const useStyles = tss.create(() => ({
+const useStyles = tss.create(({ theme }) => ({
   helpText: {
     fontSize: 20,
   },
@@ -216,8 +269,14 @@ const useStyles = tss.create(() => ({
       display: 'inline-flex',
     },
   },
+  reenablePointerEvents: {
+    pointerEvents: 'all',
+  },
   honorWhiteSpace: {
     whiteSpace: 'pre-wrap',
   },
   hidden: { display: 'none' },
+  autoLoadButton: {
+    margin: theme.spacing(4),
+  },
 }));

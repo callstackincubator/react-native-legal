@@ -107,6 +107,8 @@ export default function Tree({ data }: Props) {
       return;
     }
 
+    console.log('Regenerating graph...');
+
     const nonLeaveNodes = graph.nodes().filter((d) => graph.node(d).children.length > 0);
     const totalNonLeaves = nonLeaveNodes.length;
 

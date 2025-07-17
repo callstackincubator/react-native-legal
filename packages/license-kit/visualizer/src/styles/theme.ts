@@ -1,6 +1,7 @@
 import { getLicenseWarningColor } from '@/utils/colorUtils';
 import { LicenseCategory } from '@/types/LicenseCategory';
 import { createTheme, PaletteOptions } from '@mui/material';
+import { green, purple } from '@mui/material/colors';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -40,10 +41,10 @@ export const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#70ca9d',
+      main: green[500],
     },
     secondary: {
-      main: '#b89dff',
+      main: purple[300],
     },
     strongCopyleft: getLicenseWarningColor(LicenseCategory.STRONG_COPYLEFT) as PaletteOptions['strongCopyleft'],
     weakCopyleft: getLicenseWarningColor(LicenseCategory.WEAK_COPYLEFT) as PaletteOptions['weakCopyleft'],

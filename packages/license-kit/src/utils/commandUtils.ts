@@ -3,9 +3,9 @@ import process from 'node:process';
 import type { Command } from 'commander';
 
 import { NON_TAB_HELP_LISTING_SUBLIST_OFFSET } from '../constants';
-import { type CLIScanOptions } from '../scanOptionsUtils';
+import type { CLIReportOptions, CLIScanOptions } from '../types/CLIOptions';
 import { type DevDepsMode, validDevDepsModes } from '../types/DevDepsMode';
-import { type Format } from '../types/Format';
+import { type Format, validFormats } from '../types/Format';
 import { type Output } from '../types/Output';
 import { type TransitiveDepsMode, validTransitiveDepsModes } from '../types/TransitiveDepsMode';
 
@@ -60,6 +60,13 @@ export function validateCommonScanOptions(options: CLIScanOptions) {
         options.transitiveDepsMode
       }. Supported modes: ${validTransitiveDepsModes.join(', ')}`,
     );
+    process.exit(1);
+  }
+}
+
+export function validateCommonReportOptions(options: CLIReportOptions) {
+  if (!validFormats.includes(options.format)) {
+    console.error(`Invalid format: ${options.format}. Supported formats: ${validFormats.join(', ')}`);
     process.exit(1);
   }
 }
