@@ -65,12 +65,14 @@
   },
   "dependencies": {
     "@callstack/licenses": "^0.2.1",
+    "colorette": "^2.0.20",
     "commander": "^14.0.0",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "next": "^15.3.4",
     "open": "^10.1.2",
     "signale": "^1.4.0",
+    "table": "^6.9.0",
     "ts-markdown-builder": "^0.4.1"
   }
 }

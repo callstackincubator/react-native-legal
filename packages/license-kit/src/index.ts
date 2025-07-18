@@ -5,6 +5,7 @@ import { Command } from 'commander';
 
 import { version } from '../package.json';
 
+import analyzeCommandSetup from './commands/analyze';
 import copyleftCommandSetup from './commands/copyleft';
 import reportCommandSetup from './commands/report';
 import visualizeCommandSetup from './commands/visualize';
@@ -16,6 +17,7 @@ program.name('license-kit').description('Scan dependencies and check for copylef
 copyleftCommandSetup(program);
 reportCommandSetup(program);
 visualizeCommandSetup(program);
+analyzeCommandSetup(program);
 
 program
   .command('help', { isDefault: false })
