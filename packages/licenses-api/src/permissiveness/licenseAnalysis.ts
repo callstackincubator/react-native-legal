@@ -11,7 +11,7 @@ import { PERMISSIVENESS_SCORE_WEIGHTS } from './constants';
  * @returns the license category
  */
 export function categorizeLicense(licenseType?: string): LicenseCategory {
-  if (!licenseType) {
+  if (!licenseType || licenseType === 'unknown') {
     return LicenseCategory.UNKNOWN;
   }
 
