@@ -1,8 +1,8 @@
+import { DependencyType } from '@/types/DependencyType';
 import type { Types } from '@callstack/licenses';
+import moment from 'moment';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import moment from 'moment';
-import { DependencyType } from '@/types/DependencyType';
 
 type VisualizerStoreState = {
   report: Types.AggregatedLicensesMapping | null;

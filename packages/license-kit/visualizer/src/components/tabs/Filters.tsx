@@ -1,14 +1,12 @@
-import React from 'react';
-
+import { useVisualizerStore } from '@/store/visualizerStore';
+import { DependencyType } from '@/types/DependencyType';
 import {
   InventoryTwoTone as DependenciesIcon,
   RocketLaunchTwoTone as DevDependenciesIcon,
   FlakyTwoTone as OptionalDependenciesIcon,
 } from '@mui/icons-material';
 import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-
-import { useVisualizerStore } from '@/store/visualizerStore';
-import { DependencyType } from '@/types/DependencyType';
+import React from 'react';
 
 import { useTabsStyles } from './styles';
 

@@ -1,14 +1,12 @@
+import { useVisualizerStore } from '@/store/visualizerStore';
+import { NoteAddTwoTone } from '@mui/icons-material';
+import { Avatar, Box, Button, CircularProgress, Stack, Typography, alpha, useTheme } from '@mui/material';
 import { motion } from 'motion/react';
 import { useSnackbar } from 'notistack';
 import type { PropsWithChildren } from 'react';
 import React, { useMemo } from 'react';
 import { useRef, useState } from 'react';
 import { tss } from 'tss-react/mui';
-
-import { NoteAdd } from '@mui/icons-material';
-import { Avatar, Box, Button, CircularProgress, Stack, Typography, alpha, useTheme } from '@mui/material';
-
-import { useVisualizerStore } from '@/store/visualizerStore';
 
 import EventSourceHandler from './logic/EventSourceHandler';
 
@@ -180,7 +178,7 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
             }}
             animate={isDragOver ? 'hovered' : 'default'}
           >
-            <NoteAdd sx={{ fontSize: 60 }} />
+            <NoteAddTwoTone sx={{ fontSize: 60 }} />
           </MotionAvatar>
 
           <span className={cx(classes.helpText, classes.inlineFlexChildren, classes.honorWhiteSpace)}>

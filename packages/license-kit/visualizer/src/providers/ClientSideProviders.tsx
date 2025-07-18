@@ -1,10 +1,9 @@
 'use client';
 
+import { theme } from '@/styles/theme';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
-
-import { theme } from '@/styles/theme';
 
 export type AppProvidersProps = React.PropsWithChildren;
 

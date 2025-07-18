@@ -1,10 +1,9 @@
+import { AppWrapper } from '@/components/AppWrapper';
+import { ClientSideProviders } from '@/providers/ClientSideProviders';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import React from 'react';
-
-import { AppWrapper } from '@/components/AppWrapper';
-import { ClientSideProviders } from '@/providers/ClientSideProviders';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -21,11 +20,13 @@ export const metadata: Metadata = {
   description: 'License Kit Project Visualizer & Analyzer',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout(
+  {
+    children,
+  }: Readonly<{
+    children: React.ReactNode;
+  }>,
+) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>

@@ -1,11 +1,11 @@
 'use client';
 
+import { DEFAULT_RADIUS, MAX_TREE_PARSING_DEPTH, ROOT_PACKAGE_KEY } from '@/constants';
+import type { TreeNode } from '@/types/TreeNode';
 import type { Types } from '@callstack/licenses';
 import { graphlib } from '@dagrejs/dagre';
 import _ from 'lodash';
 
-import { DEFAULT_RADIUS, MAX_TREE_PARSING_DEPTH, ROOT_PACKAGE_KEY } from '@/constants';
-import type { TreeNode } from '@/types/TreeNode';
 import { buildPackageKey } from './packageUtils';
 
 export function buildHierarchy(_data: Types.AggregatedLicensesMapping): {
