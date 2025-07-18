@@ -1,24 +1,26 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Box, Switch, Typography } from '@mui/material';
 import {
-  Chart as ChartJS,
   ArcElement,
-  Tooltip,
-  Legend,
   BarElement,
   CategoryScale,
-  LinearScale,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
+  Chart as ChartJS,
   Filler,
+  Legend,
+  LineElement,
+  LinearScale,
   LogarithmicScale,
+  PointElement,
+  RadialLinearScale,
+  Tooltip,
 } from 'chart.js';
-import { Pie, Bar, Radar } from 'react-chartjs-2';
 import * as d3 from 'd3';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Bar, Pie, Radar } from 'react-chartjs-2';
+
+import { LicenseCategory, Types, categorizeLicense, getLicenseCategoryDescription } from '@callstack/licenses';
+import { Box, Switch, Typography, alpha } from '@mui/material';
+import { blue, pink, red } from '@mui/material/colors';
 
 import { useTabsStyles } from './styles';
-import { categorizeLicense, getLicenseCategoryDescription, LicenseCategory, Types } from '@callstack/licenses';
 
 ChartJS.register(
   ArcElement,
@@ -128,7 +130,7 @@ export default function Charts({ analysis }: ChartsProps) {
     },
   };
 
-  // Radar chart data
+  // radar chart data
   const radarData = useMemo(() => {
     const categories = Object.values(LicenseCategory);
     const categoryPercentages = categories.map((category) => {
@@ -142,29 +144,57 @@ export default function Charts({ analysis }: ChartsProps) {
         {
           label: 'License Distribution',
           data: categoryPercentages,
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: alpha(blue[500], 0.25),
+          borderColor: blue[700],
           borderWidth: 2,
-          pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+          pointBackgroundColor: blue[500],
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(54, 162, 235, 1)',
+          pointHoverBorderColor: blue[500],
         },
         {
           label: 'Permissiveness Score',
-          data: [
-            analysis.permissivenessScore,
-            analysis.permissivenessScore,
-            analysis.permissivenessScore,
-            analysis.permissivenessScore,
-          ],
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          borderColor: 'rgba(255, 99, 132, 1)',
+          data: (
+            [
+              [
+                analysis.permissiveness.weightedSumComponents[LicenseCategory.PERMISSIVE]
+                  ? analysis.permissiveness.weightedSumComponents[LicenseCategory.PERMISSIVE].count *
+                    analysis.permissiveness.weightedSumComponents[LicenseCategory.PERMISSIVE].weight
+                  : 0,
+                LicenseCategory.PERMISSIVE,
+              ],
+              [
+                analysis.permissiveness.weightedSumComponents[LicenseCategory.WEAK_COPYLEFT]
+                  ? analysis.permissiveness.weightedSumComponents[LicenseCategory.WEAK_COPYLEFT].count *
+                    analysis.permissiveness.weightedSumComponents[LicenseCategory.WEAK_COPYLEFT].weight
+                  : 0,
+                LicenseCategory.WEAK_COPYLEFT,
+              ],
+              [
+                analysis.permissiveness.weightedSumComponents[LicenseCategory.STRONG_COPYLEFT]
+                  ? analysis.permissiveness.weightedSumComponents[LicenseCategory.STRONG_COPYLEFT].count *
+                    analysis.permissiveness.weightedSumComponents[LicenseCategory.STRONG_COPYLEFT].weight
+                  : 0,
+                LicenseCategory.STRONG_COPYLEFT,
+              ],
+              [
+                analysis.permissiveness.weightedSumComponents[LicenseCategory.UNKNOWN]
+                  ? analysis.permissiveness.weightedSumComponents[LicenseCategory.UNKNOWN].count *
+                    analysis.permissiveness.weightedSumComponents[LicenseCategory.UNKNOWN].weight
+                  : 0,
+                LicenseCategory.UNKNOWN,
+              ],
+            ] as [number, LicenseCategory][]
+          )
+            .sort((a, b) => Object.values(LicenseCategory).indexOf(a[1]) - Object.values(LicenseCategory).indexOf(b[1]))
+            .map(([value]) => value),
+          backgroundColor: alpha(red[800], 0.25),
+          borderColor: pink[600],
           borderWidth: 2,
-          pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+          pointBackgroundColor: pink[600],
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(255, 99, 132, 1)',
+          pointHoverBorderColor: pink[600],
         },
       ],
     };
@@ -200,6 +230,8 @@ export default function Charts({ analysis }: ChartsProps) {
       },
     },
   };
+
+  console.log(radarData);
 
   // license names pie chart data
   const licenseNames = Object.keys(analysis.byLicense);

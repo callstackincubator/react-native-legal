@@ -1,14 +1,15 @@
 import React from 'react';
-import { Box, Typography, Chip, LinearProgress, List, ListItem, ListItemText, Divider, useTheme } from '@mui/material';
-import { Warning, CheckCircle, ErrorOutline, HelpOutline } from '@mui/icons-material';
 
-import { useTabsStyles } from './styles';
 import {
-  getLicenseCategoryDescription,
-  getPermissivenessScoreDescription,
   LicenseCategory,
   Types,
+  getLicenseCategoryDescription,
+  getPermissivenessScoreDescription,
 } from '@callstack/licenses';
+import { CheckCircle, ErrorOutline, HelpOutline, Warning } from '@mui/icons-material';
+import { Box, Chip, Divider, LinearProgress, List, ListItem, ListItemText, Typography, useTheme } from '@mui/material';
+
+import { useTabsStyles } from './styles';
 
 export type AnalysisProps = {
   analysis: Types.LicenseAnalysisResult;
@@ -72,21 +73,28 @@ export default function Analysis({ analysis }: AnalysisProps) {
             <Box display="flex" alignItems="center" gap={1}>
               <LinearProgress
                 variant="determinate"
-                value={analysis.permissivenessScore}
+                value={analysis.permissiveness.score}
                 className={classes.progressBar}
                 sx={{
                   '& .MuiLinearProgress-bar': {
-                    backgroundColor: getScoreColor(analysis.permissivenessScore),
+                    backgroundColor: getScoreColor(analysis.permissiveness.score),
                   },
                 }}
               />
-              <Typography variant="h6" color={getScoreColor(analysis.permissivenessScore)}>
-                {analysis.permissivenessScore}%
+              <Typography variant="h6" color={getScoreColor(analysis.permissiveness.score)}>
+                {analysis.permissiveness.score}%
               </Typography>
             </Box>
 
+            <span className="katex">
+              {analysis.permissiveness.score}% ={' '}
+              {Object.entries(analysis.permissiveness.weightedSumComponents).map(
+                ([category, { weight, count }]) => `${weight}_{${category}} \\cdot ${count}%`,
+              )}
+            </span>
+
             <Typography variant="body2" color="text.secondary">
-              {getPermissivenessScoreDescription(analysis.permissivenessScore)}
+              {getPermissivenessScoreDescription(analysis.permissiveness.score)}
             </Typography>
           </Box>
         </Box>

@@ -1,26 +1,13 @@
 'use client';
 
+import 'katex/dist/katex.min.css';
 import { analyzeLicenses, LicenseCategory, type Types } from '@callstack/licenses';
 import { layout as dagreLayout } from '@dagrejs/dagre';
-import {
-  useTheme,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  IconButton,
-  Box,
-  Paper,
-  Tooltip,
-  Button,
-  Typography,
-  Stack,
-  Divider,
-} from '@mui/material';
-import { ChevronLeft, ChevronRight, Analytics, ExpandMore, BarChart } from '@mui/icons-material';
+import { useTheme } from '@mui/material';
 import { useWindowSize } from '@uidotdev/usehooks';
 import * as d3 from 'd3';
 import { useSnackbar } from 'notistack';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { tss } from 'tss-react/mui';
 
 import type { TextCoordFactory } from '@/types/TextCoordFactory';
@@ -35,17 +22,12 @@ import {
   INACTIVE_HOVER_MODE_OPACITY,
   LABEL_FONT_SIZE,
   ROOT_PACKAGE_KEY,
-  SIDEBAR_COLLAPSED_WIDTH,
-  SIDEBAR_EXPANDED_WIDTH,
 } from '@/constants';
 import { useTextGroupFactory } from '@/hooks/useTextGroupFactory';
 import { buildHierarchy } from '@/utils/buildHierarchy';
-import Analysis from './tabs/Analysis';
-import { useVisualizerStore } from '@/store/visualizerStore';
-import { UpdatingHeading } from './UpdatingHeading';
 import { buildPackageKey } from '@/utils/packageUtils';
 import { getLicenseWarningColor } from '@/utils/colorUtils';
-import Charts from './tabs/Charts';
+import Sidebar from './Sidebar';
 
 export type Props = {
   data: Types.AggregatedLicensesMapping;
@@ -56,9 +38,6 @@ export default function Tree({ data }: Props) {
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const { classes } = useStyles();
-  const { reportName, loadedAt } = useVisualizerStore();
-
-  const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -95,10 +74,6 @@ export default function Tree({ data }: Props) {
           },
     [theme.palette.mode],
   );
-
-  const toggleSidebar = () => {
-    setSidebarExpanded(!sidebarExpanded);
-  };
 
   useEffect(() => {
     if (!width || !height || !svgRef.current) {
@@ -491,8 +466,6 @@ export default function Tree({ data }: Props) {
     labelTextColor,
     getLicenseWarningColor,
     theme,
-    reportName,
-    loadedAt,
     licenseTextColor,
     selectedNodeStrokeColor,
     graph,
@@ -504,87 +477,7 @@ export default function Tree({ data }: Props) {
 
   return (
     <div className={classes.mainContainer}>
-      {/* sidebar */}
-      <Paper
-        elevation={3}
-        className={classes.sidebar}
-        style={{
-          width: sidebarExpanded ? SIDEBAR_EXPANDED_WIDTH : SIDEBAR_COLLAPSED_WIDTH,
-        }}
-      >
-        {/* toggle sidebar trigger button */}
-        <Stack direction="column" className={classes.sidebarHeader}>
-          <Box className={classes.toggleContainer}>
-            <pre className={classes.sidebarHeading}>license-kit visualize</pre>
-
-            <Tooltip title={sidebarExpanded ? 'Collapse Statistics' : 'Expand Statistics'}>
-              <IconButton onClick={toggleSidebar} className={classes.toggleButton} color="primary">
-                {sidebarExpanded ? <ChevronLeft /> : <ChevronRight />}
-              </IconButton>
-            </Tooltip>
-          </Box>
-
-          {sidebarExpanded && <UpdatingHeading reportName={reportName} loadedAt={loadedAt} />}
-        </Stack>
-
-        {/* collapsed sidebar */}
-        {!sidebarExpanded && (
-          <Stack className={classes.collapsedContent} spacing={1}>
-            <Tooltip title="Analysis" placement="right" arrow>
-              <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
-                {licenseAnalysis.permissivenessScore}
-
-                <Analytics />
-              </Button>
-            </Tooltip>
-
-            <Divider orientation="horizontal" flexItem />
-
-            <Tooltip title="Report" placement="right" arrow>
-              <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
-                <BarChart />
-              </Button>
-            </Tooltip>
-          </Stack>
-        )}
-
-        {/* expanded sidebar */}
-        {sidebarExpanded && (
-          <>
-            <Accordion defaultExpanded>
-              <AccordionSummary expandIcon={<ExpandMore />}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Analytics />
-
-                  <Typography variant="body2">Analysis ({licenseAnalysis.permissivenessScore})</Typography>
-                </Box>
-              </AccordionSummary>
-
-              <AccordionDetails>
-                <Box className={classes.statsContent}>
-                  <Analysis analysis={licenseAnalysis} />
-                </Box>
-              </AccordionDetails>
-            </Accordion>
-
-            <Accordion defaultExpanded>
-              <AccordionSummary expandIcon={<ExpandMore />}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <BarChart />
-
-                  <Typography variant="body2">Statistics</Typography>
-                </Box>
-              </AccordionSummary>
-
-              <AccordionDetails>
-                <Box className={classes.statsContent}>
-                  <Charts analysis={licenseAnalysis} />
-                </Box>
-              </AccordionDetails>
-            </Accordion>
-          </>
-        )}
-      </Paper>
+      <Sidebar analysis={licenseAnalysis} />
 
       <div ref={containerRef} className={classes.container}>
         <svg className={classes.svg} ref={svgRef}>
@@ -595,49 +488,12 @@ export default function Tree({ data }: Props) {
   );
 }
 
-const useStyles = tss.create(({ theme }) => ({
+const useStyles = tss.create(() => ({
   mainContainer: {
     display: 'flex',
     width: '100%',
     height: '100%',
     position: 'relative',
-  },
-  sidebar: {
-    flexShrink: 0,
-    height: '100%',
-    overflow: 'hidden',
-    borderRadius: 0,
-    borderRight: `1px solid ${theme.palette.divider}`,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  sidebarHeader: {
-    padding: theme.spacing(1),
-    minHeight: 48,
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    paddingLeft: theme.spacing(2),
-  },
-  toggleContainer: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  toggleButton: {
-    padding: theme.spacing(1),
-  },
-  collapsedContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: theme.spacing(2, 1),
-  },
-  statsContent: {
-    flex: 1,
-    overflow: 'auto',
   },
   container: {
     flex: 1,
