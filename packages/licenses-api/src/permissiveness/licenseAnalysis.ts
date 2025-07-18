@@ -1,8 +1,9 @@
-import type { Types } from '@callstack/licenses';
-import { STRONG_COPYLEFT_LICENSES, WEAK_COPYLEFT_LICENSES } from '../../../src/constants';
-import { LicenseCategory } from '@/types/LicenseCategory';
-import { LicenseAnalysisResult } from '@/types/LicenseAnalysisResult';
-import { PERMISSIVENESS_SCORE_WEIGHTS } from '@/constants';
+import { STRONG_COPYLEFT_LICENSES_LOWERCASE, WEAK_COPYLEFT_LICENSES_LOWERCASE } from '../constants/licenses';
+import type { AggregatedLicensesMapping } from '../types';
+import type { LicenseAnalysisResult } from '../types/LicenseAnalysisResult';
+
+import { LicenseCategory } from './LicenseCategory';
+import { PERMISSIVENESS_SCORE_WEIGHTS } from './constants';
 
 /**
  * Categorizes a license based on its copyleft characteristics.
@@ -15,12 +16,12 @@ export function categorizeLicense(licenseType?: string): LicenseCategory {
   }
 
   // check for strong copyleft licenses
-  if (STRONG_COPYLEFT_LICENSES.has(licenseType)) {
+  if (STRONG_COPYLEFT_LICENSES_LOWERCASE.has(licenseType.toLowerCase())) {
     return LicenseCategory.STRONG_COPYLEFT;
   }
 
   // check for weak copyleft licenses
-  if (WEAK_COPYLEFT_LICENSES.has(licenseType)) {
+  if (WEAK_COPYLEFT_LICENSES_LOWERCASE.has(licenseType.toLowerCase())) {
     return LicenseCategory.WEAK_COPYLEFT;
   }
 
@@ -52,7 +53,7 @@ export function calculatePermissivenessScore(stats: Record<LicenseCategory, numb
  * @param report the licenses report data
  * @returns the license analysis result
  */
-export function analyzeLicenses(report: Types.AggregatedLicensesMapping): LicenseAnalysisResult {
+export function analyzeLicenses(report: AggregatedLicensesMapping): LicenseAnalysisResult {
   const byCategory: Record<LicenseCategory, number> = {
     [LicenseCategory.STRONG_COPYLEFT]: 0,
     [LicenseCategory.WEAK_COPYLEFT]: 0,
@@ -91,25 +92,4 @@ export function analyzeLicenses(report: Types.AggregatedLicensesMapping): Licens
     permissivenessScore,
     categorizedLicenses,
   };
-}
-
-/**
- * Gets a human-readable description of the license category
- * @param category the license category
- * @returns the human-readable description of the license category
- */
-export function getLicenseCategoryDescription(category: LicenseCategory): string {
-  switch (category) {
-    case LicenseCategory.STRONG_COPYLEFT:
-      return 'Strong Copyleft';
-
-    case LicenseCategory.WEAK_COPYLEFT:
-      return 'Weak Copyleft';
-
-    case LicenseCategory.PERMISSIVE:
-      return 'Permissive';
-
-    case LicenseCategory.UNKNOWN:
-      return 'Unknown';
-  }
 }

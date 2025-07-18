@@ -1,4 +1,4 @@
-import { LicenseCategory } from './LicenseCategory';
+import type { LicenseCategory } from '../permissiveness/LicenseCategory';
 
 export interface LicenseStats {
   total: number;

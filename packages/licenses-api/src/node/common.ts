@@ -13,8 +13,10 @@ import type {
   ParentPackageInfo,
   ScanPackageCallContext,
   ScanPackageOptionsFactory,
-} from './types';
-import { PackageUtils, YamlUtils } from './utils';
+} from '../types';
+import { YamlUtils } from '../utils';
+
+import { PackageUtils } from './utils';
 
 type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: string][]; dependencyType: DependencyType };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Types } from '@callstack/licenses';
+import { analyzeLicenses, LicenseCategory, type Types } from '@callstack/licenses';
 import { layout as dagreLayout } from '@dagrejs/dagre';
 import {
   useTheme,
@@ -40,8 +40,6 @@ import {
 } from '@/constants';
 import { useTextGroupFactory } from '@/hooks/useTextGroupFactory';
 import { buildHierarchy } from '@/utils/buildHierarchy';
-import { analyzeLicenses } from '@/utils/licenseAnalysis';
-import { LicenseCategory } from '@/types/LicenseCategory';
 import Analysis from './tabs/Analysis';
 import { useVisualizerStore } from '@/store/visualizerStore';
 import { UpdatingHeading } from './UpdatingHeading';

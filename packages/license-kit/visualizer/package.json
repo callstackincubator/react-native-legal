@@ -9,6 +9,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "@callstack/licenses": "workspace:^",
     "@dagrejs/dagre": "^1.1.5",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -31,7 +32,6 @@
     "zustand": "^5.0.6"
   },
   "devDependencies": {
-    "@callstack/licenses": "workspace:^",
     "@types/d3": "^7.4.3",
     "@types/eslint": "^9.6.1",
     "@types/lodash": "^4.17.18",

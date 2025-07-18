@@ -18,9 +18,7 @@ import { Pie, Bar, Radar } from 'react-chartjs-2';
 import * as d3 from 'd3';
 
 import { useTabsStyles } from './styles';
-import { LicenseAnalysisResult } from '@/types/LicenseAnalysisResult';
-import { LicenseCategory } from '@/types/LicenseCategory';
-import { categorizeLicense, getLicenseCategoryDescription } from '@/utils/licenseAnalysis';
+import { categorizeLicense, getLicenseCategoryDescription, LicenseCategory, Types } from '@callstack/licenses';
 
 ChartJS.register(
   ArcElement,
@@ -37,7 +35,7 @@ ChartJS.register(
 );
 
 export type ChartsProps = {
-  analysis: LicenseAnalysisResult;
+  analysis: Types.LicenseAnalysisResult;
 };
 
 export default function Charts({ analysis }: ChartsProps) {

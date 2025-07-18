@@ -2,13 +2,16 @@ import React from 'react';
 import { Box, Typography, Chip, LinearProgress, List, ListItem, ListItemText, Divider, useTheme } from '@mui/material';
 import { Warning, CheckCircle, ErrorOutline, HelpOutline } from '@mui/icons-material';
 
-import { getLicenseCategoryDescription } from '../../utils/licenseAnalysis';
 import { useTabsStyles } from './styles';
-import { LicenseAnalysisResult } from '@/types/LicenseAnalysisResult';
-import { LicenseCategory } from '@/types/LicenseCategory';
+import {
+  getLicenseCategoryDescription,
+  getPermissivenessScoreDescription,
+  LicenseCategory,
+  Types,
+} from '@callstack/licenses';
 
 export type AnalysisProps = {
-  analysis: LicenseAnalysisResult;
+  analysis: Types.LicenseAnalysisResult;
 };
 
 export default function Analysis({ analysis }: AnalysisProps) {
@@ -19,13 +22,6 @@ export default function Analysis({ analysis }: AnalysisProps) {
     if (score >= 80) return palette.success.main;
     if (score >= 60) return palette.warning.main;
     return palette.error.main;
-  };
-
-  const getScoreDescription = (score: number): string => {
-    if (score >= 80) return 'Highly Permissive';
-    if (score >= 60) return 'Moderately Permissive';
-    if (score >= 40) return 'Mixed Permissiveness';
-    return 'Restrictive';
   };
 
   const getCategoryIcon = (category: LicenseCategory) => {
@@ -90,7 +86,7 @@ export default function Analysis({ analysis }: AnalysisProps) {
             </Box>
 
             <Typography variant="body2" color="text.secondary">
-              {getScoreDescription(analysis.permissivenessScore)}
+              {getPermissivenessScoreDescription(analysis.permissivenessScore)}
             </Typography>
           </Box>
         </Box>
@@ -104,6 +100,7 @@ export default function Analysis({ analysis }: AnalysisProps) {
           <Box className={classes.categoryGrid}>
             {Object.entries(analysis.byCategory).map(([category, count]) => {
               const percentage = totalPackages > 0 ? Math.round((count / totalPackages) * 100) : 0;
+
               return (
                 <Box key={category} className={classes.categoryItem}>
                   <Box display="flex" alignItems="center" gap={1}>
@@ -112,6 +109,7 @@ export default function Analysis({ analysis }: AnalysisProps) {
                       {getLicenseCategoryDescription(category as LicenseCategory)}
                     </Typography>
                   </Box>
+
                   <Box display="flex" alignItems="center" gap={1}>
                     <Chip
                       label={`${count} (${percentage}%)`}
@@ -141,6 +139,7 @@ export default function Analysis({ analysis }: AnalysisProps) {
                   <ListItem>
                     <ListItemText primary={license} secondary={`${count} packages (${percentage}%)`} />
                   </ListItem>
+
                   {index < sortedLicenses.length - 1 && <Divider />}
                 </React.Fragment>
               );

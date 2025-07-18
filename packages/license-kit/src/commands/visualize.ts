@@ -8,6 +8,7 @@ import express from 'express';
 import helmet from 'helmet';
 import next from 'next';
 import open from 'open';
+import { Signale } from 'signale';
 
 import { type LicensesMappingResult, generateLicensesMapping } from '../logic/generateLicensesMapping';
 import {
@@ -19,6 +20,11 @@ import {
 import { getLockfilePath, getPackageLockChecksum } from '../utils/projectUtils';
 
 const isDev = process.env.NODE_ENV !== 'production';
+
+const visualizerSignale = new Signale({ scope: 'visualize' });
+const sseSignale = new Signale({ scope: 'SSE' });
+const apiSignale = new Signale({ scope: 'API' });
+const reportSignale = new Signale({ scope: 'report' });
 
 export default function visualizeCommandSetup(program: Command): Command {
   return curryCommonScanOptions(
@@ -75,18 +81,18 @@ export default function visualizeCommandSetup(program: Command): Command {
         return false;
       } else {
         if (lastScanResult) {
-          console.log(
+          reportSignale.log(
             `Project's root ${path.basename(
               getLockfilePath(options),
             )} changed (new checksum: ${currentPackageJsonChecksum}), re-generating report...`,
           );
         } else {
-          console.log('Generating report for the first time, please stand by...');
+          reportSignale.log('Generating report for the first time, please stand by...');
         }
 
         result = generateLicensesMapping(options);
 
-        console.log('Report generated');
+        reportSignale.log('Report generated');
 
         lastScanResult = result;
         lastScanPackageJsonChecksum = currentPackageJsonChecksum;
@@ -133,14 +139,14 @@ export default function visualizeCommandSetup(program: Command): Command {
 
     const lockfilePath = getLockfilePath(options);
 
-    console.log(`Watching '${lockfilePath}' file for changes`);
+    visualizerSignale.log(`Watching '${lockfilePath}' file for changes`);
 
     const packageJsonWatcher = watch(lockfilePath, (event) => {
       if (event === 'change') {
         const didChange = updateLastScanResultIfNeeded();
 
         if (didChange) {
-          console.log('Sending report updates to clients over SSE');
+          sseSignale.log('Sending report updates to clients over SSE');
 
           eventClients.forEach((client) => {
             client.write(
@@ -160,7 +166,7 @@ export default function visualizeCommandSetup(program: Command): Command {
     let server: Server;
     await new Promise<void>((resolve) => {
       server = expressApp.listen(options.port as number, options.host as string, async () => {
-        console.log('Preparing GUI server...');
+        apiSignale.log('Preparing GUI server...');
 
         // Next app
         const visualizerNextAppDir = path.join(__dirname, '..', '..', ...(isDev ? ['visualizer'] : []));
@@ -181,7 +187,7 @@ export default function visualizeCommandSetup(program: Command): Command {
           visualizerReqHandler(req, res, parse(req.url!, true));
         });
 
-        console.log(`Server running at http://${options.host}:${options.port}\n`);
+        apiSignale.log(`Server running at http://${options.host}:${options.port}\n`);
 
         // open the browser automatically
         if (options.autoOpen) {
@@ -229,11 +235,11 @@ export default function visualizeCommandSetup(program: Command): Command {
       }
     });
 
-    console.log('Press "q" or ctrl+c to stop the server');
+    visualizerSignale.log('Press "q" or ctrl+c to stop the server');
 
     await threadBlocker.promise;
 
-    console.log('Stopping the server...');
+    visualizerSignale.log('Stopping the server...');
 
     shutdown();
   });

@@ -1,5 +1,5 @@
 import { getLicenseWarningColor } from '@/utils/colorUtils';
-import { LicenseCategory } from '@/types/LicenseCategory';
+import { LicenseCategory } from '@callstack/licenses';
 import { createTheme, PaletteOptions } from '@mui/material';
 import { green, purple } from '@mui/material/colors';
 

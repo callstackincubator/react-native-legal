@@ -1,5 +1,5 @@
+import { LicenseCategory } from '@callstack/licenses';
 import { amber, green, orange, red } from '@mui/material/colors';
-import { LicenseCategory } from '@/types/LicenseCategory';
 
 /**
  * Gets the warning color for a license category
