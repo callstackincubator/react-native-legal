@@ -119,7 +119,7 @@ export default function Analysis({ analysis }: AnalysisProps) {
                   )
                   .join(' + ')}}{\\Sigma w}$$
 
-                $$\\text{such that weights} \\ w \\ \\text{are:} \\\\
+                $$\\text{such that weights} \\ w \\ \\text{are:}
                 ${Object.entries(analysis.permissiveness.weightedSumComponents)
                   .map(([category, { weight }]) => `w_{${categoryToActronym(category as LicenseCategory)}} = ${weight}`)
                   .join(', \\ ')}

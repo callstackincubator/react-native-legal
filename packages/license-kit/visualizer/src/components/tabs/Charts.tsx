@@ -1,6 +1,6 @@
 import { LicenseCategory, Types, categorizeLicense, getLicenseCategoryDescription } from '@callstack/licenses';
 import { Box, Switch, Typography, alpha } from '@mui/material';
-import { blue, pink, red } from '@mui/material/colors';
+import { blue } from '@mui/material/colors';
 import {
   ArcElement,
   BarElement,
@@ -136,12 +136,6 @@ export default function Charts({ analysis }: ChartsProps) {
       (category) => ((analysis.byCategory[category] ?? 0) / analysis.total) * 100,
     );
 
-    const getPermissivenessLinearCombinationComponent = (category: LicenseCategory) => {
-      const component = analysis.permissiveness.weightedSumComponents[category];
-
-      return (component ? component.count * component.weight : 0) / analysis.permissiveness.totalSum;
-    };
-
     return {
       labels: categories.map((cat) => getLicenseCategoryDescription(cat)),
       datasets: [
@@ -156,23 +150,10 @@ export default function Charts({ analysis }: ChartsProps) {
           pointHoverBackgroundColor: '#fff',
           pointHoverBorderColor: blue[500],
         },
-        {
-          label: 'Permissiveness score',
-          data: Object.keys(analysis.permissiveness.weightedSumComponents).map((category) =>
-            getPermissivenessLinearCombinationComponent(category as LicenseCategory),
-          ),
-          backgroundColor: alpha(red[800], 0.25),
-          borderColor: pink[600],
-          borderWidth: 2,
-          pointBackgroundColor: pink[600],
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: pink[600],
-        },
       ],
     };
   }, [analysis]);
-  console.log({ radarData });
+
   const radarOptions = {
     responsive: true,
     maintainAspectRatio: false,
