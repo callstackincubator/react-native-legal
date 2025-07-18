@@ -1,11 +1,13 @@
-'use client';
-
-import 'katex/dist/katex.min.css';
-import React, { useState } from 'react';
-import { tss } from 'tss-react/mui';
-
+import { SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_EXPANDED_WIDTH } from '@/constants';
+import { useVisualizerStore } from '@/store/visualizerStore';
 import { Types } from '@callstack/licenses';
-import { Analytics, BarChart, ChevronLeft, ChevronRight, ExpandMore } from '@mui/icons-material';
+import {
+  AnalyticsTwoTone,
+  BarChartTwoTone,
+  ChevronLeftTwoTone,
+  ChevronRightTwoTone,
+  ExpandMoreTwoTone,
+} from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -19,9 +21,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-
-import { SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_EXPANDED_WIDTH } from '@/constants';
-import { useVisualizerStore } from '@/store/visualizerStore';
+import React, { useState } from 'react';
+import { tss } from 'tss-react/mui';
 
 import { UpdatingHeading } from './UpdatingHeading';
 import Analysis from './tabs/Analysis';
@@ -58,7 +59,7 @@ export default function Sidebar({ analysis }: SidebarProps) {
 
             <Tooltip title={sidebarExpanded ? 'Collapse Statistics' : 'Expand Statistics'}>
               <IconButton onClick={toggleSidebar} className={classes.toggleButton} color="primary">
-                {sidebarExpanded ? <ChevronLeft /> : <ChevronRight />}
+                {sidebarExpanded ? <ChevronLeftTwoTone /> : <ChevronRightTwoTone />}
               </IconButton>
             </Tooltip>
           </Box>
@@ -73,7 +74,7 @@ export default function Sidebar({ analysis }: SidebarProps) {
               <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
                 {analysis.permissiveness.score}
 
-                <Analytics />
+                <AnalyticsTwoTone />
               </Button>
             </Tooltip>
 
@@ -81,7 +82,7 @@ export default function Sidebar({ analysis }: SidebarProps) {
 
             <Tooltip title="Report" placement="right" arrow>
               <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
-                <BarChart />
+                <BarChartTwoTone />
               </Button>
             </Tooltip>
           </Stack>
@@ -91,9 +92,9 @@ export default function Sidebar({ analysis }: SidebarProps) {
         {sidebarExpanded && (
           <Stack style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <Accordion defaultExpanded>
-              <AccordionSummary expandIcon={<ExpandMore />}>
+              <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Analytics />
+                  <AnalyticsTwoTone />
 
                   <Typography variant="body2">Analysis ({analysis.permissiveness.score})</Typography>
                 </Box>
@@ -107,9 +108,9 @@ export default function Sidebar({ analysis }: SidebarProps) {
             </Accordion>
 
             <Accordion defaultExpanded>
-              <AccordionSummary expandIcon={<ExpandMore />}>
+              <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <BarChart />
+                  <BarChartTwoTone />
 
                   <Typography variant="body2">Statistics</Typography>
                 </Box>

@@ -1,14 +1,16 @@
 import React from 'react';
-import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+
 import {
   InventoryTwoTone as DependenciesIcon,
   RocketLaunchTwoTone as DevDependenciesIcon,
   FlakyTwoTone as OptionalDependenciesIcon,
 } from '@mui/icons-material';
+import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 
-import { useTabsStyles } from './styles';
 import { useVisualizerStore } from '@/store/visualizerStore';
 import { DependencyType } from '@/types/DependencyType';
+
+import { useTabsStyles } from './styles';
 
 export default function Filters() {
   const { classes } = useTabsStyles();

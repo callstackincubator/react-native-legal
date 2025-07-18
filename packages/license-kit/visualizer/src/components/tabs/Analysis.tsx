@@ -1,13 +1,27 @@
-import React from 'react';
-
+import { categoryToActronym, getCategoryChipColor, getCategoryIcon } from '@/utils/licenseCategoryUtils';
 import {
   LicenseCategory,
   Types,
   getLicenseCategoryDescription,
   getPermissivenessScoreDescription,
 } from '@callstack/licenses';
-import { CheckCircle, ErrorOutline, HelpOutline, Warning } from '@mui/icons-material';
-import { Box, Chip, Divider, LinearProgress, List, ListItem, ListItemText, Typography, useTheme } from '@mui/material';
+import { ExpandLessTwoTone, ExpandMoreTwoTone } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Chip,
+  Collapse,
+  Divider,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import renderMathInElement from 'katex/dist/contrib/auto-render';
+import 'katex/dist/katex.min.css';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useTabsStyles } from './styles';
 
@@ -19,46 +33,18 @@ export default function Analysis({ analysis }: AnalysisProps) {
   const { classes } = useTabsStyles();
   const { palette } = useTheme();
 
-  const getScoreColor = (score: number): string => {
+  const [permissivenessEquationExpanded, setPermissivenessEquationExpanded] = useState(false);
+
+  const getScoreColor = useCallback((score: number): string => {
     if (score >= 80) return palette.success.main;
     if (score >= 60) return palette.warning.main;
     return palette.error.main;
-  };
+  }, []);
 
-  const getCategoryIcon = (category: LicenseCategory) => {
-    switch (category) {
-      case LicenseCategory.STRONG_COPYLEFT:
-        return <ErrorOutline color="strongCopyleft" />;
-
-      case LicenseCategory.WEAK_COPYLEFT:
-        return <Warning color="weakCopyleft" />;
-
-      case LicenseCategory.PERMISSIVE:
-        return <CheckCircle color="permissive" />;
-
-      default:
-        return <HelpOutline color="unknown" />;
-    }
-  };
-
-  const getCategoryChipColor = (category: LicenseCategory) => {
-    switch (category) {
-      case LicenseCategory.STRONG_COPYLEFT:
-        return 'strongCopyleft' as const;
-
-      case LicenseCategory.WEAK_COPYLEFT:
-        return 'weakCopyleft' as const;
-
-      case LicenseCategory.PERMISSIVE:
-        return 'permissive' as const;
-
-      case LicenseCategory.UNKNOWN:
-      default:
-        return 'unknown' as const;
-    }
-  };
-
-  const sortedLicenses = Object.entries(analysis.byLicense).sort(([, a], [, b]) => b - a);
+  const sortedLicenses = useMemo(
+    () => Object.entries(analysis.byLicense).sort(([, a], [, b]) => b - a),
+    [analysis.byLicense],
+  );
   const totalPackages = analysis.total;
 
   return (
@@ -68,8 +54,12 @@ export default function Analysis({ analysis }: AnalysisProps) {
         <Box className={classes.scoreContainer}>
           <Box className={classes.scoreSection}>
             <Typography variant="subtitle1" gutterBottom>
-              Permissiveness Score
+              Permissiveness Score:{' '}
+              <span style={{ color: getScoreColor(analysis.permissiveness.score), textDecoration: 'underline' }}>
+                {getPermissivenessScoreDescription(analysis.permissiveness.score)}
+              </span>
             </Typography>
+
             <Box display="flex" alignItems="center" gap={1}>
               <LinearProgress
                 variant="determinate"
@@ -86,16 +76,56 @@ export default function Analysis({ analysis }: AnalysisProps) {
               </Typography>
             </Box>
 
-            <span className="katex">
-              {analysis.permissiveness.score}% ={' '}
-              {Object.entries(analysis.permissiveness.weightedSumComponents).map(
-                ([category, { weight, count }]) => `${weight}_{${category}} \\cdot ${count}%`,
-              )}
-            </span>
+            <Button
+              onClick={() => setPermissivenessEquationExpanded(!permissivenessEquationExpanded)}
+              startIcon={permissivenessEquationExpanded ? <ExpandLessTwoTone /> : <ExpandMoreTwoTone />}
+            >
+              <Typography variant="caption" style={{ textTransform: 'none' }}>
+                How was this calculated?
+              </Typography>
+            </Button>
 
-            <Typography variant="body2" color="text.secondary">
-              {getPermissivenessScoreDescription(analysis.permissiveness.score)}
-            </Typography>
+            <Collapse in={permissivenessEquationExpanded}>
+              <Typography
+                mt={1}
+                variant="caption"
+                style={{ textTransform: 'none', textAlign: 'justify' }}
+                component="p"
+              >
+                The 'permissiveness score' is a custom reference value that has no strictly binding meaning, it may be
+                helpful in having a general idea of how permissive the licenses are. To put it shortly, it is a weighted
+                average of the count of licenses within each of the categories, multiplied by a predefined weight (as
+                shown below).
+              </Typography>
+
+              <span
+                className="katex"
+                ref={(ref) => {
+                  if (ref) {
+                    renderMathInElement(ref, {
+                      delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false },
+                      ],
+                    });
+                  }
+                }}
+              >
+                {`$$${analysis.permissiveness.score}\\% = \\dfrac{${Object.entries(
+                  analysis.permissiveness.weightedSumComponents,
+                )
+                  .map(
+                    ([category, { count }]) => `w_{${categoryToActronym(category as LicenseCategory)}} \\cdot ${count}`,
+                  )
+                  .join(' + ')}}{\\Sigma w}$$
+
+                $$\\text{such that weights} \\ w \\ \\text{are:} \\\\
+                ${Object.entries(analysis.permissiveness.weightedSumComponents)
+                  .map(([category, { weight }]) => `w_{${categoryToActronym(category as LicenseCategory)}} = ${weight}`)
+                  .join(', \\ ')}
+                $$`}
+              </span>
+            </Collapse>
           </Box>
         </Box>
 

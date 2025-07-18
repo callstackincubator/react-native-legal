@@ -1,5 +1,5 @@
 import { STRONG_COPYLEFT_LICENSES_LOWERCASE, WEAK_COPYLEFT_LICENSES_LOWERCASE } from '../constants/licenses';
-import type { AggregatedLicensesMapping } from '../types';
+import type { AggregatedLicensesMapping, LicenseStats, WeightedSumComponents } from '../types';
 import type { LicenseAnalysisResult } from '../types/LicenseAnalysisResult';
 
 import { LicenseCategory } from './LicenseCategory';
@@ -34,18 +34,44 @@ export function categorizeLicense(licenseType?: string): LicenseCategory {
  * @param stats the license stats
  * @returns the permissiveness score
  */
-export function calculatePermissivenessScore(stats: Record<LicenseCategory, number>): number {
+export function calculatePermissivenessScore(stats: Record<LicenseCategory, number>): LicenseStats['permissiveness'] {
   const total = Object.values(stats).reduce((sum, count) => sum + count, 0);
 
-  if (total === 0) return 0;
+  if (total === 0) {
+    return {
+      score: 0,
+      totalSum: 0,
+      weightedSumComponents: {},
+    };
+  }
 
-  const weightedSum = Object.entries(stats).reduce(
-    (sum, [category, count]) =>
-      sum + PERMISSIVENESS_SCORE_WEIGHTS[category as keyof typeof PERMISSIVENESS_SCORE_WEIGHTS] * count,
-    0,
-  );
+  const weightedSumComponents: WeightedSumComponents = {};
 
-  return Math.floor(weightedSum / total);
+  const weightedSum = Object.entries(stats).reduce((sum, [category, count]) => {
+    const weight = PERMISSIVENESS_SCORE_WEIGHTS[category as keyof typeof PERMISSIVENESS_SCORE_WEIGHTS];
+
+    weightedSumComponents[category as LicenseCategory] = {
+      weight,
+      count,
+    };
+
+    return sum + weight * count;
+  }, 0);
+
+  return {
+    score: Math.floor(weightedSum / total),
+    totalSum: total,
+    weightedSumComponents: Object.entries(stats).reduce(
+      (sum, [category, count]) => ({
+        ...sum,
+        [category]: {
+          weight: PERMISSIVENESS_SCORE_WEIGHTS[category as keyof typeof PERMISSIVENESS_SCORE_WEIGHTS],
+          count,
+        },
+      }),
+      {},
+    ),
+  };
 }
 
 /**
@@ -83,13 +109,12 @@ export function analyzeLicenses(report: AggregatedLicensesMapping): LicenseAnaly
   });
 
   const total = Object.keys(report).length;
-  const permissivenessScore = calculatePermissivenessScore(byCategory);
 
   return {
     total,
     byCategory,
     byLicense,
-    permissivenessScore,
+    permissiveness: calculatePermissivenessScore(byCategory),
     categorizedLicenses,
   };
 }

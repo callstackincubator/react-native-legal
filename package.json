@@ -38,6 +38,7 @@
     "@changesets/cli": "^2.28.1",
     "@commitlint/config-conventional": "17.6.6",
     "@evilmartians/lefthook": "1.4.3",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "commitlint": "17.6.6",
     "eslint": "^8.46.0",
     "eslint-plugin-flowtype": "^8.0.3",

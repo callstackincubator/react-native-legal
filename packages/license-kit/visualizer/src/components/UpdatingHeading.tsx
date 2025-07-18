@@ -1,6 +1,9 @@
-import { Typography } from '@mui/material';
+'use client';
+
 import moment from 'moment';
 import { useEffect, useState } from 'react';
+
+import { Typography } from '@mui/material';
 
 export type UpdatingHeadingProps = {
   reportName?: string;

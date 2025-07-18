@@ -1,21 +1,15 @@
 'use client';
 
-import 'katex/dist/katex.min.css';
-import { analyzeLicenses, LicenseCategory, type Types } from '@callstack/licenses';
-import { layout as dagreLayout } from '@dagrejs/dagre';
-import { useTheme } from '@mui/material';
-import { useWindowSize } from '@uidotdev/usehooks';
 import * as d3 from 'd3';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { tss } from 'tss-react/mui';
 
-import type { TextCoordFactory } from '@/types/TextCoordFactory';
-import {
-  licenseLabelYCoordFactory,
-  nameLabelYCoordFactory,
-  versionLabelYCoordFactory,
-} from '@/utils/textCoordFactories';
+import { LicenseCategory, type Types, analyzeLicenses } from '@callstack/licenses';
+import { layout as dagreLayout } from '@dagrejs/dagre';
+import { useTheme } from '@mui/material';
+import { useWindowSize } from '@uidotdev/usehooks';
+
 import {
   DEFAULT_RADIUS,
   HOVER_RADIUS,
@@ -24,9 +18,16 @@ import {
   ROOT_PACKAGE_KEY,
 } from '@/constants';
 import { useTextGroupFactory } from '@/hooks/useTextGroupFactory';
+import type { TextCoordFactory } from '@/types/TextCoordFactory';
 import { buildHierarchy } from '@/utils/buildHierarchy';
-import { buildPackageKey } from '@/utils/packageUtils';
 import { getLicenseWarningColor } from '@/utils/colorUtils';
+import { buildPackageKey } from '@/utils/packageUtils';
+import {
+  licenseLabelYCoordFactory,
+  nameLabelYCoordFactory,
+  versionLabelYCoordFactory,
+} from '@/utils/textCoordFactories';
+
 import Sidebar from './Sidebar';
 
 export type Props = {

@@ -1,3 +1,6 @@
+import { LicenseCategory, Types, categorizeLicense, getLicenseCategoryDescription } from '@callstack/licenses';
+import { Box, Switch, Typography, alpha } from '@mui/material';
+import { blue, pink, red } from '@mui/material/colors';
 import {
   ArcElement,
   BarElement,
@@ -15,10 +18,6 @@ import {
 import * as d3 from 'd3';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Bar, Pie, Radar } from 'react-chartjs-2';
-
-import { LicenseCategory, Types, categorizeLicense, getLicenseCategoryDescription } from '@callstack/licenses';
-import { Box, Switch, Typography, alpha } from '@mui/material';
-import { blue, pink, red } from '@mui/material/colors';
 
 import { useTabsStyles } from './styles';
 
@@ -133,16 +132,21 @@ export default function Charts({ analysis }: ChartsProps) {
   // radar chart data
   const radarData = useMemo(() => {
     const categories = Object.values(LicenseCategory);
-    const categoryPercentages = categories.map((category) => {
-      const count = analysis.byCategory[category] || 0;
-      return (count / analysis.total) * 100;
-    });
+    const categoryPercentages = categories.map(
+      (category) => ((analysis.byCategory[category] ?? 0) / analysis.total) * 100,
+    );
+
+    const getPermissivenessLinearCombinationComponent = (category: LicenseCategory) => {
+      const component = analysis.permissiveness.weightedSumComponents[category];
+
+      return (component ? component.count * component.weight : 0) / analysis.permissiveness.totalSum;
+    };
 
     return {
       labels: categories.map((cat) => getLicenseCategoryDescription(cat)),
       datasets: [
         {
-          label: 'License Distribution',
+          label: 'Packages share',
           data: categoryPercentages,
           backgroundColor: alpha(blue[500], 0.25),
           borderColor: blue[700],
@@ -153,41 +157,10 @@ export default function Charts({ analysis }: ChartsProps) {
           pointHoverBorderColor: blue[500],
         },
         {
-          label: 'Permissiveness Score',
-          data: (
-            [
-              [
-                analysis.permissiveness.weightedSumComponents[LicenseCategory.PERMISSIVE]
-                  ? analysis.permissiveness.weightedSumComponents[LicenseCategory.PERMISSIVE].count *
-                    analysis.permissiveness.weightedSumComponents[LicenseCategory.PERMISSIVE].weight
-                  : 0,
-                LicenseCategory.PERMISSIVE,
-              ],
-              [
-                analysis.permissiveness.weightedSumComponents[LicenseCategory.WEAK_COPYLEFT]
-                  ? analysis.permissiveness.weightedSumComponents[LicenseCategory.WEAK_COPYLEFT].count *
-                    analysis.permissiveness.weightedSumComponents[LicenseCategory.WEAK_COPYLEFT].weight
-                  : 0,
-                LicenseCategory.WEAK_COPYLEFT,
-              ],
-              [
-                analysis.permissiveness.weightedSumComponents[LicenseCategory.STRONG_COPYLEFT]
-                  ? analysis.permissiveness.weightedSumComponents[LicenseCategory.STRONG_COPYLEFT].count *
-                    analysis.permissiveness.weightedSumComponents[LicenseCategory.STRONG_COPYLEFT].weight
-                  : 0,
-                LicenseCategory.STRONG_COPYLEFT,
-              ],
-              [
-                analysis.permissiveness.weightedSumComponents[LicenseCategory.UNKNOWN]
-                  ? analysis.permissiveness.weightedSumComponents[LicenseCategory.UNKNOWN].count *
-                    analysis.permissiveness.weightedSumComponents[LicenseCategory.UNKNOWN].weight
-                  : 0,
-                LicenseCategory.UNKNOWN,
-              ],
-            ] as [number, LicenseCategory][]
-          )
-            .sort((a, b) => Object.values(LicenseCategory).indexOf(a[1]) - Object.values(LicenseCategory).indexOf(b[1]))
-            .map(([value]) => value),
+          label: 'Permissiveness score',
+          data: Object.keys(analysis.permissiveness.weightedSumComponents).map((category) =>
+            getPermissivenessLinearCombinationComponent(category as LicenseCategory),
+          ),
           backgroundColor: alpha(red[800], 0.25),
           borderColor: pink[600],
           borderWidth: 2,
@@ -199,7 +172,7 @@ export default function Charts({ analysis }: ChartsProps) {
       ],
     };
   }, [analysis]);
-
+  console.log({ radarData });
   const radarOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -230,8 +203,6 @@ export default function Charts({ analysis }: ChartsProps) {
       },
     },
   };
-
-  console.log(radarData);
 
   // license names pie chart data
   const licenseNames = Object.keys(analysis.byLicense);

@@ -8,6 +8,7 @@ import {
   WEAK_COPYLEFT_LICENSES_LOWERCASE,
   analyzeLicenses,
   categorizeLicense,
+  getPermissivenessScoreDescription,
   scanDependencies,
 } from '@callstack/licenses';
 import { bold, green, italic, red, underline, whiteBright, yellow } from 'colorette';
@@ -86,7 +87,12 @@ export default function analyzeCommandSetup(program: Command): Command {
     const permissivenessColor = getScoreColor(permissivenessScore);
 
     console.log(`📦 ${bold('Total packages')}: ${whiteBright(total)}`);
-    console.log(`🔓 ${permissivenessColor('Permissiveness')} score: ${permissivenessColor(`${permissivenessScore}%`)}`);
+    console.log(
+      `🔓 ${permissivenessColor('Permissiveness')} score: ${permissivenessColor(
+        `${permissivenessScore}%`,
+      )} (${permissivenessColor(getPermissivenessScoreDescription(permissivenessScore))})`,
+    );
+
     const byLicenseEntries = Object.entries(byLicense);
 
     console.log(

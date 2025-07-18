@@ -1,6 +1,9 @@
-import { useVisualizerStore } from '@/store/visualizerStore';
+'use client';
+
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
+
+import { useVisualizerStore } from '@/store/visualizerStore';
 
 export default function EventSourceHandler() {
   const { autoLoadFromServer, setReport } = useVisualizerStore();
