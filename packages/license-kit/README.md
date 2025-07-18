@@ -129,6 +129,10 @@ To build the project, run `yarn build-library`. This will compile the TypeScript
 
 To run the project in development mode, use `yarn dev`. This will run the TypeScript entrypoint with node directly.
 
+### Appendix - package structure
+
+This package contains a Next.js `@callstack/license-kit-visualizer` within it. It integrates a Next.js server with express server, in development mode compiling the `visualizer/` directory, while in production mode (when the package is published / ran with `NODE_ENV=production` for the sake of testing), it serves a prebuilt Next.js app from `visualizer-build/` directory, which in turn is configured to be the Next.js output directory in `next.config.js`. This output directory is also included in the `files` section of `license-kit`'s `package.json`, effectively including the prebuild app in the published tarball of this package.
+
 ## License
 
 MIT © [Callstack](https://callstack.com)
