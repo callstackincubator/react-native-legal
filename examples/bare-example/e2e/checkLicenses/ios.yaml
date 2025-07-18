@@ -12,7 +12,7 @@ tags:
 - assertVisible: 'OSS Notice'
 # workaround for long list issue taking ages to scroll to 'r*' packages (causing a timeout)
 - repeat:
-    times: 4
+    times: 3
     commands:
       - swipe:
           start: 50%, 95%

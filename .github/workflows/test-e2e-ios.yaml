@@ -29,12 +29,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  e2e-ios:
+  build-release:
     runs-on: macos-15
-    strategy:
-      fail-fast: false
-      matrix:
-        simulator: ['iPhone 16 Pro (18.5)', 'iPhone SE (3rd generation) (18.0)']
+    outputs:
+      artifact-id: ${{ steps.rnef-remote-build-ios.outputs.artifact-id }}
+      artifact-url: ${{ steps.rnef-remote-build-ios.outputs.artifact-url }}
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -44,43 +44,60 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      - name: Run generate:legal from bare-example
+        run: yarn workspace react-native-legal-bare-example generate:legal
+        shell: bash
+
+      - name: Build iOS
+        id: rnef-remote-build-ios
+        uses: callstackincubator/ios@v1
+        with:
+          destination: 'simulator'
+          scheme: 'ReactNativeLegalBareExample'
+          configuration: 'Release'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: ./examples/bare-example
+          comment-bot: false
+
+  run-e2e-tests:
+    runs-on: macos-15
+    needs: build-release
+    strategy:
+      fail-fast: false
+      matrix:
+        simulator: ['iPhone 16 Pro', 'iPhone SE (3rd generation)']
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download and Unpack APK artifact
+        run: |
+          curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -o artifact.zip "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ needs.build-release.outputs.artifact-id }}/zip"
+          unzip artifact.zip -d downloaded-artifacts
+          tar zxf downloaded-artifacts/app.tar.gz -C downloaded-artifacts
+          ls -l downloaded-artifacts
+          APP_PATH=$(pwd)/$(find downloaded-artifacts -name "*.app" -print -quit)
+          echo "ARTIFACT_PATH_FOR_E2E=$APP_PATH" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
       - name: Install Maestro
         uses: ./.github/actions/installMaestro
         with:
           target-platform: ios
 
-      - name: Install example dependencies
-        run: yarn workspace react-native-legal-bare-example install --frozen-lockfile --immutable
-
-      - name: Cache Pods
-        id: cache-pods
-        uses: actions/cache@v4
-        env:
-          cache-name: cached-ios-pods-deps
-        with:
-          path: examples/bare-example/ios/Pods
-          key: bare-example-pods
-
-      - name: Cache Build
-        id: cache-build
-        uses: actions/cache@v4
-        env:
-          cache-name: cached-ios-build
-        with:
-          path: examples/bare-example/ios/build
-          key: bare-example-ios-build
-
-      - name: Install example Pods
-        run: yarn workspace react-native-legal-bare-example pods
-
-      - name: Bundle app
-        run: yarn workspace react-native-legal-bare-example build:ios
-
       - name: List simulators
         run: xcrun simctl list
 
-      - name: Build iOS App
-        run: yarn workspace react-native-legal-bare-example ios:release --simulator="${{ matrix.simulator }}"
+      - name: Install on simulator
+        run: |
+          cd examples/bare-example
+          npx rnef run:ios --binary-path "$ARTIFACT_PATH_FOR_E2E" --device "${{ matrix.simulator }}" --local
 
       - name: Run tests
         run: yarn workspace react-native-legal-bare-example e2e:ios

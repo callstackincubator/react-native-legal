@@ -29,19 +29,48 @@ env:
   MAESTRO_DISABLE_UPDATE_CHECK: true
 
 jobs:
-  e2e-android:
+  build-release:
     runs-on: ubuntu-latest
+    outputs:
+      artifact-id: ${{ steps.rnef-remote-build-android.outputs.artifact-id }}
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Run generate:legal from bare-example
+        run: yarn workspace react-native-legal-bare-example generate:legal
+        shell: bash
+
+      - name: "[WORKAROUND] run generateCodegenArtifactsFromSchema manually for example app"
+        shell: bash
+        run: |
+          cd examples/bare-example/android
+          ./gradlew generateCodegenArtifactsFromSchema
+
+      - name: RNEF Remote Build - Android
+        id: rnef-remote-build-android
+        uses: callstackincubator/android@v1
+        with:
+          variant: release
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          sign: false
+          comment-bot: false
+          working-directory: ./examples/bare-example
+
+  run-e2e-tests:
+    runs-on: ubuntu-latest
+    needs: build-release
     strategy:
       fail-fast: false
       matrix:
-        api-level: [30, 34, 35]
+        api-level: [ 30, 33, 35 ]
     steps:
-      - name: Enable KVM group perms
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-
       - name: Checkout Repo
         uses: actions/checkout@v4
         with:
@@ -55,44 +84,58 @@ jobs:
         with:
           target-platform: android
 
-      - name: Cache Build
-        id: cache-build
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Download and Unpack APK artifact
+        run: |
+          curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -o artifact.zip "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ needs.build-release.outputs.artifact-id }}/zip"
+          unzip artifact.zip -d downloaded-artifacts
+          ls -l downloaded-artifacts
+          APK_PATH=$(pwd)/$(find downloaded-artifacts -name "*.apk" -print -quit)
+          echo "ARTIFACT_PATH_FOR_E2E=$APK_PATH" >> $GITHUB_ENV
+        shell: bash
+
+      - name: AVD cache
         uses: actions/cache@v4
-        env:
-          cache-name: cached-android-build
+        id: avd-cache
         with:
           path: |
-            examples/bare-example/android/build
-            examples/bare-example/android/app/build
-            examples/bare-example/android/app/.cxx
-          key: bare-example-android-build
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ matrix.api-level }}
 
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-          cache: 'gradle'
-
-      - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v3
-
-      - name: Install example dependencies
-        run: yarn workspace react-native-legal-bare-example install --frozen-lockfile --immutable
-
-      - name: Bundle app
-        run: yarn workspace react-native-legal-bare-example build:android
-
-      - name: Create AVD and generate snapshot for caching
+      - name: create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           arch: 'x86_64'
           target: 'google_apis'
-          force-avd-creation: true
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          force-avd-creation: false
+          cores: 4
+          emulator-options: -verbose -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-front none -camera-back none
           disable-animations: false
-          ram-size: '4096M'
-          script: ./scripts/e2e_android_emulator_build_and_test.sh
+          ram-size: '6144M'
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: 'x86_64'
+          target: 'google_apis'
+          force-avd-creation: false
+          cores: 4
+          emulator-options: -verbose -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-front none -camera-back none
+          disable-animations: false
+          ram-size: '6144M'
+          script: |
+            adb install -r "$ARTIFACT_PATH_FOR_E2E"
+            yarn workspace react-native-legal-bare-example e2e:android
 
       - name: Upload report
         if: always()
