@@ -35,15 +35,7 @@ export function categorizeLicense(licenseType?: string): LicenseCategory {
  * @returns the permissiveness score
  */
 export function calculatePermissivenessScore(stats: Record<LicenseCategory, number>): LicenseStats['permissiveness'] {
-  const total = Object.values(stats).reduce((sum, count) => sum + count, 0);
-
-  if (total === 0) {
-    return {
-      score: 0,
-      totalSum: 0,
-      weightedSumComponents: {},
-    };
-  }
+  const totalCount = Object.values(stats).reduce((sum, count) => sum + count, 0);
 
   const weightedSumComponents: WeightedSumComponents = {};
 
@@ -58,19 +50,18 @@ export function calculatePermissivenessScore(stats: Record<LicenseCategory, numb
     return sum + weight * count;
   }, 0);
 
+  if (totalCount === 0) {
+    return {
+      score: 0,
+      totalCount: 0,
+      weightedSumComponents: {},
+    };
+  }
+
   return {
-    score: Math.floor(weightedSum / total),
-    totalSum: total,
-    weightedSumComponents: Object.entries(stats).reduce(
-      (sum, [category, count]) => ({
-        ...sum,
-        [category]: {
-          weight: PERMISSIVENESS_SCORE_WEIGHTS[category as keyof typeof PERMISSIVENESS_SCORE_WEIGHTS],
-          count,
-        },
-      }),
-      {},
-    ),
+    score: (weightedSum / (Math.max(...Object.values(PERMISSIVENESS_SCORE_WEIGHTS)) * totalCount)) * 100,
+    totalCount,
+    weightedSumComponents,
   };
 }
 

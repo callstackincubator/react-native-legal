@@ -1,15 +1,5 @@
 'use client';
 
-import * as d3 from 'd3';
-import { useSnackbar } from 'notistack';
-import React, { useEffect, useMemo, useRef } from 'react';
-import { tss } from 'tss-react/mui';
-
-import { LicenseCategory, type Types, analyzeLicenses } from '@callstack/licenses';
-import { layout as dagreLayout } from '@dagrejs/dagre';
-import { useTheme } from '@mui/material';
-import { useWindowSize } from '@uidotdev/usehooks';
-
 import {
   DEFAULT_RADIUS,
   HOVER_RADIUS,
@@ -27,6 +17,14 @@ import {
   nameLabelYCoordFactory,
   versionLabelYCoordFactory,
 } from '@/utils/textCoordFactories';
+import { LicenseCategory, type Types, analyzeLicenses } from '@callstack/licenses';
+import { layout as dagreLayout } from '@dagrejs/dagre';
+import { useTheme } from '@mui/material';
+import { useWindowSize } from '@uidotdev/usehooks';
+import * as d3 from 'd3';
+import { useSnackbar } from 'notistack';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { tss } from 'tss-react/mui';
 
 import Sidebar from './Sidebar';
 

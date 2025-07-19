@@ -1,4 +1,4 @@
-export const SIDEBAR_EXPANDED_WIDTH = 500;
+export const SIDEBAR_EXPANDED_WIDTH = 550;
 export const SIDEBAR_COLLAPSED_WIDTH = 50;
 
 export const DEFAULT_RADIUS = 24;

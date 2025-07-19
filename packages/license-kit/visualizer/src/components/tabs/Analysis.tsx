@@ -72,7 +72,7 @@ export default function Analysis({ analysis }: AnalysisProps) {
                 }}
               />
               <Typography variant="h6" color={getScoreColor(analysis.permissiveness.score)}>
-                {analysis.permissiveness.score}%
+                {Math.floor(analysis.permissiveness.score)}%
               </Typography>
             </Box>
 
@@ -111,7 +111,7 @@ export default function Analysis({ analysis }: AnalysisProps) {
                   }
                 }}
               >
-                {`$$${analysis.permissiveness.score}\\% = \\dfrac{${Object.entries(
+                {`$$${analysis.permissiveness.score.toFixed(2)}\\% = \\dfrac{${Object.entries(
                   analysis.permissiveness.weightedSumComponents,
                 )
                   .map(
@@ -119,11 +119,11 @@ export default function Analysis({ analysis }: AnalysisProps) {
                   )
                   .join(' + ')}}{\\Sigma w}$$
 
-                $$\\text{such that weights} \\ w \\ \\text{are:}
+                $\\text{such that weights} \\ w \\ \\text{are:} \\\\
                 ${Object.entries(analysis.permissiveness.weightedSumComponents)
                   .map(([category, { weight }]) => `w_{${categoryToActronym(category as LicenseCategory)}} = ${weight}`)
                   .join(', \\ ')}
-                $$`}
+                $`}
               </span>
             </Collapse>
           </Box>

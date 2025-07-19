@@ -40,9 +40,9 @@ export interface LicenseStats {
     score: number;
 
     /**
-     * The total sum of the weighted sum components
+     * The total count of packages
      */
-    totalSum: number;
+    totalCount: number;
 
     /**
      * Mapping of license category to weighted component data

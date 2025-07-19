@@ -72,7 +72,7 @@ export default function Sidebar({ analysis }: SidebarProps) {
           <Stack className={classes.collapsedContent} spacing={1}>
             <Tooltip title="Analysis" placement="right" arrow>
               <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
-                {analysis.permissiveness.score}
+                {Math.floor(analysis.permissiveness.score)}
 
                 <AnalyticsTwoTone />
               </Button>
@@ -96,7 +96,7 @@ export default function Sidebar({ analysis }: SidebarProps) {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <AnalyticsTwoTone />
 
-                  <Typography variant="body2">Analysis ({analysis.permissiveness.score})</Typography>
+                  <Typography variant="body2">Analysis ({Math.floor(analysis.permissiveness.score)}%)</Typography>
                 </Box>
               </AccordionSummary>
 
