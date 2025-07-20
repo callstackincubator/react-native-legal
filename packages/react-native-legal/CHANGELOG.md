@@ -1,5 +1,11 @@
 # react-native-legal
 
+## 1.4.0
+
+### Minor Changes
+
+- [#33](https://github.com/callstackincubator/react-native-legal/pull/33) [`1e37d65`](https://github.com/callstackincubator/react-native-legal/commit/1e37d65863c4e6fb334a491a38bc18c2dacd434b) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Method that retrieves license metadata from native to JS
+
 ## 1.3.1
 
 ### Patch Changes
