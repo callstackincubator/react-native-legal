@@ -12,6 +12,7 @@
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
+  "bin": "./bin/index.js",
   "react-native": "src/index",
   "source": "src/index",
   "repository": {

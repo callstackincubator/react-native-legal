@@ -50,6 +50,7 @@ project.xcworkspace
 build/
 packages/*/lib/
 packages/*/build/
+.rnlegal/
 
 # Expo example
 examples/expo-example/android
