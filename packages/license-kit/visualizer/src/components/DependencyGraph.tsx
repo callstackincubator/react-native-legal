@@ -305,7 +305,8 @@ export default function DependencyGraph({ data }: Props) {
             texts.transition(t).style('opacity', (pred) => {
               const predNode = graph.node(pred as string);
 
-              return thisNode.meta.parentPackageKeys.includes(predNode.meta.key) ||
+              return thisNode.meta.parentPackageKeys.length === 0 ||
+                thisNode.meta.parentPackageKeys.includes(predNode.meta.key) ||
                 predNode.meta.parentPackageKeys.find((key) => thisNode.meta.parentPackageKeys.includes(key))
                 ? 1
                 : INACTIVE_HOVER_MODE_OPACITY;
@@ -339,7 +340,8 @@ export default function DependencyGraph({ data }: Props) {
             .style('opacity', (pred) => {
               const predNode = graph.node(pred as string);
 
-              return thisNode.meta.parentPackageKeys.includes(predNode.meta.key) ||
+              return thisNode.meta.parentPackageKeys.length === 0 ||
+                thisNode.meta.parentPackageKeys.includes(predNode.meta.key) ||
                 predNode.meta.parentPackageKeys.find((key) => thisNode.meta.parentPackageKeys.includes(key))
                 ? 1
                 : INACTIVE_HOVER_MODE_OPACITY;
@@ -404,7 +406,8 @@ export default function DependencyGraph({ data }: Props) {
         const packageKey = buildPackageKey(meta);
         const category = licenseAnalysis.categorizedLicenses[packageKey];
 
-        const notIsPermissive = category !== LicenseCategory.PERMISSIVE;
+        // below: ignore just the root package
+        const notIsPermissive = packageKey !== ROOT_PROJECT_ROOT_PACKAGE_KEY && category !== LicenseCategory.PERMISSIVE;
 
         const text = group
           .append('text')
@@ -539,7 +542,13 @@ export default function DependencyGraph({ data }: Props) {
 
       <div className={classes.flex}>
         <Stack direction="row" justifyContent="space-evenly" alignItems="center" gap={1}>
-          <Typography textAlign="center" display="inline-flex" alignItems="center" whiteSpace="break-spaces">
+          <Typography
+            textAlign="center"
+            display="inline-flex"
+            alignItems="center"
+            whiteSpace="break-spaces"
+            component="span"
+          >
             🌴 Current root: <pre className={classes.inline}>{rootPackageKey}</pre>
             <Typography
               color={rootOverride ? 'warning' : undefined}
