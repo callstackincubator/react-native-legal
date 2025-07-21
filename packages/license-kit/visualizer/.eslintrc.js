@@ -6,7 +6,11 @@ var config = {
   },
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'import'],
-  extends: ['plugin:@typescript-eslint/recommended', 'plugin:import/typescript'],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:import/typescript',
+    'plugin:react-hooks/recommended-legacy',
+  ],
   settings: {
     'import/resolver': {
       typescript: {

@@ -35,11 +35,14 @@ export default function Analysis({ analysis }: AnalysisProps) {
 
   const [permissivenessEquationExpanded, setPermissivenessEquationExpanded] = useState(false);
 
-  const getScoreColor = useCallback((score: number): string => {
-    if (score >= 80) return palette.success.main;
-    if (score >= 60) return palette.warning.main;
-    return palette.error.main;
-  }, []);
+  const getScoreColor = useCallback(
+    (score: number): string => {
+      if (score >= 80) return palette.success.main;
+      if (score >= 60) return palette.warning.main;
+      return palette.error.main;
+    },
+    [palette.error.main, palette.success.main, palette.warning.main],
+  );
 
   const sortedLicenses = useMemo(
     () => Object.entries(analysis.byLicense).sort(([, a], [, b]) => b - a),
@@ -81,7 +84,7 @@ export default function Analysis({ analysis }: AnalysisProps) {
               startIcon={permissivenessEquationExpanded ? <ExpandLessTwoTone /> : <ExpandMoreTwoTone />}
             >
               <Typography variant="caption" style={{ textTransform: 'none' }}>
-                How was this calculated?
+                How was the above calculated?
               </Typography>
             </Button>
 
@@ -92,10 +95,10 @@ export default function Analysis({ analysis }: AnalysisProps) {
                 style={{ textTransform: 'none', textAlign: 'justify' }}
                 component="p"
               >
-                The 'permissiveness score' is a custom reference value that has no strictly binding meaning, it may be
-                helpful in having a general idea of how permissive the licenses are. To put it shortly, it is a weighted
-                average of the count of licenses within each of the categories, multiplied by a predefined weight (as
-                shown below).
+                The &apos;permissiveness score&apos; is a custom reference value that has no strictly binding meaning,
+                it may be helpful in having a general idea of how permissive the licenses are. To put it shortly, it is
+                a weighted average of the count of licenses within each of the categories, multiplied by a predefined
+                weight (as shown below).
               </Typography>
 
               <span

@@ -87,7 +87,7 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
 
   const isHoveredVisualState = useMemo(
     () => isDragOver || (!report && !loading && isHovered && !isAutoLoadHovered),
-    [isDragOver, isHovered, report, isAutoLoadHovered],
+    [isDragOver, report, loading, isHovered, isAutoLoadHovered],
   );
 
   // handle moving dragged file over the children of this drop zone

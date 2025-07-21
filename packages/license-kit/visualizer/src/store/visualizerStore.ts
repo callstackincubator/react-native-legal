@@ -10,12 +10,14 @@ type VisualizerStoreState = {
   loadedAt?: moment.Moment;
   visibleDependencyTypes: DependencyType[];
   autoLoadFromServer: boolean;
+  selectedRoot: Types.License | null;
 };
 
 type VisualizerStoreActions = {
   setReport: (report: Types.AggregatedLicensesMapping, reportName: string) => void;
   toggleDependencyTypeVisibility: (dependencyType: DependencyType) => void;
   setAutoLoadFromServer: (autoLoadFromServer: boolean) => void;
+  selectRoot: (root: Types.License | null) => void;
 };
 
 export type VisualizerStore = VisualizerStoreState & VisualizerStoreActions;
@@ -46,5 +48,8 @@ export const useVisualizerStore = create<VisualizerStore>()(
 
     autoLoadFromServer: false,
     setAutoLoadFromServer: (autoLoadFromServer: boolean) => set({ autoLoadFromServer }),
+
+    selectedRoot: null,
+    selectRoot: (root: Types.License | null) => set({ selectedRoot: root }),
   })),
 );

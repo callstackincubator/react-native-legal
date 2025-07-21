@@ -45,7 +45,7 @@ export default function EventSourceHandler() {
         eventSource.close();
       };
     }
-  }, [autoLoadFromServer]);
+  }, [autoLoadFromServer, enqueueSnackbar, setReport]);
 
   return null;
 }

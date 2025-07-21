@@ -37,9 +37,8 @@ declare module '@mui/material/SvgIcon' {
   }
 }
 
-export const theme = createTheme({
+const baseTheme = {
   palette: {
-    mode: 'dark',
     primary: {
       main: green[500],
     },
@@ -50,5 +49,21 @@ export const theme = createTheme({
     weakCopyleft: getLicenseWarningColor(LicenseCategory.WEAK_COPYLEFT) as PaletteOptions['weakCopyleft'],
     permissive: getLicenseWarningColor(LicenseCategory.PERMISSIVE) as PaletteOptions['permissive'],
     unknown: getLicenseWarningColor(LicenseCategory.UNKNOWN) as PaletteOptions['unknown'],
+  },
+};
+
+export const lightTheme = createTheme({
+  ...baseTheme,
+  palette: {
+    ...baseTheme.palette,
+    mode: 'light',
+  },
+});
+
+export const darkTheme = createTheme({
+  ...baseTheme,
+  palette: {
+    ...baseTheme.palette,
+    mode: 'dark',
   },
 });

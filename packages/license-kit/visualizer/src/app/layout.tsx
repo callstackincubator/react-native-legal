@@ -20,13 +20,11 @@ export const metadata: Metadata = {
   description: 'License Kit Project Visualizer & Analyzer',
 };
 
-export default function RootLayout(
-  {
-    children,
-  }: Readonly<{
-    children: React.ReactNode;
-  }>,
-) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>

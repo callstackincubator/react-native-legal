@@ -41,6 +41,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "typescript": "^5"
   }
 }

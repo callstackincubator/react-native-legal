@@ -1,4 +1,5 @@
 import { SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_EXPANDED_WIDTH } from '@/constants';
+import { useAppStore } from '@/store/appStore';
 import { useVisualizerStore } from '@/store/visualizerStore';
 import { Types } from '@callstack/licenses';
 import {
@@ -6,7 +7,9 @@ import {
   BarChartTwoTone,
   ChevronLeftTwoTone,
   ChevronRightTwoTone,
+  DarkModeTwoTone,
   ExpandMoreTwoTone,
+  LightModeTwoTone,
 } from '@mui/icons-material';
 import {
   Accordion,
@@ -21,7 +24,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { tss } from 'tss-react/mui';
 
 import { UpdatingHeading } from './UpdatingHeading';
@@ -35,12 +38,17 @@ export type SidebarProps = {
 export default function Sidebar({ analysis }: SidebarProps) {
   const { classes } = useStyles();
   const { reportName, loadedAt } = useVisualizerStore();
+  const { themeMode, setThemeMode } = useAppStore();
 
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
-  const toggleSidebar = () => {
-    setSidebarExpanded(!sidebarExpanded);
-  };
+  const toggleSidebar = useCallback(() => {
+    setSidebarExpanded((previous) => !previous);
+  }, []);
+
+  const toggleThemeMode = useCallback(() => {
+    setThemeMode(themeMode === 'dark' ? 'light' : 'dark');
+  }, [setThemeMode, themeMode]);
 
   return (
     <>
@@ -57,8 +65,14 @@ export default function Sidebar({ analysis }: SidebarProps) {
           <Box className={classes.toggleContainer}>
             <pre className={classes.sidebarHeading}>license-kit visualize</pre>
 
-            <Tooltip title={sidebarExpanded ? 'Collapse Statistics' : 'Expand Statistics'}>
-              <IconButton onClick={toggleSidebar} className={classes.toggleButton} color="primary">
+            <Tooltip title="Toggle theme" arrow>
+              <IconButton onClick={toggleThemeMode}>
+                {themeMode === 'dark' ? <DarkModeTwoTone /> : <LightModeTwoTone />}
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title={sidebarExpanded ? 'Collapse sidebar' : 'Expand sidebar'} arrow>
+              <IconButton onClick={toggleSidebar} className={classes.toggleButton}>
                 {sidebarExpanded ? <ChevronLeftTwoTone /> : <ChevronRightTwoTone />}
               </IconButton>
             </Tooltip>
@@ -67,29 +81,8 @@ export default function Sidebar({ analysis }: SidebarProps) {
           {sidebarExpanded && <UpdatingHeading reportName={reportName} loadedAt={loadedAt} />}
         </Stack>
 
-        {/* collapsed sidebar */}
-        {!sidebarExpanded && (
-          <Stack className={classes.collapsedContent} spacing={1}>
-            <Tooltip title="Analysis" placement="right" arrow>
-              <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
-                {Math.floor(analysis.permissiveness.score)}
-
-                <AnalyticsTwoTone />
-              </Button>
-            </Tooltip>
-
-            <Divider orientation="horizontal" flexItem />
-
-            <Tooltip title="Report" placement="right" arrow>
-              <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
-                <BarChartTwoTone />
-              </Button>
-            </Tooltip>
-          </Stack>
-        )}
-
-        {/* expanded sidebar */}
-        {sidebarExpanded && (
+        {sidebarExpanded ? (
+          /* expanded sidebar */
           <Stack style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <Accordion defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
@@ -122,6 +115,29 @@ export default function Sidebar({ analysis }: SidebarProps) {
                 </Box>
               </AccordionDetails>
             </Accordion>
+          </Stack>
+        ) : (
+          /* collapsed sidebar */
+          <Stack className={classes.collapsedContent} spacing={1}>
+            <Tooltip title="Analysis" placement="right" arrow>
+              <span>
+                <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
+                  {Math.floor(analysis.permissiveness.score)}
+
+                  <AnalyticsTwoTone />
+                </Button>
+              </span>
+            </Tooltip>
+
+            <Divider orientation="horizontal" flexItem />
+
+            <Tooltip title="Report" placement="right" arrow>
+              <span>
+                <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
+                  <BarChartTwoTone />
+                </Button>
+              </span>
+            </Tooltip>
           </Stack>
         )}
       </Paper>
