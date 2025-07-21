@@ -237,8 +237,12 @@ export default function DependencyGraph({ data }: Props) {
           // @ts-expect-error
           zoom.transform,
           d3.zoomIdentity
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .translate(svg.node()!.getBoundingClientRect().width / 2 - root.x * initialScale, 100)
+            .translate(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              svg.node()!.getBoundingClientRect().width / 2 - root.x * initialScale,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              svg.node()!.getBoundingClientRect().height / 2 - root.y * initialScale,
+            )
             .scale(initialScale),
         );
       }
