@@ -89,7 +89,7 @@ export default function analyzeCommandSetup(program: Command): Command {
     console.log(`📦 ${bold('Total packages')}: ${whiteBright(total)}`);
     console.log(
       `🔓 ${permissivenessColor('Permissiveness')} score: ${permissivenessColor(
-        `${permissivenessScore}%`,
+        `${Math.floor(permissivenessScore)}%`,
       )} (${permissivenessColor(getPermissivenessScoreDescription(permissivenessScore))})`,
     );
 
