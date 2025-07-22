@@ -1,13 +1,13 @@
-import { Types, categorizeLicense } from '@callstack/licenses';
+import { Types } from '@callstack/licenses';
 import {
   AnalyticsTwoTone,
   BarChartTwoTone,
-  ChangeHistoryTwoTone,
   ChevronLeftTwoTone,
   ChevronRightTwoTone,
   DarkModeTwoTone,
   ExpandMoreTwoTone,
-  Inventory2TwoTone,
+  HelpOutlineTwoTone,
+  InfoOutlineTwoTone,
   LightModeTwoTone,
 } from '@mui/icons-material';
 import {
@@ -16,7 +16,6 @@ import {
   AccordionSummary,
   Box,
   Button,
-  Chip,
   Divider,
   IconButton,
   Paper,
@@ -24,20 +23,17 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { usePrevious } from '@uidotdev/usehooks';
-import React, { useCallback, useMemo, useState } from 'react';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import React, { useCallback, useState } from 'react';
 import { tss } from 'tss-react/mui';
 
 import { SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_EXPANDED_WIDTH } from '@/constants';
 import { useAppStore } from '@/store/appStore';
 import { useVisualizerStore } from '@/store/visualizerStore';
-import { getLicenseWarningColor } from '@/utils/colorUtils';
-import { getCategoryChipColor, getCategoryIcon } from '@/utils/licenseCategoryUtils';
 
-import ExternalLink from './ExternalLink';
+import HoveredDependencyInfo from './HoveredDependencyInfo';
 import { UpdatingHeading } from './UpdatingHeading';
+import Disclaimer from './sidebarSections/Disclaimer';
+import Help from './sidebarSections/Help';
 import Analysis from './tabs/Analysis';
 import Charts from './tabs/Charts';
 
@@ -47,7 +43,7 @@ export type SidebarProps = {
 
 export default function Sidebar({ analysis }: SidebarProps) {
   const { classes } = useStyles();
-  const { reportName, loadedAt, hoveredLicense } = useVisualizerStore();
+  const { reportName, loadedAt } = useVisualizerStore();
   const { themeMode, setThemeMode } = useAppStore();
 
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
@@ -59,13 +55,6 @@ export default function Sidebar({ analysis }: SidebarProps) {
   const toggleThemeMode = useCallback(() => {
     setThemeMode(themeMode === 'dark' ? 'light' : 'dark');
   }, [setThemeMode, themeMode]);
-
-  // below var is used to still display the last hovered license in the sidebar when it becomes null in the store
-  const prevHoveredLicenseValue = usePrevious(hoveredLicense);
-
-  const displayLicense = hoveredLicense ?? prevHoveredLicenseValue;
-
-  const hoveredDisplayCategoryLicense = useMemo(() => categorizeLicense(displayLicense?.type), [displayLicense]);
 
   return (
     <>
@@ -101,70 +90,7 @@ export default function Sidebar({ analysis }: SidebarProps) {
         {sidebarExpanded ? (
           /* expanded sidebar */
           <Stack style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <Stack direction="column" alignItems="center" justifyContent="center" gap={2} padding={2}>
-              <Stack direction="column" alignItems="center">
-                <Typography variant="caption">Currently hovered package ☝️</Typography>
-
-                <Typography variant="h6" component="span">
-                  <pre className={classes.hoveredPackageName}>
-                    {displayLicense ? `${displayLicense?.name}@${displayLicense?.version}` : 'N/A'}
-                  </pre>
-                </Typography>
-              </Stack>
-
-              <Stack direction="row" alignItems="center" justifyContent="center" gap={2} width="100%" flexWrap="wrap">
-                <Tooltip arrow title="Dependency type">
-                  <Chip icon={<Inventory2TwoTone />} label={displayLicense?.dependencyType ?? 'N/A'} />
-                </Tooltip>
-
-                <Tooltip arrow title="License type & category (package.json 'type' field)">
-                  <Chip
-                    sx={{
-                      // FIXME: for whatever reason, the custom background color is not applied to non-outlined chips, hence the below workaround
-                      backgroundColor: getLicenseWarningColor(hoveredDisplayCategoryLicense)?.main,
-                    }}
-                    icon={getCategoryIcon(hoveredDisplayCategoryLicense)}
-                    label={`${displayLicense?.type ?? '---'} (${hoveredDisplayCategoryLicense})`}
-                    color={getCategoryChipColor(hoveredDisplayCategoryLicense)}
-                  />
-                </Tooltip>
-
-                <Tooltip arrow title="Version specifier">
-                  <Chip
-                    icon={<ChangeHistoryTwoTone />}
-                    label={`Ver. spec.: ${displayLicense?.requiredVersion ?? 'N/A'}`}
-                  />
-                </Tooltip>
-              </Stack>
-
-              <Stack direction="column" alignItems="center">
-                {displayLicense?.url && <ExternalLink href={displayLicense.url} />}
-                <Typography variant="body1">Author: {displayLicense?.author ?? '---'}</Typography>
-
-                <Typography variant="body1" textAlign="center" width="100%" paddingLeft={2} paddingRight={2}>
-                  {displayLicense?.description ?? '(No package description available)'}
-                </Typography>
-              </Stack>
-
-              <Divider orientation="horizontal" flexItem />
-
-              <Typography variant="body1" width="100%" paddingLeft={2} paddingRight={2} component="div">
-                <Markdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    a: ({ children, href }) => (
-                      <ExternalLink href={href as string} inline>
-                        {children}
-                      </ExternalLink>
-                    ),
-                  }}
-                >
-                  {`${displayLicense?.file ? `*Source: \`${displayLicense.file}\`*` : ''}\n\n${
-                    displayLicense?.content ?? '(No license text available)'
-                  }`}
-                </Markdown>
-              </Typography>
-            </Stack>
+            <HoveredDependencyInfo />
 
             <Accordion defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
@@ -176,7 +102,7 @@ export default function Sidebar({ analysis }: SidebarProps) {
               </AccordionSummary>
 
               <AccordionDetails>
-                <Box className={classes.statsContent}>
+                <Box className={classes.accordionContents}>
                   <Analysis analysis={analysis} />
                 </Box>
               </AccordionDetails>
@@ -192,8 +118,40 @@ export default function Sidebar({ analysis }: SidebarProps) {
               </AccordionSummary>
 
               <AccordionDetails>
-                <Box className={classes.statsContent}>
+                <Box className={classes.accordionContents}>
                   <Charts analysis={analysis} />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <InfoOutlineTwoTone />
+
+                  <Typography variant="body2">Disclaimer</Typography>
+                </Box>
+              </AccordionSummary>
+
+              <AccordionDetails>
+                <Box className={classes.accordionContents}>
+                  <Disclaimer />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <HelpOutlineTwoTone />
+
+                  <Typography variant="body2">Help</Typography>
+                </Box>
+              </AccordionSummary>
+
+              <AccordionDetails>
+                <Box className={classes.accordionContents}>
+                  <Help />
                 </Box>
               </AccordionDetails>
             </Accordion>
@@ -217,6 +175,26 @@ export default function Sidebar({ analysis }: SidebarProps) {
               <span>
                 <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
                   <BarChartTwoTone />
+                </Button>
+              </span>
+            </Tooltip>
+
+            <Divider orientation="horizontal" flexItem />
+
+            <Tooltip title="Disclaimer" placement="right" arrow>
+              <span>
+                <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
+                  <InfoOutlineTwoTone />
+                </Button>
+              </span>
+            </Tooltip>
+
+            <Divider orientation="horizontal" flexItem />
+
+            <Tooltip title="Help" placement="right" arrow>
+              <span>
+                <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
+                  <HelpOutlineTwoTone />
                 </Button>
               </span>
             </Tooltip>
@@ -266,7 +244,7 @@ const useStyles = tss.create(({ theme }) => ({
     alignItems: 'center',
     padding: theme.spacing(2, 1),
   },
-  statsContent: {
+  accordionContents: {
     flex: 1,
     overflow: 'auto',
   },
@@ -284,10 +262,5 @@ const useStyles = tss.create(({ theme }) => ({
   sidebarHeading: {
     flex: 1,
     textAlign: 'start',
-  },
-  hoveredPackageName: {
-    display: 'inline-block',
-    whiteSpace: 'pre-wrap',
-    margin: 0,
   },
 }));
