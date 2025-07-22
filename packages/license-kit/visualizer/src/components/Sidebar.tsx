@@ -1,8 +1,3 @@
-import { SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_EXPANDED_WIDTH } from '@/constants';
-import { useAppStore } from '@/store/appStore';
-import { useVisualizerStore } from '@/store/visualizerStore';
-import { getLicenseWarningColor } from '@/utils/colorUtils';
-import { getCategoryChipColor, getCategoryIcon } from '@/utils/licenseCategoryUtils';
 import { Types, categorizeLicense } from '@callstack/licenses';
 import {
   AnalyticsTwoTone,
@@ -34,6 +29,12 @@ import React, { useCallback, useMemo, useState } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { tss } from 'tss-react/mui';
+
+import { SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_EXPANDED_WIDTH } from '@/constants';
+import { useAppStore } from '@/store/appStore';
+import { useVisualizerStore } from '@/store/visualizerStore';
+import { getLicenseWarningColor } from '@/utils/colorUtils';
+import { getCategoryChipColor, getCategoryIcon } from '@/utils/licenseCategoryUtils';
 
 import ExternalLink from './ExternalLink';
 import { UpdatingHeading } from './UpdatingHeading';
@@ -106,32 +107,39 @@ export default function Sidebar({ analysis }: SidebarProps) {
 
                 <Typography variant="h6" component="span">
                   <pre className={classes.hoveredPackageName}>
-                    {displayLicense?.name}@{displayLicense?.version}
+                    {displayLicense ? `${displayLicense?.name}@${displayLicense?.version}` : 'N/A'}
                   </pre>
                 </Typography>
               </Stack>
 
               <Stack direction="row" alignItems="center" justifyContent="center" gap={2} width="100%" flexWrap="wrap">
-                <Chip icon={<Inventory2TwoTone />} label={displayLicense?.dependencyType} />
+                <Tooltip arrow title="Dependency type">
+                  <Chip icon={<Inventory2TwoTone />} label={displayLicense?.dependencyType ?? 'N/A'} />
+                </Tooltip>
 
-                <Tooltip arrow title="License type & category (package.json field)">
+                <Tooltip arrow title="License type & category (package.json 'type' field)">
                   <Chip
                     sx={{
                       // FIXME: for whatever reason, the custom background color is not applied to non-outlined chips, hence the below workaround
                       backgroundColor: getLicenseWarningColor(hoveredDisplayCategoryLicense)?.main,
                     }}
                     icon={getCategoryIcon(hoveredDisplayCategoryLicense)}
-                    label={`${displayLicense?.type ?? 'N/A'} (${hoveredDisplayCategoryLicense})`}
+                    label={`${displayLicense?.type ?? '---'} (${hoveredDisplayCategoryLicense})`}
                     color={getCategoryChipColor(hoveredDisplayCategoryLicense)}
                   />
                 </Tooltip>
 
-                <Chip icon={<ChangeHistoryTwoTone />} label={`Ver. specifier: ${displayLicense?.requiredVersion}`} />
+                <Tooltip arrow title="Version specifier">
+                  <Chip
+                    icon={<ChangeHistoryTwoTone />}
+                    label={`Ver. spec.: ${displayLicense?.requiredVersion ?? 'N/A'}`}
+                  />
+                </Tooltip>
               </Stack>
 
               <Stack direction="column" alignItems="center">
                 {displayLicense?.url && <ExternalLink href={displayLicense.url} />}
-                <Typography variant="body1">Author: {displayLicense?.author}</Typography>
+                <Typography variant="body1">Author: {displayLicense?.author ?? '---'}</Typography>
 
                 <Typography variant="body1" textAlign="center" width="100%" paddingLeft={2} paddingRight={2}>
                   {displayLicense?.description ?? '(No package description available)'}
@@ -140,7 +148,7 @@ export default function Sidebar({ analysis }: SidebarProps) {
 
               <Divider orientation="horizontal" flexItem />
 
-              <Typography variant="body1" width="100%" paddingLeft={2} paddingRight={2}>
+              <Typography variant="body1" width="100%" paddingLeft={2} paddingRight={2} component="div">
                 <Markdown
                   remarkPlugins={[remarkGfm]}
                   components={{

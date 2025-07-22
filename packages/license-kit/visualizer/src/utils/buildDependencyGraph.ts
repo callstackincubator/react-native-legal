@@ -1,5 +1,9 @@
 'use client';
 
+import type { Types } from '@callstack/licenses';
+import { graphlib } from '@dagrejs/dagre';
+import _ from 'lodash';
+
 import {
   DEFAULT_RADIUS,
   MAX_TREE_PARSING_DEPTH,
@@ -7,9 +11,6 @@ import {
   ROOT_PROJECT_ROOT_PACKAGE_KEY,
 } from '@/constants';
 import type { TreeNode } from '@/types/TreeNode';
-import type { Types } from '@callstack/licenses';
-import { graphlib } from '@dagrejs/dagre';
-import _ from 'lodash';
 
 import { buildPackageKey } from './packageUtils';
 
@@ -23,7 +24,8 @@ export function buildDependencyGraph(
   _data: Types.AggregatedLicensesMapping,
   _selectedRoot: Types.License = ROOT_PROJECT_ROOT_PACKAGE,
 ): DependencyGraphResult {
-  const data = _.cloneDeep(_data);
+  let data = _.cloneDeep(_data);
+  const dataBackup = _.cloneDeep(data); // used after the first while loop truncates (at least partially) 'data'
 
   const graph = new graphlib.Graph<TreeNode>().setGraph({
     ranksep: DEFAULT_RADIUS * 6,
@@ -47,8 +49,6 @@ export function buildDependencyGraph(
 
   graph.setNode(rootPackageKey, root);
 
-  const currentCustomRootParentTraits = new Set(_selectedRoot === ROOT_PROJECT_ROOT_PACKAGE ? [] : [_selectedRoot]);
-
   // 2. Recursively add graph nodes
   let childAdditionDepth = 0;
   let incomplete = false;
@@ -67,32 +67,39 @@ export function buildDependencyGraph(
             }),
           )
         : _selectedRoot === ROOT_PROJECT_ROOT_PACKAGE
-        ? [ROOT_PROJECT_ROOT_PACKAGE_KEY]
-        : [];
+          ? [ROOT_PROJECT_ROOT_PACKAGE_KEY]
+          : [];
 
       for (const parentPackageKey of parentPackageKeys) {
-        if (parentPackageKey in mapping && !graph.hasNode(packageKey)) {
-          const nodeData: TreeNode = {
-            meta: {
-              ...packageLicense,
-              parentPackageKeys,
-              key: packageKey,
-            },
-            rank: childAdditionDepth,
-          };
+        if (parentPackageKey in mapping) {
+          // insert the node if it's not yet in the graph
+          if (!graph.hasNode(packageKey)) {
+            const nodeData: TreeNode = {
+              meta: {
+                ...packageLicense,
+                parentPackageKeys,
+                key: packageKey,
+              },
+              rank: childAdditionDepth,
+            };
 
-          graph.setNode(packageKey, nodeData);
+            graph.setNode(packageKey, nodeData);
 
-          mapping[packageKey] = nodeData;
+            mapping[packageKey] = nodeData;
 
-          // append the connection
-          graph.setEdge(parentPackageKey, packageKey, { label: packageLicense.dependencyType });
+            anyChangesAppliedThisIter = true;
+          }
 
-          delete data[packageKey]; // remove processed package
+          // append the connection, if it's not yet in the graph
+          if (!graph.hasEdge(parentPackageKey, packageKey)) {
+            graph.setEdge(parentPackageKey, packageKey, { label: packageLicense.dependencyType });
 
-          anyChangesAppliedThisIter = true;
+            anyChangesAppliedThisIter = true;
+          }
         }
       }
+
+      delete data[packageKey]; // remove processed package
     }
 
     childAdditionDepth++;
@@ -108,11 +115,16 @@ export function buildDependencyGraph(
     }
   }
 
+  // restore the original mapping for the next loop
+  data = dataBackup;
+
   // additionally, include packages that build up the dependency source trait of the custom root package (if any selected)
   // the insertion logic is done only after the standard children are inserted to prevent addition of the whole subgraphs
   // of the trait from current selected root to root project, since we only want the trait to be added
   let rootTraitAdditionDepth = -1;
   anyChangesAppliedThisIter = true;
+  const currentCustomRootParentTraits = new Set(_selectedRoot === ROOT_PROJECT_ROOT_PACKAGE ? [] : [_selectedRoot]);
+  console.log('currentCustomRootParentTraits', currentCustomRootParentTraits, Object.keys(data).length);
   while (Object.keys(data).length > 0 && anyChangesAppliedThisIter) {
     anyChangesAppliedThisIter = false; // reset the flag
 
@@ -129,11 +141,12 @@ export function buildDependencyGraph(
             : nextRootTraitPackageInfoOrLicense,
         );
 
+        const nextRootTraitPackageLicense =
+          'resolvedVersion' in nextRootTraitPackageInfoOrLicense
+            ? data[nextRootTraitPackageKey]
+            : nextRootTraitPackageInfoOrLicense;
+
         if (!graph.node(nextRootTraitPackageKey)) {
-          const nextRootTraitPackageLicense =
-            'resolvedVersion' in nextRootTraitPackageInfoOrLicense
-              ? data[nextRootTraitPackageKey]
-              : nextRootTraitPackageInfoOrLicense;
           const nodeData: TreeNode = {
             meta: {
               ...nextRootTraitPackageLicense,
@@ -147,6 +160,11 @@ export function buildDependencyGraph(
 
           mapping[nextRootTraitPackageKey] = nodeData;
 
+          anyChangesAppliedThisIter = true;
+        }
+
+        // append the connection, if it's not yet in the graph
+        if (!graph.hasEdge(nextRootTraitPackageKey, buildPackageKey(prevRootTraitPackage))) {
           // append the connection
           graph.setEdge(nextRootTraitPackageKey, buildPackageKey(prevRootTraitPackage), {
             label: nextRootTraitPackageLicense.dependencyType,
@@ -156,10 +174,6 @@ export function buildDependencyGraph(
           if (nextRootTraitPackageLicense !== ROOT_PROJECT_ROOT_PACKAGE) {
             currentCustomRootParentTraits.add(nextRootTraitPackageLicense);
           }
-
-          delete data[nextRootTraitPackageKey]; // remove processed package
-
-          anyChangesAppliedThisIter = true;
         }
       }
 

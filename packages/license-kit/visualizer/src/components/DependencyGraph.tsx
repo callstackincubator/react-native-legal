@@ -1,5 +1,14 @@
 'use client';
 
+import { LicenseCategory, type Types, analyzeLicenses } from '@callstack/licenses';
+import { layout as dagreLayout } from '@dagrejs/dagre';
+import { Backdrop, CircularProgress, Stack, Typography, useTheme } from '@mui/material';
+import { useWindowSize } from '@uidotdev/usehooks';
+import * as d3 from 'd3';
+import { useSnackbar } from 'notistack';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { tss } from 'tss-react/mui';
+
 import {
   DEFAULT_RADIUS,
   HOVER_RADIUS,
@@ -18,14 +27,6 @@ import {
   nameLabelYCoordFactory,
   versionLabelYCoordFactory,
 } from '@/utils/textCoordFactories';
-import { LicenseCategory, type Types, analyzeLicenses } from '@callstack/licenses';
-import { layout as dagreLayout } from '@dagrejs/dagre';
-import { Backdrop, CircularProgress, Stack, Typography, useTheme } from '@mui/material';
-import { useWindowSize } from '@uidotdev/usehooks';
-import * as d3 from 'd3';
-import { useSnackbar } from 'notistack';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { tss } from 'tss-react/mui';
 
 import Sidebar from './Sidebar';
 
@@ -388,7 +389,7 @@ export default function DependencyGraph({ data }: Props) {
         .on('click', (_event, d) => {
           const clickedLicense = graph.node(d)?.meta;
 
-          if (clickedLicense.key === rootPackageKey) {
+          if (clickedLicense.key === rootPackageKey || clickedLicense.key === ROOT_PROJECT_ROOT_PACKAGE_KEY) {
             selectRoot(null);
           } else {
             selectRoot(clickedLicense ?? null);
