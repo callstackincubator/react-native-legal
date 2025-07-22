@@ -9,6 +9,7 @@ import {
   HelpOutlineTwoTone,
   InfoOutlineTwoTone,
   LightModeTwoTone,
+  SmartToyTwoTone,
 } from '@mui/icons-material';
 import {
   Accordion,
@@ -32,10 +33,11 @@ import { useVisualizerStore } from '@/store/visualizerStore';
 
 import HoveredDependencyInfo from './HoveredDependencyInfo';
 import { UpdatingHeading } from './UpdatingHeading';
+import Charts from './sidebarSections/Charts';
 import Disclaimer from './sidebarSections/Disclaimer';
 import Help from './sidebarSections/Help';
-import Analysis from './tabs/Analysis';
-import Charts from './tabs/Charts';
+import Stats from './sidebarSections/Stats';
+import Summary from './sidebarSections/Summary';
 
 export type SidebarProps = {
   analysis: Types.LicenseAnalysisResult;
@@ -97,13 +99,15 @@ export default function Sidebar({ analysis }: SidebarProps) {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <AnalyticsTwoTone />
 
-                  <Typography variant="body2">Analysis ({Math.floor(analysis.permissiveness.score)}%)</Typography>
+                  <Typography variant="body2">
+                    Stats & permissiveness ({Math.floor(analysis.permissiveness.score)}%)
+                  </Typography>
                 </Box>
               </AccordionSummary>
 
               <AccordionDetails>
                 <Box className={classes.accordionContents}>
-                  <Analysis analysis={analysis} />
+                  <Stats analysis={analysis} />
                 </Box>
               </AccordionDetails>
             </Accordion>
@@ -120,6 +124,22 @@ export default function Sidebar({ analysis }: SidebarProps) {
               <AccordionDetails>
                 <Box className={classes.accordionContents}>
                   <Charts analysis={analysis} />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <SmartToyTwoTone />
+
+                  <Typography variant="body2">AI summary</Typography>
+                </Box>
+              </AccordionSummary>
+
+              <AccordionDetails>
+                <Box className={classes.accordionContents}>
+                  <Summary />
                 </Box>
               </AccordionDetails>
             </Accordion>

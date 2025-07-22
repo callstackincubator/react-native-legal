@@ -25,8 +25,16 @@ export default function Help() {
 
       <Typography>
         The third accordion section above presents you (
-        <ExternalLink href="https://caniuse.com/mdn-api_summarizer">if available in your browser</ExternalLink>) with an
-        AI-generated summary of the state of the hovered package.
+        <ExternalLink href="https://caniuse.com/mdn-api_summarizer" inline>
+          if available in your browser
+        </ExternalLink>
+        ) an AI-generated summary of the graph, which may help you get some insights before the first manual look at the
+        graph.
+      </Typography>
+
+      <Typography>
+        Remember that all data presented here require manual verification. Moreover, for packages classified as with
+        'unknown' license, manual inspection is required to check the conditions of the actual license.
       </Typography>
     </Stack>
   );

@@ -32,11 +32,11 @@ import Sidebar from './Sidebar';
 
 const printNodesEdgesInDevMode = false;
 
-export type Props = {
+export type DependencyGraphProps = {
   data: Types.AggregatedLicensesMapping;
 };
 
-export default function DependencyGraph({ data }: Props) {
+export default function DependencyGraph({ data }: DependencyGraphProps) {
   const { width, height } = useWindowSize();
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
@@ -61,6 +61,7 @@ export default function DependencyGraph({ data }: Props) {
 
     return result;
   }, [data, selectedRoot]);
+
   const licenseAnalysis = useMemo(() => analyzeLicenses(data), [data]);
 
   const prepareTextGroupsWithBackgrounds = useTextGroupFactory(graph);

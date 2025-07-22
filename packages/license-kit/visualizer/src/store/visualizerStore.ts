@@ -1,8 +1,9 @@
-import { DependencyType } from '@/types/DependencyType';
 import type { Types } from '@callstack/licenses';
 import moment from 'moment';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+
+import { DependencyType } from '@/types/DependencyType';
 
 type VisualizerStoreState = {
   report: Types.AggregatedLicensesMapping | null;
@@ -41,7 +42,7 @@ export const useVisualizerStore = create<VisualizerStore>()(
       DependencyType.DEV_DEPENDENCY,
       DependencyType.OPTIONAL_DEPENDENCY,
     ],
-    toggleDependencyTypeVisibility: (dependencyType: DependencyType) =>
+    toggleDependencyTypeVisibility: (dependencyType) =>
       set((state) => {
         state.visibleDependencyTypes = state.visibleDependencyTypes.includes(dependencyType)
           ? state.visibleDependencyTypes.filter((type) => type !== dependencyType)
@@ -49,12 +50,12 @@ export const useVisualizerStore = create<VisualizerStore>()(
       }),
 
     autoLoadFromServer: false,
-    setAutoLoadFromServer: (autoLoadFromServer: boolean) => set({ autoLoadFromServer }),
+    setAutoLoadFromServer: (autoLoadFromServer) => set({ autoLoadFromServer }),
 
     selectedRoot: null,
-    selectRoot: (root: Types.License | null) => set({ selectedRoot: root }),
+    selectRoot: (root) => set({ selectedRoot: root }),
 
     hoveredLicense: null,
-    setHoveredLicense: (license: Types.License | null) => set({ hoveredLicense: license }),
+    setHoveredLicense: (license) => set({ hoveredLicense: license }),
   })),
 );

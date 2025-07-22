@@ -124,7 +124,6 @@ export function buildDependencyGraph(
   let rootTraitAdditionDepth = -1;
   anyChangesAppliedThisIter = true;
   const currentCustomRootParentTraits = new Set(_selectedRoot === ROOT_PROJECT_ROOT_PACKAGE ? [] : [_selectedRoot]);
-  console.log('currentCustomRootParentTraits', currentCustomRootParentTraits, Object.keys(data).length);
   while (Object.keys(data).length > 0 && anyChangesAppliedThisIter) {
     anyChangesAppliedThisIter = false; // reset the flag
 

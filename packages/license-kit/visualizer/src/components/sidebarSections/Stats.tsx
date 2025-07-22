@@ -1,4 +1,3 @@
-import { categoryToActronym, getCategoryChipColor, getCategoryIcon } from '@/utils/licenseCategoryUtils';
 import {
   LicenseCategory,
   Types,
@@ -23,13 +22,15 @@ import renderMathInElement from 'katex/dist/contrib/auto-render';
 import 'katex/dist/katex.min.css';
 import React, { useCallback, useMemo, useState } from 'react';
 
+import { categoryToActronym, getCategoryChipColor, getCategoryIcon } from '@/utils/licenseCategoryUtils';
+
 import { useTabsStyles } from './styles';
 
-export type AnalysisProps = {
+export type StatsProps = {
   analysis: Types.LicenseAnalysisResult;
 };
 
-export default function Analysis({ analysis }: AnalysisProps) {
+export default function Stats({ analysis }: StatsProps) {
   const { classes } = useTabsStyles();
   const { palette } = useTheme();
 

@@ -20,7 +20,10 @@ export default function Disclaimer() {
 
       <Typography>
         As to the mechanics of the way this tool operates, please see the limitations and design assumptions{' '}
-        <ExternalLink href="https://callstackincubator.github.io/react-native-legal/docs/programmatic-usage.html#additional-details">
+        <ExternalLink
+          href="https://callstackincubator.github.io/react-native-legal/docs/programmatic-usage.html#additional-details"
+          inline
+        >
           in the documentation
         </ExternalLink>
         .
