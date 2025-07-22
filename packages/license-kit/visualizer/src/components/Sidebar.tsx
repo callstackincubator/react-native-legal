@@ -1,14 +1,18 @@
 import { SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_EXPANDED_WIDTH } from '@/constants';
 import { useAppStore } from '@/store/appStore';
 import { useVisualizerStore } from '@/store/visualizerStore';
-import { Types } from '@callstack/licenses';
+import { getLicenseWarningColor } from '@/utils/colorUtils';
+import { getCategoryChipColor, getCategoryIcon } from '@/utils/licenseCategoryUtils';
+import { Types, categorizeLicense } from '@callstack/licenses';
 import {
   AnalyticsTwoTone,
   BarChartTwoTone,
+  ChangeHistoryTwoTone,
   ChevronLeftTwoTone,
   ChevronRightTwoTone,
   DarkModeTwoTone,
   ExpandMoreTwoTone,
+  Inventory2TwoTone,
   LightModeTwoTone,
 } from '@mui/icons-material';
 import {
@@ -17,6 +21,7 @@ import {
   AccordionSummary,
   Box,
   Button,
+  Chip,
   Divider,
   IconButton,
   Paper,
@@ -24,9 +29,13 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import { usePrevious } from '@uidotdev/usehooks';
+import React, { useCallback, useMemo, useState } from 'react';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { tss } from 'tss-react/mui';
 
+import ExternalLink from './ExternalLink';
 import { UpdatingHeading } from './UpdatingHeading';
 import Analysis from './tabs/Analysis';
 import Charts from './tabs/Charts';
@@ -37,7 +46,7 @@ export type SidebarProps = {
 
 export default function Sidebar({ analysis }: SidebarProps) {
   const { classes } = useStyles();
-  const { reportName, loadedAt } = useVisualizerStore();
+  const { reportName, loadedAt, hoveredLicense } = useVisualizerStore();
   const { themeMode, setThemeMode } = useAppStore();
 
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
@@ -49,6 +58,13 @@ export default function Sidebar({ analysis }: SidebarProps) {
   const toggleThemeMode = useCallback(() => {
     setThemeMode(themeMode === 'dark' ? 'light' : 'dark');
   }, [setThemeMode, themeMode]);
+
+  // below var is used to still display the last hovered license in the sidebar when it becomes null in the store
+  const prevHoveredLicenseValue = usePrevious(hoveredLicense);
+
+  const displayLicense = hoveredLicense ?? prevHoveredLicenseValue;
+
+  const hoveredDisplayCategoryLicense = useMemo(() => categorizeLicense(displayLicense?.type), [displayLicense]);
 
   return (
     <>
@@ -84,6 +100,64 @@ export default function Sidebar({ analysis }: SidebarProps) {
         {sidebarExpanded ? (
           /* expanded sidebar */
           <Stack style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <Stack direction="column" alignItems="center" justifyContent="center" gap={2} padding={2}>
+              <Stack direction="column" alignItems="center">
+                <Typography variant="caption">Currently hovered package ☝️</Typography>
+
+                <Typography variant="h6" component="span">
+                  <pre className={classes.hoveredPackageName}>
+                    {displayLicense?.name}@{displayLicense?.version}
+                  </pre>
+                </Typography>
+              </Stack>
+
+              <Stack direction="row" alignItems="center" justifyContent="center" gap={2} width="100%" flexWrap="wrap">
+                <Chip icon={<Inventory2TwoTone />} label={displayLicense?.dependencyType} />
+
+                <Tooltip arrow title="License type & category (package.json field)">
+                  <Chip
+                    sx={{
+                      // FIXME: for whatever reason, the custom background color is not applied to non-outlined chips, hence the below workaround
+                      backgroundColor: getLicenseWarningColor(hoveredDisplayCategoryLicense)?.main,
+                    }}
+                    icon={getCategoryIcon(hoveredDisplayCategoryLicense)}
+                    label={`${displayLicense?.type ?? 'N/A'} (${hoveredDisplayCategoryLicense})`}
+                    color={getCategoryChipColor(hoveredDisplayCategoryLicense)}
+                  />
+                </Tooltip>
+
+                <Chip icon={<ChangeHistoryTwoTone />} label={`Ver. specifier: ${displayLicense?.requiredVersion}`} />
+              </Stack>
+
+              <Stack direction="column" alignItems="center">
+                {displayLicense?.url && <ExternalLink href={displayLicense.url} />}
+                <Typography variant="body1">Author: {displayLicense?.author}</Typography>
+
+                <Typography variant="body1" textAlign="center" width="100%" paddingLeft={2} paddingRight={2}>
+                  {displayLicense?.description ?? '(No package description available)'}
+                </Typography>
+              </Stack>
+
+              <Divider orientation="horizontal" flexItem />
+
+              <Typography variant="body1" width="100%" paddingLeft={2} paddingRight={2}>
+                <Markdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: ({ children, href }) => (
+                      <ExternalLink href={href as string} inline>
+                        {children}
+                      </ExternalLink>
+                    ),
+                  }}
+                >
+                  {`${displayLicense?.file ? `*Source: \`${displayLicense.file}\`*` : ''}\n\n${
+                    displayLicense?.content ?? '(No license text available)'
+                  }`}
+                </Markdown>
+              </Typography>
+            </Stack>
+
             <Accordion defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMoreTwoTone />}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -202,5 +276,10 @@ const useStyles = tss.create(({ theme }) => ({
   sidebarHeading: {
     flex: 1,
     textAlign: 'start',
+  },
+  hoveredPackageName: {
+    display: 'inline-block',
+    whiteSpace: 'pre-wrap',
+    margin: 0,
   },
 }));

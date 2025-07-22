@@ -20,8 +20,7 @@ import {
 } from '@/utils/textCoordFactories';
 import { LicenseCategory, type Types, analyzeLicenses } from '@callstack/licenses';
 import { layout as dagreLayout } from '@dagrejs/dagre';
-import { HelpTwoTone } from '@mui/icons-material';
-import { Backdrop, Button, CircularProgress, Stack, Typography, useTheme } from '@mui/material';
+import { Backdrop, CircularProgress, Stack, Typography, useTheme } from '@mui/material';
 import { useWindowSize } from '@uidotdev/usehooks';
 import * as d3 from 'd3';
 import { useSnackbar } from 'notistack';
@@ -41,7 +40,7 @@ export default function DependencyGraph({ data }: Props) {
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const { classes } = useStyles();
-  const { selectedRoot, selectRoot } = useVisualizerStore();
+  const { selectedRoot, selectRoot, setHoveredLicense } = useVisualizerStore();
 
   const [isRenderingGraph, setIsRenderingGraph] = useState<boolean>(false);
 
@@ -275,6 +274,9 @@ export default function DependencyGraph({ data }: Props) {
         .on('mouseover', (event, d) => {
           const t = d3.transition().duration(200);
           const thisNode = graph.node(d);
+
+          setHoveredLicense(thisNode.meta);
+
           d3.select<SVGCircleElement, string>(event.currentTarget)
             .raise()
             .transition(t)
@@ -353,6 +355,8 @@ export default function DependencyGraph({ data }: Props) {
         })
         .on('mouseout', () => {
           const t = d3.transition().duration(200);
+
+          setHoveredLicense(null);
 
           links.transition(t).style('opacity', 1);
 
@@ -526,6 +530,7 @@ export default function DependencyGraph({ data }: Props) {
     selectRoot,
     selectedNodeStrokeColor,
     theme.palette,
+    setHoveredLicense,
   ]);
 
   const rootOverride = rootPackageKey !== ROOT_PROJECT_ROOT_PACKAGE_KEY;
@@ -568,10 +573,6 @@ export default function DependencyGraph({ data }: Props) {
           <Typography textAlign="center" variant="caption">
             Dependency graph with {`${graph.nodes().length} nodes & ${graph.edges().length} edges`}.
           </Typography>
-
-          <Button startIcon={<HelpTwoTone />} variant="outlined" size="small" sx={{ textTransform: 'unset' }}>
-            Instructions
-          </Button>
         </Stack>
 
         <div ref={containerRef} className={classes.container}>
