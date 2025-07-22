@@ -8,7 +8,7 @@ const config = {
   singleQuote: true,
   tabWidth: 2,
   trailingComma: 'all',
-  importOrder: ['^node:.*$', '^[@a-zA-Z]', '^(?![./])', '^\\.\\./.*', '^\\./.*'],
+  importOrder: ['^node:.*$', '^((@[a-zA-Z])|([a-zA-Z]))', '^@/', '^\\.\\./.*', '^\\./.*'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
   plugins: ['@trivago/prettier-plugin-sort-imports'],
