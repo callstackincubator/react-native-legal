@@ -2,29 +2,34 @@ pre-commit:
   piped: true
   commands:
     lint-js:
-      # Run linter for JS/TS files if any of them are staged
+      # Run ESLint for JS/TS files if any of them are staged
       files: git diff --name-only --cached
-      glob: "*.{js,ts,jsx,tsx}"
+      glob: '*.{js,ts,jsx,tsx}'
       run: yarn lint:js
+    lint-docs:
+      # Run biome linter for docs files if any of them are staged
+      files: git diff --name-only --cached
+      glob: 'docs/**/*.{md,mdx,js,ts,jsx,tsx}'
+      run: yarn lint:docs
     typescript:
       # Run type-checking for TS files if any of them are staged
       files: git diff --name-only --cached
-      glob: "*.{js,ts,jsx,tsx}"
+      glob: '*.{js,ts,jsx,tsx}'
       run: yarn typescript
     lint-android:
       # Run linter for Kotlin files if any of them are staged
       files: git diff --name-only --cached
-      glob: "*.{kt,kts}"
+      glob: '*.{kt,kts}'
       run: yarn lint:android
     lint-objc:
       # Run linter for ObjC files if any of them are staged
       files: git diff --name-only --cached
-      glob: "*.{h,m,mm}"
+      glob: '*.{h,m,mm}'
       run: yarn lint:objc
     lint-swift:
       # Run linter for Swift files if any of them are staged
       files: git diff --name-only --cached
-      glob: "*.{swift}"
+      glob: '*.{swift}'
       run: yarn lint:swift
 commit-msg:
   commands:

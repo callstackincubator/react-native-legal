@@ -114,6 +114,14 @@ This tool (and in turn, the CLI and RN plugins) do not support `file:` specified
 If you would like to have support for this, please start a discussion on Github.
 :::
 
+#### Private packages
+
+All private packages (i.e., packages that have a `private: true` field in their `package.json`) are excluded from the scan. All their dependencies (all kinds of dependencies) also are **not included** in the scan / report. Therefore, all the tooling ignores private packages & their dependencies.
+
+:::warning
+If you are using a private package that introduces dependencies to your bundle / program, remember it itself & its dependencies won't be included.
+:::
+
 ### Default `scanOptionsFactory` value
 
 The default value for the optional `scanOptionsFactory` parameter in `scanPackage` & `scanDependencies` functions is set to the following:

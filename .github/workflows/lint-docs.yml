@@ -1,0 +1,26 @@
+name: Lint docs
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/lint-docs.yml'
+      - 'docs/**/*.{md,mdx,js,ts,jsx,tsx}'
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  lint-docs:
+    name: Lint docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Run linter
+        run: yarn lint:docs

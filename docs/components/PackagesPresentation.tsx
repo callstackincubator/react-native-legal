@@ -1,4 +1,4 @@
-import { LinkCard } from 'rspress/theme';
+import { LinkCard } from '@theme';
 
 export function PackagesPresentation() {
   return (

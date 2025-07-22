@@ -2,20 +2,24 @@
   "name": "docs",
   "version": "1.0.0",
   "private": true,
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
   "scripts": {
     "build": "rspress build",
-    "check": "biome check --write",
+    "check": "biome check",
+    "fix": "biome check --write",
     "dev": "rspress dev",
     "format": "biome format --write",
     "preview": "rspress preview"
   },
   "dependencies": {
-    "@callstack/rspress-theme": "^0.0.2",
-    "rspress": "1.44.0"
+    "@callstack/rspress-theme": "^0.2.0",
+    "rspress": "^2.0.0-beta.19"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@rspress/plugin-typedoc": "1.44.0",
+    "@rspress/plugin-typedoc": "^2.0.0-beta.19",
     "@types/node": "^18.11.17"
   }
 }

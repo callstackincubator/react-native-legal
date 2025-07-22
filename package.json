@@ -5,16 +5,19 @@
       "packages/*",
       "packages/license-kit/visualizer",
       "docs",
-      "examples/*"
+      "examples/*",
+      "examples/packages/*"
     ]
   },
   "scripts": {
     "build:library": "yarn workspace @callstack/licenses build && yarn workspace react-native-legal build-plugins && yarn workspace license-kit build-library && yarn workspace react-native-legal build-library && yarn workspace @callstack/license-kit-visualizer build",
     "lint:js": "eslint \"**/*.{js,ts,tsx}\"",
+    "lint:docs": "yarn workspace docs check",
     "typescript": "yarn build:library && tsc --noEmit -p examples/bare-example/tsconfig.json && tsc --noEmit -p examples/expo-example/tsconfig.json",
     "lint:android": "./scripts/lint-android.sh",
     "lint:objc": "./scripts/lint-objc.sh",
     "lint:swift": "./scripts/lint-swift.sh",
+    "format:docs": "yarn workspace docs format",
     "format:android": "./scripts/format-android.sh",
     "format:objc": "./scripts/format-objc.sh",
     "format:swift": "./scripts/format-swift.sh",

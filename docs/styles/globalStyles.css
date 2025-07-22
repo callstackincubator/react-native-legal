@@ -28,11 +28,29 @@
   text-align: center;
   margin-top: 40;
   margin-bottom: 40;
-}
-
-.home-footer-wrapper {
-  position: relative;
-  margin-top: 140;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* == Introduction page styles section end == */
+
+/* == Callstack rspress theme styles section start == */
+
+@font-face {
+  font-family: "Alliance No. 2";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  /* src: url('./fonts/alliance-no-2-regular.ttf') format('truetype'); */
+}
+
+@font-face {
+  font-family: "Alliance No. 2";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  /* src: url('./fonts/alliance-no-2-medium.ttf') format('truetype'); */
+}
+
+/* Callstack rspress theme styles section end */

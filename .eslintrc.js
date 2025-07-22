@@ -11,6 +11,7 @@ const config = {
     '**/build/',
     'visualizer-build/',
     'doc_build',
+    'docs/**',
   ],
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs

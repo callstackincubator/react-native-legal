@@ -8,9 +8,8 @@ export default defineConfig({
   root: path.join(__dirname, 'docs'),
   title: 'React Native Legal & License Kit',
   description: 'React Native Legal & License Kit Documentation',
-  logoText: 'React Native Legal & License Kit',
-  icon: '/img/notice.png',
-  logo: '/img/notice.png',
+  icon: '/img/rn-legal-logo.svg',
+  logo: '/img/rn-legal-logo.svg',
   themeConfig: {
     socialLinks: [
       {
@@ -27,7 +26,16 @@ export default defineConfig({
   plugins: [
     pluginCallstackTheme(),
     pluginTypeDoc({
-      entryPoints: [path.join(__dirname, '..', 'packages', 'licenses-api', 'src', 'index.ts')],
+      entryPoints: [
+        path.join(
+          __dirname,
+          '..',
+          'packages',
+          'licenses-api',
+          'src',
+          'index.ts',
+        ),
+      ],
       outDir: 'api',
     }),
   ],
