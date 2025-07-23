@@ -2,14 +2,13 @@ import { LicenseCategory, categorizeLicense } from '@callstack/licenses';
 import { RefreshTwoTone } from '@mui/icons-material';
 import { Alert, Box, Button, CircularProgress, LinearProgress, Skeleton, Stack, Typography } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 import { SummarizerState, useSummarizerStore } from '@/store/summarizerStore';
 import { useVisualizerStore } from '@/store/visualizerStore';
 import { buildDependencyGraph } from '@/utils/buildDependencyGraph';
 
 import ExternalLink from '../ExternalLink';
+import MarkdownBlock from '../MarkdownBlock';
 
 import { useTabsStyles } from './styles';
 
@@ -144,21 +143,12 @@ export default function Summary() {
               </Typography>
             </Stack>
           ) : summary ? (
-            <Markdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                a: ({ children, href }) => (
-                  <ExternalLink href={href as string} inline>
-                    {children}
-                  </ExternalLink>
-                ),
-              }}
-            >
+            <MarkdownBlock>
               {'#### AI-generated summary\n' +
                 summary +
                 '\n\n#### Additional details for licenses not classified as fully permissive *(these are non-AI-generated)*:\n' +
                 markdownProblematicDependencyChains}
-            </Markdown>
+            </MarkdownBlock>
           ) : (
             <>
               <Skeleton />

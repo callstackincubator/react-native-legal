@@ -25,7 +25,9 @@ export default function visualizeCommandSetup(program: Command): Command {
   return curryCommonScanOptions(
     program
       .command('visualize')
-      .description('Launch a web license graph visualizer & analyzer app.')
+      .description(
+        'Launches a local server providing a web license graph visualizer & analyzer app: calculate permissiveness score (weighted average of points preset for given types), shows an interactive graph of licenses with possibility to select a subgraph, provides browser built-in AI-turbocharged summary of the dependency graph.',
+      )
       .option(
         '--port [port]',
         'Port on which to launch the app',

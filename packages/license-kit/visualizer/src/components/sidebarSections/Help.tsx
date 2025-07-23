@@ -4,7 +4,7 @@ import ExternalLink from '../ExternalLink';
 
 export default function Help() {
   return (
-    <Stack>
+    <Stack gap={2}>
       <Typography variant="h6">Help</Typography>
 
       <Typography>This tool visualizes the license dependencies of your project.</Typography>
@@ -33,8 +33,24 @@ export default function Help() {
       </Typography>
 
       <Typography>
+        The GUI allows you to browse the graph, view information about the most-recently-hovered node on top of this
+        sidebar. Clicking on a node changes the view to browse the subgraph rooted at this node, with the trace of nodes
+        between the root project and the selected node, allowing you to see the causal hierarchy of packages. To cancel
+        the filtered mode, click the selected root node again, or click the yellow text button on top of the graph pane,
+        which will reset the view to be rooted at the root project node (i.e., show all nodes).
+      </Typography>
+
+      <Typography>
         Remember that all data presented here require manual verification. Moreover, for packages classified as with
         'unknown' license, manual inspection is required to check the conditions of the actual license.
+      </Typography>
+
+      <Typography>
+        OSS license attributions for this project can be found{' '}
+        <ExternalLink href="/licenses" inline>
+          here
+        </ExternalLink>
+        .
       </Typography>
     </Stack>
   );

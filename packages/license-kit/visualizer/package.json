@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "yarn licenses && next build",
+    "licenses": "yarn workspace license-kit dev report --format markdown --output src/app/licenses/licenses.md --transitive-deps-mode all --dev-deps-mode root-only --include-optional-deps --root $(pwd)",
     "lint": "next lint",
     "prepare": "yarn build"
   },
@@ -44,6 +45,7 @@
     "@types/react-dom": "^19",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "raw-loader": "^4.0.2",
     "typescript": "^5"
   }
 }

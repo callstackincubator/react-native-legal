@@ -3,8 +3,6 @@ import { ChangeHistoryTwoTone, Inventory2TwoTone } from '@mui/icons-material';
 import { Chip, Divider, Stack, Tooltip, Typography } from '@mui/material';
 import { usePrevious } from '@uidotdev/usehooks';
 import React, { useMemo } from 'react';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { tss } from 'tss-react/mui';
 
 import { useVisualizerStore } from '@/store/visualizerStore';
@@ -12,6 +10,7 @@ import { getLicenseWarningColor } from '@/utils/colorUtils';
 import { getCategoryChipColor, getCategoryIcon } from '@/utils/licenseCategoryUtils';
 
 import ExternalLink from './ExternalLink';
+import MarkdownBlock from './MarkdownBlock';
 
 export default function HoveredDependencyInfo() {
   const { classes } = useStyles();
@@ -70,20 +69,11 @@ export default function HoveredDependencyInfo() {
       <Divider orientation="horizontal" flexItem />
 
       <Typography variant="body1" width="100%" paddingLeft={2} paddingRight={2} component="div">
-        <Markdown
-          remarkPlugins={[remarkGfm]}
-          components={{
-            a: ({ children, href }) => (
-              <ExternalLink href={href as string} inline>
-                {children}
-              </ExternalLink>
-            ),
-          }}
-        >
+        <MarkdownBlock>
           {`${displayLicense?.file ? `*Source: \`${displayLicense.file}\`*` : ''}\n\n${
             displayLicense?.content ?? '(No license text available)'
           }`}
-        </Markdown>
+        </MarkdownBlock>
       </Typography>
     </Stack>
   );
