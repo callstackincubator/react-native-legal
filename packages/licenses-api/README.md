@@ -30,10 +30,10 @@ You can use `@callstack/licenses` programmatically in your Node.js applications.
 
 ```typescript
 import {
+  Types,
   generateAboutLibrariesNPMOutput,
   generateLicensePlistNPMOutput,
   scanDependencies,
-  Types,
 } from '@callstack/licenses';
 import * as md from 'ts-markdown-builder';
 

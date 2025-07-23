@@ -2,14 +2,27 @@
   "name": "@callstack/licenses",
   "version": "0.2.2",
   "description": "API package that exposes functionalities for programmatic scanning of licenses in Node.js projects.",
-  "main": "build/index",
-  "module": "build/index",
-  "types": "build/index.d.ts",
+  "browser": "./build/index.js",
+  "main": "./build/node/index.js",
   "exports": {
     ".": {
-      "source": "./src/index.ts",
-      "types": "./build/index.d.ts",
-      "default": "./build/index.js"
+      "import": {
+        "source": "./src/index.ts",
+        "types": "./build/index.d.ts",
+        "default": "./build/index.js"
+      },
+      "require": {
+        "source": "./src/node/index.ts",
+        "types": "./build/node/index.d.ts",
+        "default": "./build/node/index.js"
+      }
+    },
+    "./node": {
+      "import": {
+        "source": "./src/node/index.ts",
+        "types": "./build/node/index.d.ts",
+        "default": "./build/node/index.js"
+      }
     },
     "./package.json": "./package.json"
   },

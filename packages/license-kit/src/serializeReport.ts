@@ -9,7 +9,7 @@ export function serializeReport({
   licenses,
   format,
 }: {
-  licenses: Types.AggregatedLicensesObj;
+  licenses: Types.AggregatedLicensesMapping;
   format: Format;
 }): string {
   // convert absolute paths to license files to just filenames (no point in placing those in the file)

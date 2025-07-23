@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 import { scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/licenses';
 import { type ConfigPlugin, withAndroidManifest } from 'expo/config-plugins';
