@@ -11,12 +11,7 @@ import open from 'open';
 import { Signale } from 'signale';
 
 import { type LicensesMappingResult, generateLicensesMapping } from '../logic/generateLicensesMapping';
-import {
-  curryCommonScanOptions,
-  curryReportOptions,
-  validateCommonReportOptions,
-  validateCommonScanOptions,
-} from '../utils/commandUtils';
+import { curryCommonScanOptions, validateCommonScanOptions } from '../utils/commandUtils';
 import { getLockfilePath, getPackageLockChecksum } from '../utils/projectUtils';
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -28,9 +23,9 @@ const reportSignale = new Signale({ scope: 'report' });
 
 export default function visualizeCommandSetup(program: Command): Command {
   return curryCommonScanOptions(
-    curryReportOptions(
-      program.command('visualize').description('Launch a web license graph visualizer & analyzer app.'),
-    )
+    program
+      .command('visualize')
+      .description('Launch a web license graph visualizer & analyzer app.')
       .option(
         '--port [port]',
         'Port on which to launch the app',
@@ -51,10 +46,10 @@ export default function visualizeCommandSetup(program: Command): Command {
         'Host on which to launch the app',
         (value) => value === 'true' || value === '1',
         true,
-      ),
+      )
+      .option('--root [path]', 'Path to the root of your project', '.'),
   ).action(async (options) => {
     validateCommonScanOptions(options);
-    validateCommonReportOptions(options);
 
     const expressApp = express();
 
