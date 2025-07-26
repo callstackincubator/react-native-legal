@@ -25,7 +25,6 @@ export function buildDependencyGraph(
   _selectedRoot: Types.License = ROOT_PROJECT_ROOT_PACKAGE,
 ): DependencyGraphResult {
   let data = _.cloneDeep(_data);
-  const dataBackup = _.cloneDeep(data); // used after the first while loop truncates (at least partially) 'data'
 
   const graph = new graphlib.Graph<TreeNode>().setGraph({
     ranksep: DEFAULT_RADIUS * 6,
@@ -116,7 +115,7 @@ export function buildDependencyGraph(
   }
 
   // restore the original mapping for the next loop
-  data = dataBackup;
+  data = _.cloneDeep(_data);
 
   // additionally, include packages that build up the dependency source trait of the custom root package (if any selected)
   // the insertion logic is done only after the standard children are inserted to prevent addition of the whole subgraphs
