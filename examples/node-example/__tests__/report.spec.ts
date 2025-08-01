@@ -39,9 +39,15 @@ async function runReportCommandForJsonOutput(args: string[] = []) {
   const command = `yarn workspace license-kit-node-example report${args ? ` ${args.join(' ')}` : ''}`;
 
   const output = await new Promise<string>((resolve) => {
-    child_process.exec(command, (_, stdout) => {
-      resolve(stdout);
-    });
+    child_process.exec(
+      command,
+      {
+        maxBuffer: 1024 * 1024 * 100, // 100MB
+      },
+      (_, stdout) => {
+        resolve(stdout);
+      },
+    );
   });
 
   return JSON.parse(output);

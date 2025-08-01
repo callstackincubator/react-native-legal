@@ -1,7 +1,7 @@
 {
   "name": "license-kit",
   "version": "0.2.1",
-  "description": "Aggregate license notes of OSS libraries used in your Node.js project",
+  "description": "Aggregate license notes of OSS libraries used in your Node.js project, analyze & visualize OSS licenses with AI-turbocharged tooling",
   "main": "build/index",
   "module": "build/index",
   "types": "build/index.d.ts",
@@ -17,6 +17,7 @@
   "files": [
     "src",
     "build",
+    "visualizer-build",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
@@ -28,7 +29,8 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "rimraf build",
     "build-library": "tsc -p tsconfig.json",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "prod": "tsx build/index.js"
   },
   "keywords": [
     "nodejs",
@@ -52,7 +54,11 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
+    "@callstack/license-kit-visualizer": "workspace:^",
+    "@callstack/licenses": "workspace:^",
+    "@types/express": "^5.0.3",
     "@types/jest": "^29.5.5",
+    "@types/signale": "^1.4.7",
     "jest": "^29.7.0",
     "rimraf": "^6.0.1",
     "tsx": "^4.20.3",
@@ -60,7 +66,14 @@
   },
   "dependencies": {
     "@callstack/licenses": "^0.2.1",
+    "colorette": "^2.0.20",
     "commander": "^14.0.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "next": "^15.3.4",
+    "open": "^10.1.2",
+    "signale": "^1.4.0",
+    "table": "^6.9.0",
     "ts-markdown-builder": "^0.4.1"
   }
 }

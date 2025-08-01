@@ -1,13 +1,6 @@
 import { type Types as SharedTypes } from '@callstack/licenses';
 
-import type { DevDepsMode } from './types/DevDepsMode';
-import type { TransitiveDepsMode } from './types/TransitiveDepsMode';
-
-export type CLIScanOptions = {
-  transitiveDepsMode: TransitiveDepsMode;
-  devDepsMode: DevDepsMode;
-  includeOptionalDeps: boolean;
-};
+import type { CLIScanOptions } from './types/CLIOptions';
 
 export const createScanOptionsFactory =
   (cliScanOptions: CLIScanOptions): SharedTypes.ScanPackageOptionsFactory =>
