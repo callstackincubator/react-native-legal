@@ -56,6 +56,8 @@ This will extract and prepare license metadata for use in your app.
 
 ## Usage
 
+### Builtin list screen
+
 Once the setup is complete, you can easily add a button to your app to display the list of open-source licenses:
 
 ```tsx
@@ -77,6 +79,45 @@ function MyComponent() {
 ```
 
 This will open a native screen listing all detected licenses. The title of the screen can be customized by passing a different string argument to `launchLicenseListScreen()`.
+
+### Retrieving licenses metadata and custom UI
+
+If you want to handle the UI yourself, you can get the licenses metadata and display it with your custom UI:
+
+```tsx
+import * as React from 'react';
+import { FlatList, Text, View } from 'react-native';
+import type { Library } from 'react-native-legal';
+import { ReactNativeLegal } from 'react-native-legal';
+
+function keyExtractor(item: Library) {
+  return item.id;
+}
+
+function renderItem({ item }: ListRenderItemInfo<Library>) {
+  return <Text>{item.name}</Text>;
+}
+
+function MyComponent() {
+  const [libraries, setLibraries] = React.useState<Library[]>([]);
+
+  React.useEffect(() => {
+    async function getLibraries() {
+      const result = await ReactNativeLegal.getLibrariesAsync();
+
+      setLibraries(result.data);
+    }
+
+    getLibraries();
+  }, []);
+
+  return (
+    <View>
+      <FlatList data={libraries} keyExtractor={keyExtractor} renderItem={renderItem} />
+    </View>
+  );
+}
+```
 
 ## License Display in Settings <Badge text="iOS" type="info" />
 

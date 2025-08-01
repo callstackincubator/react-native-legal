@@ -18857,7 +18857,18 @@ __metadata:
     react: 18.3.1
     react-native: 0.76.7
     react-native-legal: "workspace:*"
+    react-native-legal-common-example-ui: "workspace:*"
     react-test-renderer: 18.3.1
+  languageName: unknown
+  linkType: soft
+
+"react-native-legal-common-example-ui@workspace:*, react-native-legal-common-example-ui@workspace:examples/common-ui":
+  version: 0.0.0-use.local
+  resolution: "react-native-legal-common-example-ui@workspace:examples/common-ui"
+  dependencies:
+    react: 18.3.1
+    react-native: 0.76.7
+    react-native-legal: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18874,6 +18885,7 @@ __metadata:
     react: 18.3.1
     react-native: 0.76.7
     react-native-legal: "workspace:*"
+    react-native-legal-common-example-ui: "workspace:*"
   languageName: unknown
   linkType: soft
 
