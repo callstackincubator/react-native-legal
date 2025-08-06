@@ -2,10 +2,15 @@ pre-commit:
   piped: true
   commands:
     lint-js:
-      # Run ESLint for JS/TS files if any of them are staged
-      files: git diff --name-only --cached
+      # Run ESLint for root ESLint config JS/TS files if any of them are staged
+      files: git diff --name-only --cached | grep -v '^packages/visualizer/'
       glob: '*.{js,ts,jsx,tsx}'
       run: yarn lint:js
+    lint-js-visualizer:
+      # Run ESLint for visualizer ESLint config JS/TS files if any of them are staged
+      files: git diff --name-only --cached | grep '^packages/visualizer/'
+      glob: '*.{js,ts,jsx,tsx}'
+      run: yarn workspace @callstack/license-kit-visualizer lint
     lint-docs:
       # Run biome linter for docs files if any of them are staged
       files: git diff --name-only --cached

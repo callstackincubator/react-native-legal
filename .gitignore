@@ -3,7 +3,8 @@
 .DS_Store
 
 # VSCode
-.vscode/
+.vscode/*
+!.vscode/settings.json
 
 # Yarn
 node_modules/
