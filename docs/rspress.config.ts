@@ -39,5 +39,5 @@ export default defineConfig({
       outDir: 'api',
     }),
   ],
-  globalStyles: path.join(__dirname, 'styles/globalStyles.css'),
+  globalStyles: path.join(__dirname, 'theme/styles.css'),
 });
