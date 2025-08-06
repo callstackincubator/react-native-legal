@@ -1,5 +1,5 @@
-export * from './LicenseObj';
-export * from './AggregatedLicensesObj';
+export * from './License';
+export * from './AggregatedLicensesMapping';
 export * from './AboutLibrariesLibraryJsonPayload';
 export * from './AboutLibrariesLicenseJsonPayload';
 export * from './LicensePlistPayload';
@@ -7,3 +7,6 @@ export * from './AboutLibrariesLikePackageInfo';
 export * from './ScanPackageOptions';
 export * from './ScanPackageCallContext';
 export * from './DependencyType';
+export * from './ParentPackageInfo';
+export * from './LicenseAnalysisResult';
+export * from './LicenseStats';
