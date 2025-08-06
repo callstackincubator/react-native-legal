@@ -1,5 +1,6 @@
 import { LicenseCategory } from '@callstack/licenses';
 import { CheckCircleTwoTone, ErrorOutlineTwoTone, HelpOutlineTwoTone, WarningTwoTone } from '@mui/icons-material';
+import type { SvgIconProps } from '@mui/material';
 
 export function categoryToActronym(category: LicenseCategory): string {
   return category
@@ -8,19 +9,19 @@ export function categoryToActronym(category: LicenseCategory): string {
     .join('');
 }
 
-export function getCategoryIcon(category: LicenseCategory) {
+export function getCategoryIcon(category: LicenseCategory, colorOverride?: SvgIconProps['color']) {
   switch (category) {
     case LicenseCategory.STRONG_COPYLEFT:
-      return <ErrorOutlineTwoTone color="strongCopyleft" />;
+      return <ErrorOutlineTwoTone color={colorOverride ?? 'strongCopyleft'} />;
 
     case LicenseCategory.WEAK_COPYLEFT:
-      return <WarningTwoTone color="weakCopyleft" />;
+      return <WarningTwoTone color={colorOverride ?? 'weakCopyleft'} />;
 
     case LicenseCategory.PERMISSIVE:
-      return <CheckCircleTwoTone color="permissive" />;
+      return <CheckCircleTwoTone color={colorOverride ?? 'permissive'} />;
 
     default:
-      return <HelpOutlineTwoTone color="unknown" />;
+      return <HelpOutlineTwoTone color={colorOverride ?? 'unknown'} />;
   }
 }
 

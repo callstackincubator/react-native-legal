@@ -99,9 +99,7 @@ export default function Sidebar({ analysis }: SidebarProps) {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <AnalyticsTwoTone />
 
-                  <Typography variant="body2">
-                    Stats & permissiveness ({Math.floor(analysis.permissiveness.score)}%)
-                  </Typography>
+                  <Typography variant="body2">Stats & graph state</Typography>
                 </Box>
               </AccordionSummary>
 
@@ -182,8 +180,6 @@ export default function Sidebar({ analysis }: SidebarProps) {
             <Tooltip title="Analysis" placement="right" arrow>
               <span>
                 <Button onClick={toggleSidebar} color="primary" size="large" sx={{ flexDirection: 'column' }}>
-                  {Math.floor(analysis.permissiveness.score)}
-
                   <AnalyticsTwoTone />
                 </Button>
               </span>

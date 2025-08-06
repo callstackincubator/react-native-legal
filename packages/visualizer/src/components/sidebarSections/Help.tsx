@@ -10,11 +10,8 @@ export default function Help() {
       <Typography>This tool visualizes the license dependencies of your project.</Typography>
 
       <Typography>
-        The first accordion section above present you: the &apos;permissiveness score&apos; of your project, which is a
-        weighted average of the counts of respective license categories (strong-copyleft, weak-copyleft, permissive,
-        unknown) that should help you have a general overview of the balance between permissive & other categories of
-        dependencies in your project. The weights have been arbitrarily set to custom values. You can preview
-        what&apos;s happening under the hood by clicking the &quot;How was the above calculated?&quot; button.
+        The first accordion section above presents you the breakdown of license types into categories and the share of
+        specific license types in your project, which gives a quick overview of what was scanned.
       </Typography>
 
       <Typography>
@@ -41,8 +38,10 @@ export default function Help() {
       </Typography>
 
       <Typography>
-        Remember that all data presented here require manual verification. Moreover, for packages classified as with
-        &apos;unknown&apos; license, manual inspection is required to check the conditions of the actual license.
+        Remember that all data presented by the tool require manual verification. The tool analyzes licenses by - among
+        others - specific metadata provided inside packages and the presented information any be inaccurate or
+        incomplete. Moreover, for packages classified as with &apos;unknown&apos; license, manual inspection is required
+        to check the conditions of the actual license.
       </Typography>
 
       <Typography>

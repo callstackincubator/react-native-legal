@@ -8,10 +8,9 @@ import {
   WEAK_COPYLEFT_LICENSES_LOWERCASE,
   analyzeLicenses,
   categorizeLicense,
-  getPermissivenessScoreDescription,
   scanDependencies,
 } from '@callstack/licenses';
-import { bold, green, italic, red, underline, whiteBright, yellow } from 'colorette';
+import { bold, green, italic, red, underline, whiteBright, yellow, yellowBright } from 'colorette';
 import type { Command } from 'commander';
 import { type TableUserConfig, getBorderCharacters, table } from 'table';
 
@@ -21,12 +20,6 @@ import { curryCommonScanOptions } from '../utils/commandUtils';
 const tableConfig: TableUserConfig = {
   border: getBorderCharacters('norc'),
 };
-
-function getScoreColor(score: number): (text: string) => string {
-  if (score >= 80) return green;
-  if (score >= 60) return yellow;
-  return red;
-}
 
 const categoryToEmojiMapping: Record<LicenseCategory, string> = {
   [LicenseCategory.PERMISSIVE]: '🔓',
@@ -50,7 +43,7 @@ export default function analyzeCommandSetup(program: Command): Command {
     program
       .command('analyze')
       .description(
-        'Scan licenses & report the insights: calculate permissiveness score (weighted average of points preset for given types), top license types, optionally unknowns & breakdown of licenses by different features.',
+        'Scan licenses & report the insights: summary, top license types, optionally unknowns & breakdown of licenses by different features.',
       )
       .option('--root [path]', 'Path to the root of your project', '.')
       .option('--list-unknown', 'List unknown licenses', false)
@@ -67,31 +60,28 @@ export default function analyzeCommandSetup(program: Command): Command {
     const { name = null } = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
     if (name) {
-      console.log(underline(`Project: ${whiteBright(name)} 💼`));
+      console.log(underline(`💼 Project: ${whiteBright(name)}`));
     }
 
     console.log();
 
     const licenses = scanDependencies(packageJsonPath, createScanOptionsFactory(options));
 
-    const {
-      permissiveness: { score: permissivenessScore },
-      byCategory,
-      byLicense,
-      categorizedLicenses,
-      total,
-    } = analyzeLicenses(licenses);
+    const { byCategory, byLicense, categorizedLicenses, total, description, categoriesPresence } =
+      analyzeLicenses(licenses);
 
     console.log();
 
-    const permissivenessColor = getScoreColor(permissivenessScore);
+    const summaryColor = categoriesPresence.hasAllPermissive
+      ? green
+      : categoriesPresence.hasAnyUnknown
+        ? yellowBright
+        : categoriesPresence.hasAnyStrongCopyleft
+          ? red
+          : yellow;
 
     console.log(`📦 ${bold('Total packages')}: ${whiteBright(total)}`);
-    console.log(
-      `🔓 ${permissivenessColor('Permissiveness')} score: ${permissivenessColor(
-        `${Math.floor(permissivenessScore)}%`,
-      )} (${permissivenessColor(getPermissivenessScoreDescription(permissivenessScore))})`,
-    );
+    console.log(`🔓 ${summaryColor('Graph state summary')}: ${description}`);
 
     const byLicenseEntries = Object.entries(byLicense);
 
@@ -101,7 +91,13 @@ export default function analyzeCommandSetup(program: Command): Command {
         .slice(0, 5)
         .map(([license, count]) => `${whiteBright(license)} (${count})`)
         .join(', ')} ${
-        byLicenseEntries.length > 5 ? italic(yellow(` + ${byLicenseEntries.length - 5} more (see below)`)) : ''
+        byLicenseEntries.length > 5
+          ? italic(
+              yellow(
+                ` + ${byLicenseEntries.length - 5} more (${options.showBreakdown ? 'see below' : 'pass --show-breakdown to view'})`,
+              ),
+            )
+          : ''
       }`,
     );
 

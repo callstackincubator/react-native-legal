@@ -1,9 +1,9 @@
 import { STRONG_COPYLEFT_LICENSES_LOWERCASE, WEAK_COPYLEFT_LICENSES_LOWERCASE } from '../constants/licenses';
-import type { AggregatedLicensesMapping, LicenseStats, WeightedSumComponents } from '../types';
+import type { AggregatedLicensesMapping } from '../types';
 import type { LicenseAnalysisResult } from '../types/LicenseAnalysisResult';
 
 import { LicenseCategory } from './LicenseCategory';
-import { PERMISSIVENESS_SCORE_WEIGHTS } from './constants';
+import { getGraphStateInfo } from './descriptions';
 
 /**
  * Categorizes a license based on its copyleft characteristics.
@@ -27,42 +27,6 @@ export function categorizeLicense(licenseType?: string): LicenseCategory {
 
   // everything else is considered permissive
   return LicenseCategory.PERMISSIVE;
-}
-
-/**
- * Calculates a permissiveness score (0-100) based on license distribution. A higher score means more permissive licenses.
- * @param stats the license stats
- * @returns the permissiveness score
- */
-export function calculatePermissivenessScore(stats: Record<LicenseCategory, number>): LicenseStats['permissiveness'] {
-  const totalCount = Object.values(stats).reduce((sum, count) => sum + count, 0);
-
-  const weightedSumComponents: WeightedSumComponents = {};
-
-  const weightedSum = Object.entries(stats).reduce((sum, [category, count]) => {
-    const weight = PERMISSIVENESS_SCORE_WEIGHTS[category as keyof typeof PERMISSIVENESS_SCORE_WEIGHTS];
-
-    weightedSumComponents[category as LicenseCategory] = {
-      weight,
-      count,
-    };
-
-    return sum + weight * count;
-  }, 0);
-
-  if (totalCount === 0) {
-    return {
-      score: 0,
-      totalCount: 0,
-      weightedSumComponents: {},
-    };
-  }
-
-  return {
-    score: (weightedSum / (Math.max(...Object.values(PERMISSIVENESS_SCORE_WEIGHTS)) * totalCount)) * 100,
-    totalCount,
-    weightedSumComponents,
-  };
 }
 
 /**
@@ -101,11 +65,14 @@ export function analyzeLicenses(report: AggregatedLicensesMapping): LicenseAnaly
 
   const total = Object.keys(report).length;
 
+  const { categoriesPresence, description } = getGraphStateInfo(byCategory);
+
   return {
     total,
     byCategory,
     byLicense,
-    permissiveness: calculatePermissivenessScore(byCategory),
+    description,
+    categoriesPresence,
     categorizedLicenses,
   };
 }

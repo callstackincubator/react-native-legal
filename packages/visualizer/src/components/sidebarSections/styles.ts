@@ -13,11 +13,11 @@ export const useTabsStyles = tss.create(({ theme }) => ({
     flexDirection: 'column',
     gap: theme.spacing(3),
   },
-  scoreContainer: {
+  descriptionContainer: {
     display: 'flex',
     flexDirection: 'column',
   },
-  scoreSection: {
+  descriptionSection: {
     textAlign: 'center',
   },
   progressBar: {

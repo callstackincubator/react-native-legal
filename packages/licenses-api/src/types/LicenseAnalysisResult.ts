@@ -1,4 +1,4 @@
-import type { LicenseCategory } from '../permissiveness/LicenseCategory';
+import type { LicenseCategory } from '../licenses/LicenseCategory';
 
 import type { LicenseStats } from './LicenseStats';
 

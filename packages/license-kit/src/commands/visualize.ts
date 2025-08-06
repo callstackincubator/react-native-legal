@@ -26,7 +26,7 @@ export default function visualizeCommandSetup(program: Command): Command {
     program
       .command('visualize')
       .description(
-        'Launches a local server providing a web license graph visualizer & analyzer app: calculate permissiveness score (weighted average of points preset for given types), shows an interactive graph of licenses with possibility to select a subgraph, provides browser built-in AI-turbocharged summary of the dependency graph.',
+        'Launches a local server providing a web license graph visualizer & analyzer app: summarizes the dependency graph state, shows an interactive graph of licenses with possibility to select a subgraph, provides browser built-in AI-turbocharged summary of the dependency graph.',
       )
       .option(
         '--port [port]',
@@ -166,7 +166,7 @@ export default function visualizeCommandSetup(program: Command): Command {
         apiSignale.log('Preparing GUI server...');
 
         // Next app
-        const visualizerNextAppDir = path.join(__dirname, '..', '..', ...(isDev ? ['visualizer'] : []));
+        const visualizerNextAppDir = path.join(__dirname, '..', '..', ...(isDev ? ['..', 'visualizer'] : []));
         const visualizerNextApp = next({
           dev: isDev,
           dir: visualizerNextAppDir,

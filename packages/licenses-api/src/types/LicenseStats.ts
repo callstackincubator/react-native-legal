@@ -1,21 +1,4 @@
-import type { LicenseCategory } from '../permissiveness/LicenseCategory';
-
-export type WeightedSumComponents = Partial<
-  Record<
-    LicenseCategory,
-    {
-      /**
-       * The weight of the license category in the permissiveness score
-       */
-      weight: number;
-
-      /**
-       * The count of packages in the license category
-       */
-      count: number;
-    }
-  >
->;
+import type { LicenseCategory } from '../licenses/LicenseCategory';
 
 export interface LicenseStats {
   /**
@@ -33,20 +16,18 @@ export interface LicenseStats {
    */
   byLicense: Record<string, number>;
 
-  permissiveness: {
-    /**
-     * The normalized score in range [0, 1], being a weighted average of counts in respective categories
-     */
-    score: number;
-
-    /**
-     * The total count of packages
-     */
-    totalCount: number;
-
-    /**
-     * Mapping of license category to weighted component data
-     */
-    weightedSumComponents: WeightedSumComponents;
+  /**
+   * Information about the presence of different license categories
+   */
+  categoriesPresence: {
+    hasAnyUnknown: boolean;
+    hasAnyWeakCopyleft: boolean;
+    hasAnyStrongCopyleft: boolean;
+    hasAllPermissive: boolean;
   };
+
+  /**
+   * Description of the graph state based on the license categories
+   */
+  description: string;
 }
