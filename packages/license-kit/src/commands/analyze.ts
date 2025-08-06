@@ -200,5 +200,12 @@ export default function analyzeCommandSetup(program: Command): Command {
         console.log(`✅  ${whiteBright('All licenses are fully-permissive')}`);
       }
     }
+
+    console.log();
+    console.log(
+      italic(
+        'Remember that all data presented by the tool require manual verification. The presented information may be inaccurate or incomplete.',
+      ),
+    );
   });
 }

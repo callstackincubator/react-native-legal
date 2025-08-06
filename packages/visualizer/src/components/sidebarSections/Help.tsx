@@ -38,10 +38,9 @@ export default function Help() {
       </Typography>
 
       <Typography>
-        Remember that all data presented by the tool require manual verification. The tool analyzes licenses by - among
-        others - specific metadata provided inside packages and the presented information any be inaccurate or
-        incomplete. Moreover, for packages classified as with &apos;unknown&apos; license, manual inspection is required
-        to check the conditions of the actual license.
+        Remember that all data presented by the tool require manual verification. The presented information may be
+        inaccurate or incomplete. Moreover, for packages classified as with &apos;unknown&apos; license, manual
+        inspection is required to check the conditions of the actual license.
       </Typography>
 
       <Typography>
