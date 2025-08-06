@@ -3,7 +3,7 @@ import { Avatar, Box, Button, CircularProgress, Stack, Typography, alpha, useThe
 import { motion } from 'motion/react';
 import { useSnackbar } from 'notistack';
 import type { PropsWithChildren } from 'react';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import React, { useMemo } from 'react';
 import { tss } from 'tss-react/mui';
 
@@ -30,44 +30,47 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
   const [loading, setLoading] = useState(false);
   const [reportLoadError, setReportLoadError] = useState<Error | string | null>(null);
 
-  const handleFile = (file: File) => {
-    if (!file || file.type !== 'application/json') {
-      enqueueSnackbar({
-        message: 'Please select a valid JSON file.',
-        variant: 'error',
-      });
-      return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      try {
-        if (!reader.result) {
-          throw new Error('File reading error');
-        }
-
-        const json = JSON.parse(reader.result as string);
-
-        setAutoLoadFromServer(false);
-        setReport(json, file.name);
-      } catch (error) {
-        console.error('Error parsing JSON file:', error);
-
+  const handleFile = useCallback(
+    (file: File) => {
+      if (!file || file.type !== 'application/json') {
         enqueueSnackbar({
-          message: 'Failed to parse JSON file. Please ensure it is a valid JSON.',
+          message: 'Please select a valid JSON file.',
           variant: 'error',
         });
-
-        setReportLoadError(error as Error | string);
-      } finally {
-        setLoading(false);
+        return;
       }
-    };
 
-    setLoading(true);
-    reader.readAsText(file);
-  };
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        try {
+          if (!reader.result) {
+            throw new Error('File reading error');
+          }
+
+          const json = JSON.parse(reader.result as string);
+
+          setAutoLoadFromServer(false);
+          setReport(json, file.name);
+        } catch (error) {
+          console.error('Error parsing JSON file:', error);
+
+          enqueueSnackbar({
+            message: 'Failed to parse JSON file. Please ensure it is a valid JSON.',
+            variant: 'error',
+          });
+
+          setReportLoadError(error as Error | string);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      setLoading(true);
+      reader.readAsText(file);
+    },
+    [enqueueSnackbar, setAutoLoadFromServer, setReport],
+  );
 
   const handleDrop: React.DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();

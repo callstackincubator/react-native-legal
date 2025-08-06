@@ -1,5 +1,4 @@
 import type { Types } from '@callstack/licenses';
-import moment from 'moment';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
@@ -8,7 +7,7 @@ import { DependencyType } from '@/types/DependencyType';
 type VisualizerStoreState = {
   report: Types.AggregatedLicensesMapping | null;
   reportName?: string;
-  loadedAt?: moment.Moment;
+  loadedAt?: Date;
   visibleDependencyTypes: DependencyType[];
   autoLoadFromServer: boolean;
   selectedRoot: Types.License | null;
@@ -32,7 +31,7 @@ export const useVisualizerStore = create<VisualizerStore>()(
       set((state) => {
         state.report = report;
         state.reportName = reportName;
-        state.loadedAt = moment();
+        state.loadedAt = new Date();
       }),
 
     reportName: undefined,
