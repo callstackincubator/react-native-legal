@@ -135,7 +135,7 @@ export default function Summary() {
               <ExternalLink href="https://caniuse.com/mdn-api_summarizer" inline>
                 Can I use...
               </ExternalLink>{' '}
-              to check which browsers currently supports it.
+              to check which browsers currently support it.
             </Typography>
           ) : summarizerState === SummarizerState.DOWNLOADING ? (
             <Stack justifyContent="center" alignContent="center" gap={1} direction="column">
