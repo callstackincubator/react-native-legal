@@ -26,6 +26,14 @@ export type SummarizerStore = SummarizerStoreState & SummarizerStoreActions;
 export const useSummarizerStore = create<SummarizerStore>()(
   immer((set) => ({
     ensureInitialized: async () => {
+      if (!('Summarizer' in window)) {
+        console.error('[Summarizer] Summarizer API not available in this browser');
+        set({
+          summarizerState: SummarizerState.UNAVAILABLE,
+        });
+        return null;
+      }
+
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error -- missing types for Summarizer API
       const availability = await Summarizer.availability();
