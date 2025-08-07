@@ -1,5 +1,11 @@
 # license-kit
 
+## 0.3.1
+
+### Patch Changes
+
+- [#90](https://github.com/callstackincubator/react-native-legal/pull/90) [`4fa38f6`](https://github.com/callstackincubator/react-native-legal/commit/4fa38f6c77fac994a03d4dabb4e252ec23166819) Thanks [@artus9033](https://github.com/artus9033)! - Resolve problem with missing next config & wrong path to prebuild visualizer web app, unify next version in license-kit and visualizer packages.
+
 ## 0.3.0
 
 ### Minor Changes
