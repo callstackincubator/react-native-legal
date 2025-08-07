@@ -31,7 +31,8 @@ object ReactNativeLegalModuleImpl {
             cachedData = retrieveLibrariesArray(reactContext)
         }
 
-        return Arguments.createMap().apply { putArray("data", Arguments.fromList(cachedData)) }
+        val libraries = cachedData ?: emptyList<Bundle>()
+        return Arguments.createMap().apply { putArray("data", Arguments.fromList(libraries)) }
     }
 
     private fun retrieveLibrariesArray(reactContext: ReactApplicationContext): List<Bundle>? {
