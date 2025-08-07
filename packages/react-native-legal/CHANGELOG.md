@@ -1,5 +1,16 @@
 # react-native-legal
 
+## 1.5.0
+
+### Minor Changes
+
+- [#89](https://github.com/callstackincubator/react-native-legal/pull/89) [`4695372`](https://github.com/callstackincubator/react-native-legal/commit/4695372a3a47b63bb29b589f5a4286c5fa41b23d) Thanks [@artus9033](https://github.com/artus9033)! - Upgraded to `@callstack/licenses@0.3.0`
+
+### Patch Changes
+
+- Updated dependencies [[`feae9be`](https://github.com/callstackincubator/react-native-legal/commit/feae9be21245251cec2a0d11d146faaa70cb8561)]:
+  - @callstack/licenses@0.3.0
+
 ## 1.4.1
 
 ### Patch Changes

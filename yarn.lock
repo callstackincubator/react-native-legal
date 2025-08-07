@@ -4233,7 +4233,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@callstack/licenses@^0.2.1, @callstack/licenses@workspace:^, @callstack/licenses@workspace:packages/licenses-api":
+"@callstack/licenses@^0.3.0, @callstack/licenses@workspace:^, @callstack/licenses@workspace:packages/licenses-api":
   version: 0.0.0-use.local
   resolution: "@callstack/licenses@workspace:packages/licenses-api"
   dependencies:
@@ -21268,7 +21268,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-legal@workspace:packages/react-native-legal"
   dependencies:
-    "@callstack/licenses": ^0.2.1
+    "@callstack/licenses": ^0.3.0
     "@types/glob": ^8.1.0
     "@types/xml2js": ^0.4.11
     expo: ~52.0.36

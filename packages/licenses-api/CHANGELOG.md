@@ -1,5 +1,11 @@
 # @callstack/licenses
 
+## 0.3.0
+
+### Minor Changes
+
+- [#82](https://github.com/callstackincubator/react-native-legal/pull/82) [`feae9be`](https://github.com/callstackincubator/react-native-legal/commit/feae9be21245251cec2a0d11d146faaa70cb8561) Thanks [@artus9033](https://github.com/artus9033)! - Change parentPackage to parentPackages array, rename exported types for brevity, separate exports for node & web environments
+
 ## 0.2.2
 
 ### Patch Changes
