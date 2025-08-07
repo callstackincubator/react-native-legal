@@ -14,7 +14,7 @@ import { type LicensesMappingResult, generateLicensesMapping } from '../logic/ge
 import { curryCommonScanOptions, validateCommonScanOptions } from '../utils/commandUtils';
 import { getLockfilePath, getPackageLockChecksum } from '../utils/projectUtils';
 
-const isDev = process.env.NODE_ENV !== 'production';
+const isDev = !!process.env.NODE_ENV && process.env.NODE_ENV !== 'production';
 
 const visualizerSignale = new Signale({ scope: 'visualize' });
 const sseSignale = new Signale({ scope: 'SSE' });
