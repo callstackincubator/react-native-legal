@@ -190,7 +190,7 @@ You can use the `@callstack/licenses` package to access the core functionalities
 
 ## Contributing
 
-See the [contributing guide](./CONTRIBUTING) to learn how to contribute to the repository and the development workflow.
+See the [contributing guide](./CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
 
 ## Acknowledgements
 
