@@ -1,5 +1,11 @@
 # react-native-legal
 
+## 1.4.1
+
+### Patch Changes
+
+- [#85](https://github.com/callstackincubator/react-native-legal/pull/85) [`64c8c74`](https://github.com/callstackincubator/react-native-legal/commit/64c8c746412677be2477876fb7bf88afc6225293) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Fixes Kotlin mismatch type issue
+
 ## 1.4.0
 
 ### Minor Changes
@@ -59,7 +65,6 @@
 ### Major Changes
 
 - [#12](https://github.com/callstackincubator/react-native-legal/pull/12) [`9e76909`](https://github.com/callstackincubator/react-native-legal/commit/9e76909194bb2201362f9a44bf7f7d3ef5ec161b) Thanks [@piotrski](https://github.com/piotrski)! - Initial release of `react-native-legal` 🎉
-
   - Full support for both iOS and Android platforms, including tvOS and AndroidTV
   - Native platform integration using LicensePlist (iOS) and AboutLibraries (Android)
   - Automatic dependency scanning and license information generation
