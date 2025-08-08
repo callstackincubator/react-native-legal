@@ -5172,16 +5172,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evilmartians/lefthook@npm:1.12.2":
-  version: 1.12.2
-  resolution: "@evilmartians/lefthook@npm:1.12.2"
-  bin:
-    lefthook: bin/index.js
-  checksum: 99d29d4c700bb22b75838603589896a5368b0512a813df9cb6d807cf2317301cac7154dd53c2714d5a466ee5d3b74166140736201e84bbec29d05b6006c7030f
-  conditions: (os=darwin | os=linux | os=win32) & (cpu=x64 | cpu=arm64 | cpu=ia32)
-  languageName: node
-  linkType: hard
-
 "@expo/bunyan@npm:^4.0.0":
   version: 4.0.0
   resolution: "@expo/bunyan@npm:4.0.0"
@@ -17708,6 +17698,117 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lefthook-darwin-arm64@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook-darwin-arm64@npm:1.12.2"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lefthook-darwin-x64@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook-darwin-x64@npm:1.12.2"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lefthook-freebsd-arm64@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook-freebsd-arm64@npm:1.12.2"
+  conditions: os=freebsd & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lefthook-freebsd-x64@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook-freebsd-x64@npm:1.12.2"
+  conditions: os=freebsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lefthook-linux-arm64@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook-linux-arm64@npm:1.12.2"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lefthook-linux-x64@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook-linux-x64@npm:1.12.2"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lefthook-openbsd-arm64@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook-openbsd-arm64@npm:1.12.2"
+  conditions: os=openbsd & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lefthook-openbsd-x64@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook-openbsd-x64@npm:1.12.2"
+  conditions: os=openbsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lefthook-windows-arm64@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook-windows-arm64@npm:1.12.2"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lefthook-windows-x64@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook-windows-x64@npm:1.12.2"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lefthook@npm:1.12.2":
+  version: 1.12.2
+  resolution: "lefthook@npm:1.12.2"
+  dependencies:
+    lefthook-darwin-arm64: 1.12.2
+    lefthook-darwin-x64: 1.12.2
+    lefthook-freebsd-arm64: 1.12.2
+    lefthook-freebsd-x64: 1.12.2
+    lefthook-linux-arm64: 1.12.2
+    lefthook-linux-x64: 1.12.2
+    lefthook-openbsd-arm64: 1.12.2
+    lefthook-openbsd-x64: 1.12.2
+    lefthook-windows-arm64: 1.12.2
+    lefthook-windows-x64: 1.12.2
+  dependenciesMeta:
+    lefthook-darwin-arm64:
+      optional: true
+    lefthook-darwin-x64:
+      optional: true
+    lefthook-freebsd-arm64:
+      optional: true
+    lefthook-freebsd-x64:
+      optional: true
+    lefthook-linux-arm64:
+      optional: true
+    lefthook-linux-x64:
+      optional: true
+    lefthook-openbsd-arm64:
+      optional: true
+    lefthook-openbsd-x64:
+      optional: true
+    lefthook-windows-arm64:
+      optional: true
+    lefthook-windows-x64:
+      optional: true
+  bin:
+    lefthook: bin/index.js
+  checksum: 5a6a5bc5b02aca102acd83f7233f53ea6bce5cb27054d5be5abe5804bfc52c3afe0aa667d2b3a35186979f1b93b1e2f2fe768a0c72deee413f5fc2c5a8620815
+  languageName: node
+  linkType: hard
+
 "leven@npm:^3.1.0":
   version: 3.1.0
   resolution: "leven@npm:3.1.0"
@@ -22237,12 +22338,12 @@ __metadata:
     "@changesets/changelog-github": ^0.5.1
     "@changesets/cli": ^2.28.1
     "@commitlint/config-conventional": 17.6.6
-    "@evilmartians/lefthook": 1.12.2
     commitlint: 17.6.6
     eslint: ^8.46.0
     eslint-plugin-flowtype: ^8.0.3
     eslint-plugin-prettier: ^5.5.3
     expo: ~52.0.36
+    lefthook: 1.12.2
     prettier: ^3.6.2
     typescript: ^5.1.3
   languageName: unknown
