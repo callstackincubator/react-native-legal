@@ -218,6 +218,7 @@ We use [changesets](https://github.com/changesets/changesets) to make it easier 
 The `package.json` file contains various scripts for common tasks:
 
 - `yarn build:library`: compile the library code with babel.
+- `yarn build:visualizer`: compile the Next.js visualizer code.
 - `yarn lint:js`: lint files with ESLint.
 - `yarn typescript`: type-check files with TypeScript.
 - `yarn lint:android`: lint Kotlin files.

@@ -1,41 +1,48 @@
-pre-commit:
+pre-push:
   piped: true
   commands:
     lint-js:
       # Run ESLint for root ESLint config JS/TS files if any of them are staged
-      files: git diff --name-only --cached
+      files: git diff --name-only --cached origin/main
       glob: '*.{js,ts,jsx,tsx}'
       run: yarn lint:js
       exclude:
         - 'packages/visualizer/**'
     lint-js-visualizer:
       # Run ESLint for visualizer ESLint config JS/TS files if any of them are staged
-      files: git diff --name-only --cached
-      glob: 'packages/visualizer/**/*.{js,ts,jsx,tsx}'
+      files: git diff --name-only --cached origin/main
+      glob: 'packages/visualizer/*.{js,ts,jsx,tsx}'
       run: yarn workspace @callstack/license-kit-visualizer lint
     lint-docs:
       # Run biome linter for docs files if any of them are staged
-      files: git diff --name-only --cached
-      glob: 'docs/**/*.{md,mdx,js,ts,jsx,tsx}'
+      files: git diff --name-only --cached origin/main
+      glob: 'docs/*.{md,mdx,js,ts,jsx,tsx}'
       run: yarn lint:docs
     typescript:
       # Run type-checking for TS files if any of them are staged
-      files: git diff --name-only --cached
+      files: git diff --name-only --cached origin/main
       glob: '*.{js,ts,jsx,tsx}'
       run: yarn typescript
+      exclude:
+        - 'packages/visualizer/**'
+    typescript-visualizer:
+      # Run type-checking for TS files if any of them are staged
+      files: git diff --name-only --cached origin/main
+      glob: 'packages/visualizer/*.{js,ts,jsx,tsx}'
+      run: yarn workspace @callstack/license-kit-visualizer build
     lint-android:
       # Run linter for Kotlin files if any of them are staged
-      files: git diff --name-only --cached
+      files: git diff --name-only --cached origin/main
       glob: '*.{kt,kts}'
       run: yarn lint:android
     lint-objc:
       # Run linter for ObjC files if any of them are staged
-      files: git diff --name-only --cached
+      files: git diff --name-only --cached origin/main
       glob: '*.{h,m,mm}'
       run: yarn lint:objc
     lint-swift:
       # Run linter for Swift files if any of them are staged
-      files: git diff --name-only --cached
+      files: git diff --name-only --cached origin/main
       glob: '*.{swift}'
       run: yarn lint:swift
 commit-msg:
