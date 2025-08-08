@@ -12,7 +12,7 @@ runs:
     - name: Install Maestro CLI
       shell: bash
       run: |
-        export MAESTRO_VERSION=1.40.3
+        export MAESTRO_VERSION=1.41.0
         curl -Ls "https://get.maestro.mobile.dev" | bash
 
     - name: Conditionally install brew packages for iOS
