@@ -51,7 +51,7 @@ jobs:
           target-platform: ios
 
       - name: Install example dependencies
-        run: yarn workspace react-native-legal-bare-example install --frozen-lockfile --immutable
+        run: yarn workspace react-native-legal-bare-example install --immutable
 
       - name: Cache Pods
         id: cache-pods
