@@ -57,10 +57,10 @@ jobs:
         id: cache-pods
         uses: actions/cache@v4
         env:
-          cache-name: cached-ios-pods-deps
+          cache-name: cached-ios-pods
         with:
           path: examples/bare-example/ios/Pods
-          key: bare-example-pods
+          key: bare-example-pods-${{ matrix.simulator }}-${{ hashFiles('ios/Podfile.lock') }}
 
       - name: Cache Build
         id: cache-build
@@ -69,10 +69,13 @@ jobs:
           cache-name: cached-ios-build
         with:
           path: examples/bare-example/ios/build
-          key: bare-example-ios-build
+          key: bare-example-ios-build-${{ matrix.simulator }}
+
+      - name: Install gems
+        run: yarn workspace react-native-legal-bare-example gem:install
 
       - name: Install example Pods
-        run: yarn workspace react-native-legal-bare-example pods
+        run: yarn workspace react-native-legal-bare-example pod:install
 
       - name: Bundle app
         run: yarn workspace react-native-legal-bare-example build:ios

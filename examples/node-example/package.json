@@ -6,6 +6,7 @@
     "report": "license-kit report",
     "copyleft": "license-kit copyleft",
     "weak-copyleft": "license-kit copyleft --error-on-weak",
+    "visualize": "license-kit visualize",
     "test": "jest"
   },
   "dependencies": {
@@ -13,16 +14,16 @@
     "dhtmlx-gantt": "9.0.11",
     "is-even": "1.0.0",
     "mariadb": "3.4.2",
-    "zustand": "5.0.5"
+    "zustand": "^5.0.7"
   },
   "devDependencies": {
     "@babel/core": "7.27.4",
     "@babel/preset-env": "7.27.2",
     "@babel/preset-typescript": "7.27.1",
-    "@types/jest": "29.5.5",
-    "babel-jest": "29.7.0",
-    "jest": "29.7.0",
-    "jest-extended": "6.0.0",
+    "@types/jest": "^29.5.5",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-extended": "^6.0.0",
     "license-kit": "workspace:*"
   },
   "optionalDependencies": {

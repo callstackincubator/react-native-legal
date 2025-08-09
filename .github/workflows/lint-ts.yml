@@ -11,6 +11,9 @@ on:
       - 'packages/license-kit/**/*.[tj]sx?'
       - 'examples/**/*.jsx?'
       - 'examples/**/*.tsx?'
+      - '.eslintrc.js'
+      - '.prettierrc.js'
+      - 'tsconfig.json'
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 

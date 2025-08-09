@@ -66,7 +66,7 @@ jobs:
             examples/bare-example/android/build
             examples/bare-example/android/app/build
             examples/bare-example/android/app/.cxx
-          key: bare-example-android-build
+          key: bare-example-android-build-${{ matrix.api-level }}
 
       - uses: actions/setup-java@v4
         with:
@@ -106,7 +106,7 @@ jobs:
           target: 'google_apis'
           force-avd-creation: ${{ steps.avd-cache.outputs.cache-hit != 'true' }}
           cores: 4
-          emulator-options: -verbose -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-front none -camera-back none
+          emulator-options: -verbose -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-front none -camera-back none
           disable-animations: false
           ram-size: '6144M'
           script: |

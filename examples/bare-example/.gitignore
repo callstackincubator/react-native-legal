@@ -33,6 +33,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+.kotlin/
 
 # node.js
 #
@@ -65,4 +66,5 @@ yarn-error.log
 # testing
 /coverage
 
+/dist
 /e2e_results

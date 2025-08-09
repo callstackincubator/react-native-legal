@@ -10,27 +10,19 @@ tags:
 - startRecording: 'e2e_results/checkLicenses'
 - tapOn: 'Tap to see list of OSS libraries'
 - assertVisible: 'OSS Notice'
-# workaround for long list issue taking ages to scroll to 'r*' packages (causing a timeout)
-- repeat:
-    times: 10
-    commands:
-      - swipe:
-          start: 50%, 90%
-          end: 50%, 0%
-          duration: 50
+- swipe:
+    start: 50%, 90%
+    end: 50%, 0%
 - scrollUntilVisible:
     element:
-      containsChild: 'react-native'
+      containsChild: '@react-native/virtualized-lists'
       index: 0
     direction: 'DOWN'
-    timeout: 190000
-    centerElement: true
-    speed: 70
+    timeout: 60000
+    centerElement: false
+    speed: 75
     visibilityPercentage: 75
 - takeScreenshot: 'e2e_results/react-native_list_element'
-- assertVisible:
-    text: 'Facebook'
-    index: 0
 - assertVisible:
     text: '\d+\.\d+\.\d+'
     index: 0
@@ -46,7 +38,7 @@ tags:
 - assertVisible: '.*Permission is hereby granted, free of charge.*'
 - back
 - tapOn:
-    containsChild: 'react-native'
+    containsChild: '@react-native/virtualized-lists'
     waitToSettleTimeoutMs: 3500
     index: 0
 

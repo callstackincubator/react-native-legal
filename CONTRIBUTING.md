@@ -57,7 +57,10 @@ cd examples/bare-example
 To install Pods:
 
 ```sh
-npx pod-install
+# first install Gems
+yarn gem:install
+# and after that install Pods
+yarn pod:install
 ```
 
 To start the packager:
