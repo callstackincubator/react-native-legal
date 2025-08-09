@@ -12,9 +12,21 @@ export function addSettingsBundle(iosProjectPath: string) {
     const projectName = getIOSProjectName(iosProjectPath);
     const { pbxproj, pbxprojPath } = getIOSPbxProj(iosProjectPath);
 
-    pbxproj.removeFile(settingsBundleFilename, pbxproj.findPBXGroupKey({ name: projectName }));
+    let group: string | undefined = pbxproj.findPBXGroupKey({ name: projectName });
 
-    const settingsBundleFile = pbxproj.addFile(settingsBundleFilename, pbxproj.findPBXGroupKey({ name: projectName }));
+    if (!group) {
+      // https://github.com/callstackincubator/react-native-legal/issues/81
+      // If the project name is wrapped in quotes inside pbxproj file, let's try to grab it
+      group = pbxproj.findPBXGroupKey({ name: `"${projectName}"` });
+    }
+
+    if (!group) {
+      throw new Error(`Could not find group named: ${projectName} in the pbxproj`);
+    }
+
+    pbxproj.removeFile(settingsBundleFilename, group);
+
+    const settingsBundleFile = pbxproj.addFile(settingsBundleFilename, group);
 
     if (!settingsBundleFile) {
       throw new Error('Could not add Settings.bundle file reference to xcode project');
