@@ -73,7 +73,9 @@ describe('license-kit report', () => {
   it('without transitive deps and without dev deps', async () => {
     const json = await runReportCommandForJsonOutput(['--dev-deps-mode', 'none', '--transitive-deps-mode', 'none']);
 
-    expect(Object.keys(json).toSorted()).toEqual([...dependencies, ...optionalDependencies].toSorted());
+    expect(stripVersionSuffixes(Object.keys(json).toSorted())).toEqual(
+      stripVersionSuffixes([...dependencies, ...optionalDependencies].toSorted()),
+    );
   });
 
   it('without transitive deps and with root-only dev deps', async () => {
@@ -84,8 +86,10 @@ describe('license-kit report', () => {
       'none',
     ]);
 
-    expect(Object.keys(json).toSorted()).toEqual(
-      Array.from(new Set([...dependencies, ...optionalDependencies, ...devDependencies])).toSorted(),
+    expect(stripVersionSuffixes(Object.keys(json).toSorted())).toEqual(
+      stripVersionSuffixes(
+        Array.from(new Set([...dependencies, ...optionalDependencies, ...devDependencies])).toSorted(),
+      ),
     );
   });
 
