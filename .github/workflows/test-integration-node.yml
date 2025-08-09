@@ -9,6 +9,7 @@ on:
       - 'packages/license-kit/**/*.[tj]sx?'
       - 'packages/licenses-api/**/*.[tj]sx?'
       - 'examples/node-example/**/*.[tj]sx?'
+      - 'examples/node-example/package.json'
 
   push:
     branches:

@@ -104,7 +104,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           arch: 'x86_64'
           target: 'google_apis'
-          force-avd-creation: ${{ steps.avd-cache.outputs.cache-hit != 'true' }}
+          force-avd-creation: true
           cores: 4
           emulator-options: -verbose -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-front none -camera-back none
           disable-animations: false

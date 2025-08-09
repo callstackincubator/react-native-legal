@@ -19,7 +19,9 @@ export function getDependencyCorrespondingKey(
   dependencyMapping: Record<string, string>,
   packageName: string,
 ): string | undefined {
-  return dependencyMapping[packageName] ? `${packageName}@${dependencyMapping[packageName]}` : undefined;
+  return dependencyMapping[packageName]
+    ? `${packageName}@${dependencyMapping[packageName].replace('^', '').replace('~', '')}`
+    : undefined;
 }
 
 /**
