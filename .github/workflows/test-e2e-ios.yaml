@@ -35,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        simulator: ['iPhone 16 Pro (18.5)']
+        simulator: ['iPhone 16 Pro']
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
