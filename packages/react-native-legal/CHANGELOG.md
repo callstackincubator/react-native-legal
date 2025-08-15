@@ -1,5 +1,13 @@
 # react-native-legal
 
+## 1.5.1
+
+### Patch Changes
+
+- [#102](https://github.com/callstackincubator/react-native-legal/pull/102) [`3934343`](https://github.com/callstackincubator/react-native-legal/commit/393434340468e586c64e99ed7c8435ea1af3c56d) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Add missing `com.facebook.react.bridge.Promise` import in old arch Kotlin module
+
+- [#97](https://github.com/callstackincubator/react-native-legal/pull/97) [`8da383f`](https://github.com/callstackincubator/react-native-legal/commit/8da383f8a35a8faee68ff970f107506fe7ca80b1) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Replace deprecated TurboReactPackage with BaseReactPackage
+
 ## 1.5.0
 
 ### Minor Changes
