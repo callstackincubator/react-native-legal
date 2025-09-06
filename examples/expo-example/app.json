@@ -45,7 +45,13 @@
           }
         }
       ],
-      "react-native-legal"
+      [
+        "react-native-legal", {
+          "devDepsMode": "none",
+          "includeOptionalDeps": true,
+          "transitiveDepsMode": "all"
+        }
+      ]
     ]
   }
 }

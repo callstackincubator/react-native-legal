@@ -47,7 +47,7 @@ export function applyAndConfigureAboutLibrariesPluginUtil(androidAppBuildGradleC
   const pluginConfigRegex = /aboutLibraries {/;
 
   if (!androidAppBuildGradleContent.match(pluginConfigRegex)?.length) {
-    androidAppBuildGradleContent += '\n\naboutLibraries {\n    configPath = "config"\n    prettyPrint = true\n}';
+    androidAppBuildGradleContent += '\n\naboutLibraries {\n    configPath = "config"\n    prettyPrint = true\n}\n';
     console.log('About Libraries Gradle Plugin - CONFIGURED');
   } else {
     console.log('About Libraries Gradle Plugin already configured - SKIP');

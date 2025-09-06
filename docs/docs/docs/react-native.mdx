@@ -27,7 +27,7 @@ If you are using Expo, you need to add the config plugin to your `app.json` or `
 ```diff
 {
   "expo": {
-+  "plugins": ["react-native-legal"]
++   "plugins": ["react-native-legal"]
   }
 }
 ```
@@ -42,6 +42,42 @@ or
 
 This will ensure the required native dependencies are included.
 
+#### Expo Plugin Options
+
+```diff
+{
+  "expo": {
++   "plugins": [
++     [
++       "react-native-legal",
++       {
++         "devDepsMode": "root-only",
++         "includeOptionalDeps": true,
++         "transitiveDepsMode": "all"
++       }
++     ]
++   ]
+  }
+}
+```
+
+```ts
+interface PluginOptions {
+  // `'root-only'` (only direct devDependencies from the scanned project's root package.json)
+  // `'none'` (no devDependencies included)
+  // @default `'none'`
+  devDepsMode?: 'root-only' | 'none';
+  // @default `true`
+  includeOptionalDeps?: boolean;
+  // `'all'` (all transitive dependencies of direct dependencies)
+  // `'from-external-only'` (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers)
+  // `'from-workspace-only'` (only direct dependencies of direct dependencies specified by `workspace:` specifier)
+  // `'none'` (no transitive dependencies of direct dependencies)
+  // @default `'all'`
+  transitiveDepsMode?: 'all' | 'from-external-only' | 'from-workspace-only' | 'none';
+}
+```
+
 :::warning
 This library **cannot be used** in [Expo Go](https://expo.dev/go) because it requires custom native code.
 :::
@@ -53,6 +89,14 @@ For bare React Native projects, you need to run the CLI plugin to generate and i
 <PackageManagerTabs command="react-native legal-generate" exec />
 
 This will extract and prepare license metadata for use in your app.
+
+#### Bare React Native Plugin Options
+
+| Flag / Option                             | Description                                                                                                                                                                                                                                                                                                                                              | Default                   |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `--tm, --transitive-deps-mode [mode]`     | Controls, which transitive dependencies are included: <ul><li>`'all'`</li> <li>`'from-external-only'` (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers)</li> <li>`'from-workspace-only'` (only direct dependencies of direct dependencies specified by `workspace:` specifier)</li> <li>`'none'`</li></ul> | `'all'`                  |
+| `--dm, --dev-deps-mode [mode]`            | <ul><li>`'root-only'` (only direct devDependencies from the scanned project's root package.json)</li> <li>`'none'`</li></ul>                                                                                                                                                                                                                             | `'none'`             |
+| `--od, --include-optional-deps [include]` | Whether to include optionalDependencies in the scan; other flags apply                                                                                                                                                                                                                                                                                   | `true`                    |
 
 ## Usage
 
