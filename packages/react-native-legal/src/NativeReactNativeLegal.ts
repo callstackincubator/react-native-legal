@@ -21,6 +21,7 @@ export interface Library {
   id: string;
   name: string;
   licenses: License[];
+  version?: string;
   /**
    * @platform Android
    */

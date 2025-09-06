@@ -12,6 +12,7 @@ export const CustomListDetails = ({ item, onModalClose }: Props) => {
       <Button onPress={onModalClose} title="Exit detail view" />
       <ScrollView style={styles.scroll}>
         <Text style={styles.header}>{item.name}</Text>
+        {item.version ? <Text style={styles.subheader}>Version: {item.version}</Text> : null}
         <Text style={styles.content}>
           {item.licenses.map((license) => license.licenseContent).reduce((a, c) => a + '\n' + c, '')}
         </Text>
@@ -35,6 +36,11 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     margin: 8,
+  },
+  subheader: {
+    fontSize: 20,
+    fontWeight: 'semibold',
+    margin: 4,
   },
   scroll: {
     alignSelf: 'stretch',

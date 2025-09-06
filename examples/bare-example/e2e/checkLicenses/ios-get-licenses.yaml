@@ -15,16 +15,16 @@ tags:
     end: 50%, 0%
 - scrollUntilVisible:
     label: Scroll to React Native library
-    element: '@react-native/virtualized-lists (.*)'
+    element: '@react-native/virtualized-lists'
     direction: 'DOWN'
     timeout: 60000
     speed: 80
     visibilityPercentage: 75
 - takeScreenshot: 'e2e_results/getLicenses-react-native_list_element'
-- tapOn: '@react-native/virtualized-lists (.*)'
+- tapOn: '@react-native/virtualized-lists'
 - takeScreenshot: 'e2e_results/getLicenses-react-native_entry'
 - assertVisible: 'Exit detail view'
-- assertVisible: '@react-native/virtualized-lists (.*)'
+- assertVisible: '@react-native/virtualized-lists'
 - assertVisible: '.*MIT.*'
 - tapOn: 'Exit detail view'
 - takeScreenshot: 'e2e_results/react-native_back_to_list'
