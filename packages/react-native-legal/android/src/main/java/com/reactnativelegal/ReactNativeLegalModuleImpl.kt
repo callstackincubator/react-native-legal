@@ -44,6 +44,7 @@ object ReactNativeLegalModuleImpl {
             bundleOf(
                 "id" to library.uniqueId,
                 "name" to library.name,
+                "version" to library.artifactVersion,
                 "description" to library.description,
                 "website" to library.website,
                 "developers" to library.developers.joinToString(),

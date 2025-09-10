@@ -49,12 +49,33 @@ public class ReactNativeLegalModuleImpl: NSObject {
 
     return [
       "data": libraries.map({ library in
-        [
-          "id": "library-\(library.name ?? "")", "name": library.name ?? "",
+        let (name, version) = splitNameAndVersion(library.name)
+        return [
+          "id": "library-\(library.name ?? "")",
+          "name": name ?? "",
+          "version": version as Any,
           "licenses": [["licenseContent": library.content ?? ""]],
         ]
       })
     ]
+  }
+
+  private static func splitNameAndVersion(_ nameAndVersionStr: String?) -> (
+    name: String?, version: String?
+  ) {
+    guard let nameAndVersion = nameAndVersionStr else {
+      return (nil, nil)
+    }
+    var elements = nameAndVersion.split(separator: " ")
+    if elements.count <= 1 {
+      return (nameAndVersion, nil)
+    }
+    var version = elements.removeLast()
+    version.removeFirst()  // remove "("
+    version.removeLast()  // remove ")"
+    let name = elements.joined(separator: " ")
+
+    return (name, String(version))
   }
 
   private static func getChildPaneSpecifiers(dictArray: [[String: Any]]) -> [[String: Any]] {
