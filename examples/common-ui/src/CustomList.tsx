@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
 import type { ListRenderItemInfo } from 'react-native';
-import { FlatList, Modal, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import type { Library } from 'react-native-legal';
 
 import { CustomListButton } from './CustomListButton';
 import { CustomListDetails } from './CustomListDetails';
+import { FullscreenModal } from './FullscreenModal';
 
 function Item({ item }: { item: Library }) {
   const [customDetailModalVisible, setCustomDetailModalVisible] = useState(false);
@@ -20,9 +21,9 @@ function Item({ item }: { item: Library }) {
   return (
     <View style={styles.item}>
       <CustomListButton label={item.name} onPress={handlePress} />
-      <Modal animationType="slide" supportedOrientations={['portrait', 'landscape']} visible={customDetailModalVisible}>
+      <FullscreenModal visible={customDetailModalVisible}>
         <CustomListDetails item={item} onModalClose={closeModal} />
-      </Modal>
+      </FullscreenModal>
     </View>
   );
 }

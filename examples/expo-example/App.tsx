@@ -1,13 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { MainScreen } from 'react-native-legal-common-example-ui';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <SafeAreaProvider style={styles.container}>
       <MainScreen />
       <StatusBar style="dark" />
-    </View>
+    </SafeAreaProvider>
   );
 }
 

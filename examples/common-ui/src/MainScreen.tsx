@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react';
-import { Button, Modal, SafeAreaView, StyleSheet } from 'react-native';
+import { Button, StyleSheet } from 'react-native';
 import type { Library } from 'react-native-legal';
 import { ReactNativeLegal } from 'react-native-legal';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CustomList } from './CustomList';
 import { ExampleButton } from './ExampleButton';
+import { FullscreenModal } from './FullscreenModal';
 
 export const MainScreen = () => {
   const [customModalVisible, setCustomModalVisible] = useState(false);
@@ -37,12 +39,12 @@ export const MainScreen = () => {
     <>
       <ExampleButton label="Tap to see list of OSS libraries" onPress={launchNotice} />
       <ExampleButton label="Tap to get list of licenses" onPress={getLibraries} />
-      <Modal animationType="slide" supportedOrientations={['portrait', 'landscape']} visible={customModalVisible}>
-        <SafeAreaView style={styles.modalContent}>
+      <FullscreenModal visible={customModalVisible}>
+        <SafeAreaView edges={['bottom', 'left', 'right', 'top']} style={styles.modalContent}>
           <Button onPress={closeModal} title="Exit list" />
           <CustomList libraries={libraries} />
         </SafeAreaView>
-      </Modal>
+      </FullscreenModal>
     </>
   );
 };
