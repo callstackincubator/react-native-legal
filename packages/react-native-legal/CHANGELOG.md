@@ -1,5 +1,13 @@
 # react-native-legal
 
+## 1.6.0
+
+### Minor Changes
+
+- [#111](https://github.com/callstackincubator/react-native-legal/pull/111) [`f1d20b1`](https://github.com/callstackincubator/react-native-legal/commit/f1d20b16e2b7259d76f3e596822a00024d932021) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Add support for "scan options" in bare and Expo plugin to make parity with `license-kit`
+
+- [#113](https://github.com/callstackincubator/react-native-legal/pull/113) [`9dc5610`](https://github.com/callstackincubator/react-native-legal/commit/9dc56102528166973d053cc5ce5337cbd50025d1) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Support `version` field in `Library` type returned via `getLibrariesAsync` function
+
 ## 1.5.2
 
 ### Patch Changes
