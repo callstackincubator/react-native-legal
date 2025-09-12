@@ -1,12 +1,13 @@
-import { StatusBar, StyleSheet, View } from 'react-native';
+import { StatusBar, StyleSheet } from 'react-native';
 import { MainScreen } from 'react-native-legal-common-example-ui';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <SafeAreaProvider style={styles.container}>
       <MainScreen />
       <StatusBar backgroundColor="transparent" barStyle="dark-content" translucent />
-    </View>
+    </SafeAreaProvider>
   );
 }
 

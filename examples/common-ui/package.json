@@ -8,8 +8,9 @@
   "react-native": "src/index",
   "source": "src/index",
   "dependencies": {
-    "react": "19.0.0",
-    "react-native": "0.79.5",
-    "react-native-legal": "workspace:*"
+    "react": "19.1.0",
+    "react-native": "0.81.4",
+    "react-native-legal": "workspace:*",
+    "react-native-safe-area-context": "5.6.1"
   }
 }

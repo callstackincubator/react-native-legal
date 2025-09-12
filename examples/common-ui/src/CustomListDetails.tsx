@@ -1,5 +1,6 @@
-import { Button, SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
+import { Button, ScrollView, StyleSheet, Text } from 'react-native';
 import type { Library } from 'react-native-legal';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Props {
   item: Library;
@@ -8,7 +9,7 @@ interface Props {
 
 export const CustomListDetails = ({ item, onModalClose }: Props) => {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={['bottom', 'left', 'right', 'top']} style={styles.container}>
       <Button onPress={onModalClose} title="Exit detail view" />
       <ScrollView style={styles.scroll}>
         <Text style={styles.header}>{item.name}</Text>
