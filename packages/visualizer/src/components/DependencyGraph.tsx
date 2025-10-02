@@ -95,7 +95,7 @@ export default function DependencyGraph({ data }: DependencyGraphProps) {
   );
 
   const graphRenderJobPendingRef = useRef<boolean>(false);
-  const graphRenderJobDispatchRef = useRef<NodeJS.Timeout | null>(null);
+  const graphRenderJobDispatchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /**
    * Graph render dispatch effect; used for first committing a new state

@@ -1,0 +1,36 @@
+dialog.rnl--dialog {
+  height: 90%;
+  width: 90%;
+  border-radius: 20px;
+}
+
+dialog.rnl--dialog::backdrop {
+  background-color: rgba(0,0,0,0.4);
+}
+
+main.rnl--main {
+  display: flex;
+  align-self: stretch;
+  flex: 1;
+  flex-direction: column;
+  overflow: scroll;
+  width: 100%;
+}
+
+.rnl--close-button {
+  font-size: 36px;
+  font-weight: 600;
+  padding: 10px;
+}
+
+header.rnl--header-container {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+summary.rnl--summary {
+  font-size: 20px;
+  margin: 10px 0px;
+}

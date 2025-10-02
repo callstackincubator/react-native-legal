@@ -1,3 +1,5 @@
+import '@expo/metro-runtime';
+import 'react-native-legal';
 import { registerRootComponent } from 'expo';
 
 import App from './App';

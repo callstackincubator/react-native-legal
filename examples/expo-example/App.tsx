@@ -1,3 +1,4 @@
+import './web-styles.css';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { MainScreen } from 'react-native-legal-common-example-ui';
