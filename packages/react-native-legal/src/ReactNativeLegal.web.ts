@@ -1,4 +1,13 @@
+import './ReactNativeLegalStyles.css';
 import type { LibrariesResult } from './NativeReactNativeLegal';
+
+function createElementWithClassName<K extends keyof HTMLElementTagNameMap>(tagName: K, className: string) {
+  const element = document.createElement(tagName);
+
+  element.className = className;
+
+  return element;
+}
 
 export const ReactNativeLegal = {
   getLibrariesAsync: () => {
@@ -15,51 +24,41 @@ export const ReactNativeLegal = {
   launchLicenseListScreen: (licenseHeaderText?: string) => {
     const payload = require(`react-native-legal/.rnlegal/libraries.json`);
 
-    const main = document.createElement('main');
+    const main = createElementWithClassName('main', 'rnl--main');
+    const closeBtn = createElementWithClassName('span', 'rnl--close-button');
 
-    main.style.display = 'flex';
-    main.style.alignSelf = 'stretch';
-    main.style.flex = '1';
-    main.style.flexDirection = 'column';
-    main.style.overflow = 'scroll';
-    main.style.width = '100%';
+    closeBtn.innerHTML = '&times;';
 
-    const closeBtn = document.createElement('button');
+    const closeBtnContainer = createElementWithClassName('div', 'rnl--close-button-container');
 
-    closeBtn.innerText = 'Close';
+    closeBtnContainer.ariaLabel = 'Close licenses dialog';
+    closeBtnContainer.role = 'button';
+    closeBtnContainer.appendChild(closeBtn);
 
-    const headerContainer = document.createElement('header');
+    const headerContainer = createElementWithClassName('header', 'rnl--header-container');
 
-    headerContainer.style.display = 'flex';
-    headerContainer.style.flexDirection = 'row';
-    headerContainer.style.alignItems = 'center';
-    headerContainer.style.justifyContent = 'space-between';
-    headerContainer.appendChild(closeBtn);
+    headerContainer.appendChild(closeBtnContainer);
 
     main.appendChild(headerContainer);
 
     if (licenseHeaderText) {
-      const header = document.createElement('h1');
+      const header = createElementWithClassName('h1', 'rnl--header');
 
       header.innerText = licenseHeaderText;
 
-      headerContainer.insertBefore(header, closeBtn);
-    } else {
-      headerContainer.style.flexDirection = 'row-reverse';
+      headerContainer.appendChild(header);
     }
 
     payload.forEach((library: any) => {
-      const summary = document.createElement('summary');
+      const summary = createElementWithClassName('summary', 'rnl--summary');
 
-      summary.style.fontSize = '20px';
-      summary.style.margin = '10px 0px';
       summary.innerText = library.packageKey;
 
-      const content = document.createElement('p');
+      const content = createElementWithClassName('p', 'rnl--summary-content');
 
       content.innerText = library.content;
 
-      const details = document.createElement('details');
+      const details = createElementWithClassName('details', 'rnl--summary-details');
 
       details.appendChild(summary);
       details.appendChild(content);
@@ -67,16 +66,13 @@ export const ReactNativeLegal = {
       main.appendChild(details);
     });
 
-    const dialog = document.createElement('dialog');
+    const dialog = createElementWithClassName('dialog', 'rnl--dialog');
 
-    dialog.id = 'react-native-legal-dialog';
-    dialog.style.height = '90%';
-    dialog.style.width = '90%';
     dialog.appendChild(main);
 
     document.querySelector('body')?.appendChild(dialog);
 
-    closeBtn.addEventListener(
+    closeBtnContainer.addEventListener(
       'click',
       () => {
         document.querySelector('body')?.removeChild(dialog);

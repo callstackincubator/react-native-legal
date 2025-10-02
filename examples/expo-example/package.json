@@ -6,8 +6,8 @@
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "react-native-legal && expo start --web",
-    "react-native-legal": "react-native-legal",
+    "web": "yarn legal-generate:web && expo start --web",
+    "legal-generate:web": "react-native-legal legal-generate --dev-deps-mode=none --include-optional-deps --transitive-deps-mode=all",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -17412,6 +17412,7 @@ __metadata:
     "@callstack/licenses": "npm:^0.3.0"
     "@types/glob": "npm:^8.1.0"
     "@types/xml2js": "npm:^0.4.11"
+    commander: "npm:^14.0.0"
     expo: "npm:^54.0.0"
     expo-module-scripts: "npm:^5.0.7"
     glob: "npm:^7.1.3"
