@@ -54,7 +54,7 @@ tags:
         text: 'Accept & continue'
     file: '../common/acceptChromeTerms-AcceptContinueVariant.yaml'
 
-- assertVisible: A framework for building native applications using React
+- assertVisible: react-native
 - takeScreenshot: 'e2e_results/github_page'
 - back
 - stopRecording
