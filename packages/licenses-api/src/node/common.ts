@@ -215,6 +215,9 @@ export function scanDependencies(
   return result;
 }
 
+const PODSPEC_NAME_REGEX =
+  /(Pod::Spec\.new\s+do\s+\|(?<specref>.*)\|).*(\k<specref>\.name\s+=\s+(?<quote>["'])(?<specname>[a-zA-Z0-9_\-@]+)\k<quote>)/;
+
 /**
  * Generates LicensePlist-compatible metadata for NPM dependencies as a YAML string.
  *
@@ -243,9 +246,48 @@ export function generateLicensePlistNPMOutput(licenses: AggregatedLicensesMappin
     } as LicensePlistPayload;
   });
 
+  const excludedEntries = Object.values(licenses).reduce<Array<{ name: string }>>((acc, license) => {
+    const packageName = license.name;
+    const localPackageJsonPath = PackageUtils.getPackageJsonPath(packageName);
+
+    if (!localPackageJsonPath) {
+      return acc;
+    }
+
+    const podspecFiles = glob.sync('**.podspec', {
+      cwd: path.dirname(localPackageJsonPath),
+      absolute: true,
+      nocase: true,
+      nodir: true,
+      ignore: '**/{__tests__,__fixtures__,__mocks__}/**',
+    });
+
+    if (!podspecFiles) {
+      return acc;
+    }
+
+    const podspecEntries = podspecFiles.map((podspecFile) => {
+      const podspecContent = fs.readFileSync(podspecFile, { encoding: 'utf-8' });
+      const podspecContentShrinked = podspecContent.replace(/\n/g, ' ');
+      const { specname } = PODSPEC_NAME_REGEX.exec(podspecContentShrinked)?.groups ?? {};
+
+      return { name: specname ?? packageName };
+    });
+
+    return [...acc, ...podspecEntries];
+  }, []);
+
   const yamlDoc = {
     ...(Object.keys(renames).length > 0 && { rename: renames }),
     manual: licenseEntries,
+    /**
+     * Adding excludes to prevent duplicates - NPM packages with iOS Podspecs are already
+     * manually included in the `licenseEntries`. However License Plist is automatically including all
+     * the entries detected via Pods-<project-name>-acknowledgements.plist, which also
+     * includes the NPM package with iOS Podspecs - let's filter them out,
+     * so that only the manual NPM entries are displayed
+     */
+    exclude: excludedEntries,
   };
 
   const yamlContent = [
