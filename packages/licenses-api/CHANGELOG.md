@@ -1,5 +1,11 @@
 # @callstack/licenses
 
+## 0.3.1
+
+### Patch Changes
+
+- [#129](https://github.com/callstackincubator/react-native-legal/pull/129) [`b912567`](https://github.com/callstackincubator/react-native-legal/commit/b912567f75f4ddc5123494eee32251219820d347) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Exclude duplicated cocoapods license entries from license_plist.yml
+
 ## 0.3.0
 
 ### Minor Changes
