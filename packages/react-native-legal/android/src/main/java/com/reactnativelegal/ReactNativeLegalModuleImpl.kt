@@ -47,7 +47,13 @@ object ReactNativeLegalModuleImpl {
                 "version" to library.artifactVersion,
                 "description" to library.description,
                 "website" to library.website,
-                "developers" to library.developers.joinToString(),
+                "developers" to
+                    library.developers.map { developer ->
+                        bundleOf(
+                            "name" to developer.name,
+                            "organisationUrl" to developer.organisationUrl,
+                        )
+                    },
                 "organization" to library.organization?.name,
                 "licenses" to
                     library.licenses.map { license ->

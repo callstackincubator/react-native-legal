@@ -1,6 +1,11 @@
 import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
 
+export interface Developer {
+  name?: string;
+  organisationUrl?: string;
+}
+
 export interface License {
   licenseContent: string;
   /**
@@ -29,7 +34,7 @@ export interface Library {
   /**
    * @platform Android
    */
-  developers?: string;
+  developers?: Developer[];
   /**
    * @platform Android
    */
