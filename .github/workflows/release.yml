@@ -10,7 +10,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 permissions:
   id-token: write # Required for OIDC
   contents: write # Required to publish Github Release
-  pull-request: write # Required to create PR with Changeset release
+  pull-requests: write # Required to create PR with Changeset release
 
 jobs:
   release:
