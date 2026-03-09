@@ -1,5 +1,11 @@
 # react-native-legal
 
+## 1.6.2
+
+### Patch Changes
+
+- [#131](https://github.com/callstackincubator/react-native-legal/pull/131) [`915da37`](https://github.com/callstackincubator/react-native-legal/commit/915da37df42c02e3facc0d5756daa51234ded9c3) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Fix "developers" field returned on Android platform to be stringified in a non reversible way, instead of being returned as an array
+
 ## 1.6.1
 
 ### Patch Changes
