@@ -7,6 +7,10 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+  id-token: write # Required for OIDC
+  contents: write # Required to publish Github Release
+
 jobs:
   release:
     name: Release
@@ -20,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: yarn
 
       - name: Install Dependencies
@@ -28,7 +32,7 @@ jobs:
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v1.7.0
         with:
           version: yarn run version
           commit: "chore: version packages"
@@ -36,4 +40,3 @@ jobs:
           publish: yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
