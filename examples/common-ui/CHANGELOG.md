@@ -1,5 +1,12 @@
 # react-native-legal-common-example-ui
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [[`186d9e3`](https://github.com/callstackincubator/react-native-legal/commit/186d9e39353327d2b08a2d6602a5bc7305b4b067)]:
+  - react-native-legal@1.6.1
+
 ## 0.0.7
 
 ### Patch Changes

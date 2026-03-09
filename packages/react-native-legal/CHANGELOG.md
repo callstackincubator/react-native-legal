@@ -1,5 +1,11 @@
 # react-native-legal
 
+## 1.6.1
+
+### Patch Changes
+
+- [#135](https://github.com/callstackincubator/react-native-legal/pull/135) [`186d9e3`](https://github.com/callstackincubator/react-native-legal/commit/186d9e39353327d2b08a2d6602a5bc7305b4b067) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Update `@callstack/licenses` dependency from ^0.3.0 to ^0.3.1 to support https://github.com/callstackincubator/react-native-legal/commit/b912567f75f4ddc5123494eee32251219820d347
+
 ## 1.6.0
 
 ### Minor Changes
