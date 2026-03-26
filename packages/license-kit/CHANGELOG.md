@@ -1,5 +1,11 @@
 # license-kit
 
+## 0.3.4
+
+### Patch Changes
+
+- [#144](https://github.com/callstackincubator/react-native-legal/pull/144) [`b691b7f`](https://github.com/callstackincubator/react-native-legal/commit/b691b7f850269ab147d8496a65dff06c71b8cc18) Thanks [@Berdsen](https://github.com/Berdsen)! - Updated dependencies because of known vulnerabilities
+
 ## 0.3.3
 
 ### Patch Changes
