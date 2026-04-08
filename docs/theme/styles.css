@@ -10,9 +10,9 @@
 }
 
 /* Single LinkCard in intro page */
-.flex-intro-cards div {
+.flex-intro-cards > div {
   display: flex;
-  width: calc(max(30%, 250px));
+  width: calc(min(max(30%, 250px), 100%));
   height: auto;
   aspect-ratio: 1;
 }
