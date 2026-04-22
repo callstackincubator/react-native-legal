@@ -2,13 +2,17 @@ package com.reactnativelegal
 
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updatePadding
 import com.mikepenz.aboutlibraries.LibsBuilder.Companion.BUNDLE_TITLE
 import com.mikepenz.aboutlibraries.ui.LibsSupportFragment
@@ -25,14 +29,7 @@ class ReactNativeLegalActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_licenses)
 
-        val isLightTheme =
-            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK !=
-                Configuration.UI_MODE_NIGHT_YES
-
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = isLightTheme
-            isAppearanceLightNavigationBars = isLightTheme
-        }
+        setupEdgeToEdge()
 
         val bundle = intent.extras
         fragment = LibsSupportFragment().apply { arguments = bundle }
@@ -83,9 +80,9 @@ class ReactNativeLegalActivity : AppCompatActivity() {
                 WindowInsetsCompat.toWindowInsetsCompat(insets)
                     .getInsets(WindowInsetsCompat.Type.systemBars())
             v.updatePadding(
-                left = v.paddingLeft + systemInsets.left,
-                top = v.paddingTop + systemInsets.top,
-                right = v.paddingRight + systemInsets.right,
+                left = systemInsets.left,
+                top = systemInsets.top,
+                right = systemInsets.right,
             )
 
             insets
@@ -104,6 +101,48 @@ class ReactNativeLegalActivity : AppCompatActivity() {
                     override fun onViewDetachedFromWindow(v: View) = Unit
                 }
             )
+        }
+    }
+
+    /**
+     * Based on React Native's edge-to-edge util
+     * https://github.com/facebook/react-native/blob/6e7797d5ab1af6bab8d94b1c1ad62dddc1ec5474/packages/react-native/ReactAndroid/src/main/java/com/facebook/react/views/view/WindowUtil.kt#L106
+     */
+    private fun setupEdgeToEdge() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        val isLightTheme =
+            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK !=
+                Configuration.UI_MODE_NIGHT_YES
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isStatusBarContrastEnforced = false
+            window.isNavigationBarContrastEnforced = true
+        }
+
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor =
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Color.TRANSPARENT
+                // https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/com/android/internal/policy/DecorView.java;drc=6ef0f022c333385dba2c294e35b8de544455bf19;l=142
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isLightTheme ->
+                    Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
+                // https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/res/remote_color_resources_res/values/colors.xml;l=67
+                else -> Color.argb(0x80, 0x1b, 0x1b, 0x1b)
+            }
+
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            isAppearanceLightStatusBars = isLightTheme
+            isAppearanceLightNavigationBars = isLightTheme
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode =
+                when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
+                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+                    else -> WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                }
         }
     }
 }
