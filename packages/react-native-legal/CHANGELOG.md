@@ -1,5 +1,11 @@
 # react-native-legal
 
+## 1.6.3
+
+### Patch Changes
+
+- [#143](https://github.com/callstackincubator/react-native-legal/pull/143) [`1c0a50e`](https://github.com/callstackincubator/react-native-legal/commit/1c0a50ed8ef1faca7bb1e88b672022f640a379ae) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Fix android system bars appearance for fullscreen activity list
+
 ## 1.6.2
 
 ### Patch Changes
