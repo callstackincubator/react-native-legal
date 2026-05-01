@@ -1,5 +1,7 @@
 import { MiscUtils } from '@callstack/licenses';
 
+import type { AboutLibrariesOptions } from './types';
+
 /**
  * Applies Gradle Plugin Portal & AboutLibraries Gradle plugin repositories (if needed) inside root build.gradle
  */
@@ -32,7 +34,10 @@ export function declareAboutLibrariesPluginUtil(androidBuildGradleContent: strin
 /**
  * Applies and configures AboutLibraries Grale plugin (if needed) inside app's build.gradle
  */
-export function applyAndConfigureAboutLibrariesPluginUtil(androidAppBuildGradleContent: string) {
+export function applyAndConfigureAboutLibrariesPluginUtil(
+  androidAppBuildGradleContent: string,
+  options?: AboutLibrariesOptions,
+) {
   // Apply plugin
   const applyPluginBlockRegex = new RegExp(`apply\\s+plugin:\\s+['"]${PLUGIN_APPLY_BLOCK_IDENTIFIER}['"]`);
 
@@ -44,14 +49,28 @@ export function applyAndConfigureAboutLibrariesPluginUtil(androidAppBuildGradleC
   }
 
   // Configure plugin
-  const pluginConfigRegex = /aboutLibraries {/;
+  const pluginConfigRegex = /aboutLibraries\s*{/;
+  const hasConfigBlock = androidAppBuildGradleContent.match(pluginConfigRegex)?.length;
+  const gitHubApiToken = options?.gitHubApiToken;
 
-  if (!androidAppBuildGradleContent.match(pluginConfigRegex)?.length) {
-    androidAppBuildGradleContent += '\n\naboutLibraries {\n    configPath = "config"\n    prettyPrint = true\n}\n';
+  if (!hasConfigBlock) {
+    const tokenLine = gitHubApiToken ? `    gitHubApiToken = "${gitHubApiToken}"\n` : '';
+
+    androidAppBuildGradleContent += `\n\naboutLibraries {\n    configPath = "config"\n    prettyPrint = true\n${tokenLine}}\n`;
     console.log('About Libraries Gradle Plugin - CONFIGURED');
   } else {
-    console.log('About Libraries Gradle Plugin already configured - SKIP');
+    if (gitHubApiToken && !androidAppBuildGradleContent.match(/gitHubApiToken\s*=/)?.length) {
+      androidAppBuildGradleContent = androidAppBuildGradleContent.replace(
+        pluginConfigRegex,
+        `aboutLibraries {\n    gitHubApiToken = "${gitHubApiToken}"`,
+      );
+      console.log('About Libraries Gradle Plugin - UPDATED');
+    } else {
+      console.log('About Libraries Gradle Plugin already configured - SKIP');
+    }
   }
+
+  console.log('androidAppBuildGradleContent', androidAppBuildGradleContent);
 
   return androidAppBuildGradleContent;
 }
