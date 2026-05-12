@@ -18,22 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      
+      - name: Setup
+        uses: ./.github/actions/setup
         with:
-          node-version: 24
-          cache: yarn
-
-      - name: Install Dependencies
-        run: yarn install --immutable
+          enable-cache: false
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v1.7.0
+        uses: changesets/action@63a615b9cd06ba9a3e6d13796c7fbcb080a60a0b # v1.8.0
         with:
           version: yarn run version
           commit: "chore: version packages"
