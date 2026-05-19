@@ -59,7 +59,14 @@ export function prepareAboutLibrariesLicenseField(license: License) {
     return '';
   }
 
-  return `${license.type}_${sha512(license.content ?? license.type)}`;
+  // The returned value is used as a filename under `android/config/licenses/`.
+  // Legacy/compound SPDX expressions like `MIT/X11` or `(MIT OR Apache-2.0)` would
+  // otherwise produce paths containing `/`, `(` or spaces, which causes the writer
+  // to either fail with ENOENT (when a `/` is interpreted as a subdirectory) or
+  // to produce names that are invalid on some filesystems.
+  const sanitizedType = license.type.replace(/[^A-Za-z0-9._-]/g, '_');
+
+  return `${sanitizedType}_${sha512(license.content ?? sanitizedType)}`;
 }
 
 export function parseAuthorField(json: { author: string | { name: string } }) {
