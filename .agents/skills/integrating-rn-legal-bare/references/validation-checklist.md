@@ -1,0 +1,1 @@
+../../../../skills/integrating-rn-legal-bare/references/validation-checklist.md
