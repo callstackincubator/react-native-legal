@@ -53,7 +53,14 @@ This will ensure the required native dependencies are included.
 +       {
 +         "devDepsMode": "root-only",
 +         "includeOptionalDeps": true,
-+         "transitiveDepsMode": "all"
++         "transitiveDepsMode": "all",
++         "aboutLibraries": {
++           "gitHubApiToken": "YOUR_GITHUB_TOKEN"
++         },
++         "licensePlist": {
++           "githubToken": "YOUR_GITHUB_TOKEN",
++           "addVersionNumbers": true
++         }
 +       }
 +     ]
 +   ]
@@ -75,6 +82,16 @@ interface PluginOptions {
   // `'none'` (no transitive dependencies of direct dependencies)
   // @default `'all'`
   transitiveDepsMode?: 'all' | 'from-external-only' | 'from-workspace-only' | 'none';
+  aboutLibraries?: {
+    // GitHub API token used by AboutLibraries to resolve metadata.
+    gitHubApiToken?: string;
+  };
+  licensePlist?: {
+    // GitHub token passed to LicensePlist (helps avoid rate limits).
+    githubToken?: string;
+    // @default `true`
+    addVersionNumbers?: boolean;
+  };
 }
 ```
 
@@ -97,6 +114,9 @@ This will extract and prepare license metadata for use in your app.
 | `--tm, --transitive-deps-mode [mode]`     | Controls, which transitive dependencies are included: <ul><li>`'all'`</li> <li>`'from-external-only'` (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers)</li> <li>`'from-workspace-only'` (only direct dependencies of direct dependencies specified by `workspace:` specifier)</li> <li>`'none'`</li></ul> | `'all'`                  |
 | `--dm, --dev-deps-mode [mode]`            | <ul><li>`'root-only'` (only direct devDependencies from the scanned project's root package.json)</li> <li>`'none'`</li></ul>                                                                                                                                                                                                                             | `'none'`             |
 | `--od, --include-optional-deps [include]` | Whether to include optionalDependencies in the scan; other flags apply                                                                                                                                                                                                                                                                                   | `true`                    |
+| `--al, --about-libraries-github-api-token [token]` | GitHub API token used by AboutLibraries to resolve metadata                                                                                                                                                                                                                                                                                         | —                        |
+| `--github-token [token]`                  | GitHub token passed to LicensePlist (helps avoid rate limits)                                                                                                                                                                                                                                                                                             | —                        |
+| `--add-version-numbers [boolean]`         | Whether LicensePlist should add version numbers to entries                                                                                                                                                                                                                                                                                                | `true`                   |
 
 ## Usage
 

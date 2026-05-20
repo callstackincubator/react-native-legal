@@ -36,13 +36,42 @@ module.exports = {
           },
           default: 'all',
         },
+        {
+          name: '--al, --about-libraries-github-api-token <string>',
+          description: 'GitHub API token used by AboutLibraries to resolve metadata',
+          parse: (val) => val,
+        },
+        {
+          name: '--github-token <string>',
+          description: 'GitHub token passed to LicensePlist (helps avoid rate limits)',
+          parse: (val) => val,
+        },
+        {
+          name: '--add-version-numbers [boolean]',
+          description: 'Whether LicensePlist should add version numbers to entries',
+          parse: (val) => val !== 'false',
+          default: true,
+        },
       ],
       func: ([], { project: { android, ios } }, args) => {
         const generateLegal = require('./bare-plugin/build').default;
-        /** @type {import('./plugin-utils/build/types').PluginScanOptions} */
-        const { devDepsMode, includeOptionalDeps, transitiveDepsMode } = args;
+        /** @type {import('./plugin-utils/build/types').PluginOptions} */
+        const {
+          devDepsMode,
+          includeOptionalDeps,
+          transitiveDepsMode,
+          aboutLibrariesGithubApiToken,
+          githubToken,
+          addVersionNumbers,
+        } = args;
 
-        generateLegal(android?.sourceDir, ios?.sourceDir, { devDepsMode, includeOptionalDeps, transitiveDepsMode });
+        generateLegal(android?.sourceDir, ios?.sourceDir, {
+          devDepsMode,
+          includeOptionalDeps,
+          transitiveDepsMode,
+          aboutLibraries: aboutLibrariesGithubApiToken ? { gitHubApiToken: aboutLibrariesGithubApiToken } : undefined,
+          licensePlist: { githubToken, addVersionNumbers },
+        });
       },
     },
   ],

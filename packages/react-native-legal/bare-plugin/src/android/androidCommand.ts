@@ -3,6 +3,8 @@ import path from 'node:path';
 
 import { type Types as SharedTypes, scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/licenses';
 
+import type { AboutLibrariesOptions } from '../../../plugin-utils/build/types';
+
 import { addListActivity } from './addListActivity';
 import { applyAndConfigureAboutLibrariesPlugin } from './applyAndConfigureAboutLibrariesPlugin';
 import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
@@ -13,7 +15,11 @@ import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
  * It scans the NPM dependencies, generates AboutLibraries-compatible metadata for them,
  * installs & configures AboutLibraries Gradle plugin and adds Android Activity with a list of dependencies and their licenses
  */
-export function androidCommand(androidProjectPath: string, scanOptionsFactory: SharedTypes.ScanPackageOptionsFactory) {
+export function androidCommand(
+  androidProjectPath: string,
+  scanOptionsFactory: SharedTypes.ScanPackageOptionsFactory,
+  aboutLibraries?: AboutLibrariesOptions,
+) {
   const licenses = scanDependencies(
     path.join(path.resolve(androidProjectPath, '..'), 'package.json'),
     scanOptionsFactory,
@@ -27,6 +33,6 @@ export function androidCommand(androidProjectPath: string, scanOptionsFactory: S
   writeAboutLibrariesNPMOutput(licenses, androidProjectPath);
 
   declareAboutLibrariesPlugin(androidProjectPath);
-  applyAndConfigureAboutLibrariesPlugin(androidProjectPath);
+  applyAndConfigureAboutLibrariesPlugin(androidProjectPath, aboutLibraries);
   addListActivity(androidProjectPath);
 }

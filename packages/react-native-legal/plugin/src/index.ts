@@ -12,12 +12,18 @@ import type { PluginOptions } from './types';
 const pak = require('react-native-legal/package.json');
 
 const withReactNativeLegal: ConfigPlugin<PluginOptions> = (config, options) => {
-  const { devDepsMode = 'none', includeOptionalDeps = true, transitiveDepsMode = 'all' } = options ?? {};
+  const {
+    devDepsMode = 'none',
+    includeOptionalDeps = true,
+    transitiveDepsMode = 'all',
+    aboutLibraries,
+    licensePlist,
+  } = options ?? {};
   const pluginScanOptions: PluginScanOptions = { devDepsMode, includeOptionalDeps, transitiveDepsMode };
   const scanOptionsFactory = createPluginScanOptionsFactory(pluginScanOptions);
 
-  config = withAndroidLegal(config, { scanOptionsFactory });
-  config = withIosLegal(config, { scanOptionsFactory });
+  config = withAndroidLegal(config, { scanOptionsFactory, aboutLibraries });
+  config = withIosLegal(config, { scanOptionsFactory, licensePlist });
 
   return config;
 };

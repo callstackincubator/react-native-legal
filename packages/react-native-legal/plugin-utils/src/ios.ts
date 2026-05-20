@@ -3,6 +3,8 @@ import path from 'node:path';
 
 import type { XcodeProject } from 'xcode';
 
+import type { LicensePlistOptions } from './types';
+
 /**
  * Creates a Settings.bundle from a template and invokes a callback responsible for linking new file to the iOS project
  */
@@ -35,9 +37,28 @@ export function addSettingsBundleUtil(
 /**
  * Creates a shell script build phase (if needed) and links it to native targets build phases
  */
+export function buildLicensePlistShellScript(options?: LicensePlistOptions) {
+  const args = ['${PODS_ROOT}/LicensePlist/license-plist'];
+
+  if (options?.addVersionNumbers !== false) {
+    args.push('--add-version-numbers');
+  }
+
+  if (options?.githubToken) {
+    const quotedToken = `'${options.githubToken.replace(/'/g, `'\\''`)}'`;
+
+    args.push(`--github-token ${quotedToken}`);
+  }
+
+  args.push('--output-path ./Settings.bundle');
+
+  return args.join(' ');
+}
+
 export function registerLicensePlistBuildPhaseUtil(
   projectTargetId: string,
   pbxproj: XcodeProject, // Xcode Pbxproj
+  options?: LicensePlistOptions,
 ) {
   const nativeTargetSection = pbxproj.pbxNativeTargetSection();
   const nativeTarget = nativeTargetSection[projectTargetId];
@@ -59,7 +80,7 @@ export function registerLicensePlistBuildPhaseUtil(
     projectTargetId,
     {
       shellPath: '/bin/sh',
-      shellScript: '${PODS_ROOT}/LicensePlist/license-plist --add-version-numbers --output-path ./Settings.bundle',
+      shellScript: buildLicensePlistShellScript(options),
     },
   );
   /**

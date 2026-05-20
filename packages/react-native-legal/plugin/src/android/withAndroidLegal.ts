@@ -15,7 +15,10 @@ import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
  * It scans the NPM dependencies, generates AboutLibraries-compatible metadata,
  * installs & configures AboutLibraries Gradle plugin and adds Android Activity with a list of dependencies and their licenses
  */
-export const withAndroidLegal: ConfigPlugin<PlatformPluginOptions> = (config, { scanOptionsFactory }) => {
+export const withAndroidLegal: ConfigPlugin<PlatformPluginOptions> = (
+  config,
+  { scanOptionsFactory, aboutLibraries },
+) => {
   withAndroidManifest(config, async (exportedConfig) => {
     const licenses = scanDependencies(
       path.join(exportedConfig.modRequest.projectRoot, 'package.json'),
@@ -26,7 +29,7 @@ export const withAndroidLegal: ConfigPlugin<PlatformPluginOptions> = (config, { 
     return exportedConfig;
   });
   config = declareAboutLibrariesPlugin(config);
-  config = applyAndConfigureAboutLibrariesPlugin(config);
+  config = applyAndConfigureAboutLibrariesPlugin(config, aboutLibraries);
   config = addListActivity(config);
   return config;
 };
