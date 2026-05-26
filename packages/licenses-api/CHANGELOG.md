@@ -1,5 +1,11 @@
 # @callstack/licenses
 
+## 0.3.2
+
+### Patch Changes
+
+- [#169](https://github.com/callstackincubator/react-native-legal/pull/169) [`f300815`](https://github.com/callstackincubator/react-native-legal/commit/f3008150b94e50cec30a2706bf63bfca956eefa4) Thanks [@alexisloiselle](https://github.com/alexisloiselle)! - Sanitize unsafe characters in `prepareAboutLibrariesLicenseField` so packages with legacy or compound SPDX expressions (e.g. `MIT/X11`, `(MIT OR Apache-2.0)`) no longer break the AboutLibraries metadata generation on Android. Previously the unsanitized `/` caused `writeAboutLibrariesNPMOutput` to attempt creating files like `android/config/licenses/MIT/X11_<hash>.json`, failing with `ENOENT` because `MIT/` was treated as a subdirectory.
+
 ## 0.3.1
 
 ### Patch Changes
