@@ -1,0 +1,4 @@
+interface:
+  display_name: 'React Native Legal Bare Integration'
+  short_description: 'Implement bare React Native legal integration'
+  default_prompt: 'Use $integrating-rn-legal-bare to set up react-native-legal in this bare React Native app.'
