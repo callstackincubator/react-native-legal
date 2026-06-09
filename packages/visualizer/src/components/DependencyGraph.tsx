@@ -240,9 +240,9 @@ export default function DependencyGraph({ data }: DependencyGraphProps) {
           d3.zoomIdentity
             .translate(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              svg.node()!.getBoundingClientRect().width / 2 - root.x * initialScale,
+              svg.node()!.getBoundingClientRect().width / 2 - (root?.x ?? 0) * initialScale,
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              svg.node()!.getBoundingClientRect().height / 2 - root.y * initialScale,
+              svg.node()!.getBoundingClientRect().height / 2 - (root?.y ?? 0) * initialScale,
             )
             .scale(initialScale),
         );
@@ -543,7 +543,7 @@ export default function DependencyGraph({ data }: DependencyGraphProps) {
 
       {/* while the graph is being rendered, the JS thread may be blocked & become unresponsive; this must not be delayed e.g. via useMemo */}
       <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={isRenderingGraph}>
-        <Stack alignItems="center" gap={2} justifyContent="center" direction="column">
+        <Stack sx={{ alignItems: 'center', gap: 2, justifyContent: 'center' }} direction="column">
           <CircularProgress disableShrink />
           <Typography>
             Rendering dependency graph, this may take some time based on the size of your project...
@@ -552,12 +552,9 @@ export default function DependencyGraph({ data }: DependencyGraphProps) {
       </Backdrop>
 
       <div className={classes.flex}>
-        <Stack direction="row" justifyContent="space-evenly" alignItems="center" gap={1}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: 1, justifyContent: 'space-evenly' }}>
           <Typography
-            textAlign="center"
-            display="inline-flex"
-            alignItems="center"
-            whiteSpace="break-spaces"
+            sx={{ alignItems: 'center', display: 'inline-flex', textAlign: 'center', whiteSpace: 'break-spaces' }}
             component="span"
           >
             🌴 Current root: <pre className={classes.inline}>{rootPackageKey}</pre>
@@ -572,7 +569,7 @@ export default function DependencyGraph({ data }: DependencyGraphProps) {
             </Typography>
           </Typography>
 
-          <Typography textAlign="center" variant="caption">
+          <Typography sx={{ textAlign: 'center' }} variant="caption">
             Dependency graph with {`${graph.nodes().length} nodes & ${graph.edges().length} edges`}.
           </Typography>
         </Stack>

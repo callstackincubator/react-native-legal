@@ -4,7 +4,7 @@ import ExternalLink from '../ExternalLink';
 
 export default function Help() {
   return (
-    <Stack gap={2}>
+    <Stack sx={{ gap: 2 }}>
       <Typography variant="h6">Help</Typography>
 
       <Typography>This tool visualizes the license dependencies of your project.</Typography>

@@ -7,7 +7,7 @@ import licenses from './licenses.md';
 
 export default function Licenses() {
   return (
-    <Stack direction="column" padding={4}>
+    <Stack direction="column" sx={{ padding: 4 }}>
       <MarkdownBlock>{`# OSS Licenses\n\n${licenses}`}</MarkdownBlock>
     </Stack>
   );

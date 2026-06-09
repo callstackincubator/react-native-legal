@@ -24,8 +24,8 @@ export default function HoveredDependencyInfo() {
   const hoveredDisplayCategoryLicense = useMemo(() => categorizeLicense(displayLicense?.type), [displayLicense]);
 
   return (
-    <Stack direction="column" alignItems="center" justifyContent="center" gap={2} padding={2}>
-      <Stack direction="column" alignItems="center">
+    <Stack direction="column" sx={{ alignItems: 'center', gap: 2, justifyContent: 'center', padding: 2 }}>
+      <Stack direction="column" sx={{ alignItems: 'center' }}>
         <Typography variant="caption">Currently hovered package ☝️</Typography>
 
         <Typography variant="h6" component="span">
@@ -35,7 +35,10 @@ export default function HoveredDependencyInfo() {
         </Typography>
       </Stack>
 
-      <Stack direction="row" alignItems="center" justifyContent="center" gap={2} width="100%" flexWrap="wrap">
+      <Stack
+        direction="row"
+        sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 2, justifyContent: 'center', width: '100%' }}
+      >
         <Tooltip arrow title="Dependency type">
           <Chip icon={<Inventory2TwoTone />} label={displayLicense?.dependencyType ?? 'N/A'} />
         </Tooltip>
@@ -57,18 +60,18 @@ export default function HoveredDependencyInfo() {
         </Tooltip>
       </Stack>
 
-      <Stack direction="column" alignItems="center">
+      <Stack direction="column" sx={{ alignItems: 'center' }}>
         {displayLicense?.url && <ExternalLink href={displayLicense.url} />}
         <Typography variant="body1">Author: {displayLicense?.author ?? '---'}</Typography>
 
-        <Typography variant="body1" textAlign="center" width="100%" paddingLeft={2} paddingRight={2}>
+        <Typography variant="body1" sx={{ paddingLeft: 2, paddingRight: 2, textAlign: 'center', width: '100%' }}>
           {displayLicense?.description ?? '(No package description available)'}
         </Typography>
       </Stack>
 
       <Divider orientation="horizontal" flexItem />
 
-      <Typography variant="body1" width="100%" paddingLeft={2} paddingRight={2} component="div">
+      <Typography variant="body1" sx={{ paddingLeft: 2, paddingRight: 2, width: '100%' }} component="div">
         <MarkdownBlock>
           {`${displayLicense?.file ? `*Source: \`${displayLicense.file}\`*` : ''}\n\n${
             displayLicense?.content ?? '(No license text available)'

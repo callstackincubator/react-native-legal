@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import glob from 'glob';
+import { glob } from 'glob';
 
 import type {
   AboutLibrariesLibraryJsonPayload,

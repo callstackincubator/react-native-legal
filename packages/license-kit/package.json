@@ -68,11 +68,11 @@
   "dependencies": {
     "@callstack/licenses": "^0.3.1",
     "colorette": "^2.0.20",
-    "commander": "^14.0.0",
+    "commander": "^15.0.0",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
-    "next": "^15.5.18",
-    "open": "^10.1.2",
+    "next": "^16.2.0",
+    "open": "^11.0.0",
     "signale": "^1.4.0",
     "table": "^6.9.0",
     "ts-markdown-builder": "^0.4.1"

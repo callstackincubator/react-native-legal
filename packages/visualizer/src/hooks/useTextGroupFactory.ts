@@ -1,5 +1,5 @@
 import { type Types } from '@callstack/licenses';
-import type { graphlib } from '@dagrejs/dagre';
+import type { GraphLabel, graphlib } from '@dagrejs/dagre';
 import { useTheme } from '@mui/material';
 import * as d3 from 'd3';
 import { useCallback } from 'react';
@@ -12,7 +12,7 @@ import type { TreeNode } from '@/types/TreeNode';
  * @param graph The dagrejs graph instance.
  * @returns A function that creates an SVG group containing a text element provided by the `textFactory` on top of a rect with theme's default background.
  */
-export function useTextGroupFactory(graph: graphlib.Graph<TreeNode>) {
+export function useTextGroupFactory(graph: graphlib.Graph<GraphLabel, TreeNode>) {
   const theme = useTheme();
 
   const textGroupFactory = useCallback(

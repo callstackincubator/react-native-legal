@@ -22,6 +22,6 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@rspress/plugin-typedoc": "^2.0.8",
-    "@types/node": "^18.11.17"
+    "@types/node": "^24"
   }
 }

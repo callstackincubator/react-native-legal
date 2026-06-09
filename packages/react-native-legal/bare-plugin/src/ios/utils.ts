@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import glob from 'glob';
+import { glob } from 'glob';
 import type { XcodeProject } from 'xcode';
 import xcode from 'xcode';
 
