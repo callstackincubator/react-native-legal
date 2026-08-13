@@ -1,5 +1,14 @@
 # license-kit
 
+## 0.3.5
+
+### Patch Changes
+
+- [#173](https://github.com/callstackincubator/react-native-legal/pull/173) [`0017b28`](https://github.com/callstackincubator/react-native-legal/commit/0017b28707c823add803c66a7905bf52dcb56ce2) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Update dependencies (glob, next, commander)
+
+- Updated dependencies [[`0017b28`](https://github.com/callstackincubator/react-native-legal/commit/0017b28707c823add803c66a7905bf52dcb56ce2)]:
+  - @callstack/licenses@0.3.3
+
 ## 0.3.4
 
 ### Patch Changes
