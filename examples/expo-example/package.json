@@ -10,20 +10,20 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "expo": "^54.0.0",
-    "expo-build-properties": "~1.0.8",
-    "expo-splash-screen": "~31.0.9",
-    "expo-status-bar": "~3.0.8",
-    "react": "19.1.0",
-    "react-native": "0.81.4",
+    "expo": "^56.0.0",
+    "expo-build-properties": "^56.0.0",
+    "expo-splash-screen": "^56.0.0",
+    "expo-status-bar": "^56.0.0",
+    "react": "19.2.3",
+    "react-native": "0.85.3",
     "react-native-legal": "workspace:*",
     "react-native-legal-common-example-ui": "workspace:*",
-    "react-native-safe-area-context": "5.6.1"
+    "react-native-safe-area-context": "~5.7.0"
   },
   "devDependencies": {
-    "@babel/core": "7.27.4",
-    "@babel/preset-env": "7.27.2",
-    "@types/react": "~19.1.12"
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@types/react": "^19.2.0"
   },
   "private": true
 }

@@ -108,7 +108,7 @@ export default function Summary() {
     <Box className={classes.container}>
       <Box className={classes.gridContainer}>
         <Box className={classes.groupContainer}>
-          <Stack justifyContent="space-between" alignItems="center" direction="row" mb={2}>
+          <Stack sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }} direction="row">
             <Typography variant="subtitle1" gutterBottom>
               AI-generated summary
             </Typography>
@@ -138,10 +138,10 @@ export default function Summary() {
               to check which browsers currently support it.
             </Typography>
           ) : summarizerState === SummarizerState.DOWNLOADING ? (
-            <Stack justifyContent="center" alignContent="center" gap={1} direction="column">
+            <Stack sx={{ alignContent: 'center', gap: 1, justifyContent: 'center' }} direction="column">
               <LinearProgress value={summarizerDownloadProgress} />
 
-              <Typography textAlign="center">
+              <Typography sx={{ textAlign: 'center' }}>
                 Downloading Summarization API model - {summarizerDownloadProgress}%
               </Typography>
             </Stack>

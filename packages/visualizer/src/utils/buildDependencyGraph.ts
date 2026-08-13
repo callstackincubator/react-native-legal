@@ -2,6 +2,7 @@
 
 import type { Types } from '@callstack/licenses';
 import { graphlib } from '@dagrejs/dagre';
+import type { GraphLabel } from '@dagrejs/dagre';
 import _ from 'lodash';
 
 import {
@@ -15,7 +16,7 @@ import type { TreeNode } from '@/types/TreeNode';
 import { buildPackageKey } from './packageUtils';
 
 export type DependencyGraphResult = {
-  graph: graphlib.Graph<TreeNode>;
+  graph: graphlib.Graph<GraphLabel, TreeNode>;
   incomplete: boolean;
   rootPackageKey: string;
 };
@@ -26,7 +27,7 @@ export function buildDependencyGraph(
 ): DependencyGraphResult {
   let data = _.cloneDeep(_data);
 
-  const graph = new graphlib.Graph<TreeNode>().setGraph({
+  const graph = new graphlib.Graph<GraphLabel, TreeNode>().setGraph({
     ranksep: DEFAULT_RADIUS * 6,
     nodesep: DEFAULT_RADIUS * 3,
   });
@@ -40,6 +41,8 @@ export function buildDependencyGraph(
       key: rootPackageKey,
     },
     rank: 0,
+    width: 0,
+    height: 0,
   };
 
   const mapping: Record<string, TreeNode> = {};
@@ -80,6 +83,8 @@ export function buildDependencyGraph(
                 key: packageKey,
               },
               rank: childAdditionDepth,
+              width: 0,
+              height: 0,
             };
 
             graph.setNode(packageKey, nodeData);
@@ -153,6 +158,8 @@ export function buildDependencyGraph(
               key: nextRootTraitPackageKey,
             },
             rank: rootTraitAdditionDepth,
+            width: 0,
+            height: 0,
           };
 
           graph.setNode(nextRootTraitPackageKey, nodeData);

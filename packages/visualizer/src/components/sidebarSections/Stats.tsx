@@ -66,14 +66,14 @@ export default function Stats({ analysis }: StatsProps) {
 
               return (
                 <Box key={category} className={classes.categoryItem}>
-                  <Box display="flex" alignItems="center" gap={1}>
+                  <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
                     {getCategoryIcon(category as LicenseCategory, count === 0 ? 'disabled' : undefined)}
                     <Typography variant="body2" color={count === 0 ? 'textDisabled' : undefined}>
                       {getLicenseCategoryDescription(category as LicenseCategory)}
                     </Typography>
                   </Box>
 
-                  <Box display="flex" alignItems="center" gap={1}>
+                  <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
                     <Chip
                       disabled={count === 0}
                       label={`${count} (${percentage}%)`}

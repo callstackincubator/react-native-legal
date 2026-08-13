@@ -1,9 +1,9 @@
-name: '[Android] Accept Chrome T & C - Use without an account variant'
+name: '[Android] Accept Chrome T & C - Stay signed out'
 appId: com.android.chrome
 ---
 - tapOn:
     label: Dismiss Chrome sign in
-    text: 'Use without an account'
+    text: 'Stay signed out'
 - tapOn:
     label: 'Dismiss Chrome notifications'
     id: 'com.android.chrome:id/negative_button'

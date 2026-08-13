@@ -165,7 +165,7 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
       />
 
       {loading ? (
-        <Stack alignItems="center" gap={2} justifyContent="center" direction="column">
+        <Stack sx={{ alignItems: 'center', gap: 2, justifyContent: 'center' }} direction="column">
           <CircularProgress disableShrink />
 
           <Typography>Loading report, this may take some time based on the size of your project...</Typography>
@@ -173,7 +173,7 @@ export default function ReportPickerArea({ children }: ReportPickerAreaProps) {
       ) : report ? (
         children
       ) : (
-        <Stack alignItems="center">
+        <Stack sx={{ alignItems: 'center' }}>
           <MotionAvatar
             sx={{ padding: 6 }}
             variants={{

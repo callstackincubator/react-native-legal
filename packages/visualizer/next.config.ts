@@ -2,13 +2,13 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   distDir: '../license-kit/visualizer-build',
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.md$/,
-      use: 'raw-loader',
-    });
-
-    return config;
+  turbopack: {
+    rules: {
+      '*.md': {
+        loaders: ['raw-loader'],
+        as: '*.js',
+      },
+    },
   },
 };
 
