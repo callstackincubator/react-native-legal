@@ -1,5 +1,11 @@
 # react-native-legal
 
+## 1.6.5
+
+### Patch Changes
+
+- [#177](https://github.com/callstackincubator/react-native-legal/pull/177) [`8dff4f5`](https://github.com/callstackincubator/react-native-legal/commit/8dff4f551abc71af7b026abb7404f2906d51746e) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Fix omitted parts of license content on iOS
+
 ## 1.6.4
 
 ### Patch Changes
