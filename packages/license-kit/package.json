@@ -1,6 +1,6 @@
 {
   "name": "license-kit",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Aggregate license notes of OSS libraries used in your Node.js project, analyze & visualize OSS licenses with AI-turbocharged tooling",
   "main": "build/index",
   "module": "build/index",
@@ -66,7 +66,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@callstack/licenses": "^0.3.1",
+    "@callstack/licenses": "^0.3.3",
     "colorette": "^2.0.20",
     "commander": "^15.0.0",
     "express": "^5.1.0",
