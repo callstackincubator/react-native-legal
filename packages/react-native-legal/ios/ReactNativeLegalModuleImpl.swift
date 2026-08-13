@@ -101,12 +101,12 @@ public class ReactNativeLegalModuleImpl: NSObject {
           .appendingPathExtension("plist")
 
         guard
-          let data = parsePlistToDictArray(fileUrl: fileUrl),
-          let item = data.first(where: { $0["FooterText"] != nil }),
-          let footerText = item["FooterText"] as? String
+          let data = parsePlistToDictArray(fileUrl: fileUrl)
         else {
           return ReactNativeLegalLicenseMetadata(name: title)
         }
+
+        let footerText = data.compactMap { $0["FooterText"] as? String }.joined(separator: "\n")
 
         return ReactNativeLegalLicenseMetadata(name: title, content: footerText)
       }
