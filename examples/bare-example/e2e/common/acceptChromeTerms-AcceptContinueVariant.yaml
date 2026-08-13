@@ -1,4 +1,4 @@
-name: '[Android] Accept Chrome T & C - Use without an account variant'
+name: '[Android] Accept Chrome T & C - Accept and Continue variant'
 appId: com.android.chrome
 ---
 - tapOn:

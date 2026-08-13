@@ -18,7 +18,7 @@ tags:
       containsChild: '@react-native/virtualized-lists'
       index: 0
     direction: 'DOWN'
-    timeout: 60000
+    timeout: 75000
     centerElement: false
     speed: 75
     visibilityPercentage: 75
@@ -47,6 +47,12 @@ tags:
       visible:
         text: 'Use without an account'
     file: '../common/acceptChromeTerms-UseWithoutAnAccountVariant.yaml'
+
+- runFlow:
+    when:
+      visible:
+        text: 'Stay signed out'
+    file: '../common/acceptChromeTerms-StaySignedOut.yaml'
 
 - runFlow:
     when:
