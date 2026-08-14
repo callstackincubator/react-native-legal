@@ -1,9 +1,17 @@
 #import "ReactNativeLegalModule.h"
 
+#import <React/RCTUtils.h>
+
+#ifdef REACT_NATIVE_LEGAL_USING_SPM
+@import ReactNativeLegalSwift;
+#else
+
 #if __has_include(<ReactNativeLegal/ReactNativeLegal-Swift.h>)
 #import <ReactNativeLegal/ReactNativeLegal-Swift.h>
 #else
 #import "ReactNativeLegal-Swift.h"
+#endif
+
 #endif
 
 #if RCT_NEW_ARCH_ENABLED
@@ -19,7 +27,10 @@ RCT_EXPORT_MODULE(ReactNativeLegalModule)
 
 RCT_EXPORT_METHOD(launchLicenseListScreen : (NSString *)licenseHeaderText)
 {
-  [ReactNativeLegalModuleImpl launchLicenseListScreenWithLicenseHeaderText:licenseHeaderText];
+  [ReactNativeLegalModuleImpl launchLicenseListScreenWithLicenseHeaderText:licenseHeaderText
+                                                getPresentedViewController:^{
+                                                  return RCTPresentedViewController();
+                                                }];
 }
 
 RCT_EXPORT_METHOD(getLibrariesAsync : (RCTPromiseResolveBlock)resolve reject : (RCTPromiseRejectBlock)reject)
