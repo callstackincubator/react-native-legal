@@ -1,3 +1,5 @@
+import UIKit
+
 class ReactNativeLegalDetailViewController: UIViewController {
   private var licenseContentTextView: UITextView = {
     let textView = UITextView()

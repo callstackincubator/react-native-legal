@@ -2,7 +2,10 @@ import UIKit
 
 @objc(ReactNativeLegalModuleImpl)
 public class ReactNativeLegalModuleImpl: NSObject {
-  @objc public static func launchLicenseListScreen(licenseHeaderText: String) {
+  @objc public static func launchLicenseListScreen(
+    licenseHeaderText: String,
+    getPresentedViewController: @Sendable @escaping () -> UIViewController?
+  ) {
     guard
       let settingsBundleUrl = Bundle.main.url(forResource: "Settings", withExtension: "bundle"),
       let settingsBundle = Bundle(url: settingsBundleUrl),
@@ -19,7 +22,7 @@ public class ReactNativeLegalModuleImpl: NSObject {
     )
 
     DispatchQueue.main.async {
-      guard let presentedViewController = RCTPresentedViewController() else {
+      guard let presentedViewController = getPresentedViewController() else {
         return
       }
 
