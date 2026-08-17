@@ -14,7 +14,7 @@ import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase
  * It scans the NPM dependencies, generates LicensePlist-compatible metadata,
  * configures Settings.bundle and registers a shell script generating LicensePlist metadata for iOS dependencies
  */
-export const withIosLegal: ConfigPlugin<PlatformPluginOptions> = (config, { scanOptionsFactory }) => {
+export const withIosLegal: ConfigPlugin<PlatformPluginOptions> = (config, { scanOptionsFactory, licensePlist }) => {
   withXcodeProject(config, async (exportedConfig) => {
     const licenses = scanDependencies(
       path.join(exportedConfig.modRequest.projectRoot, 'package.json'),
@@ -25,6 +25,6 @@ export const withIosLegal: ConfigPlugin<PlatformPluginOptions> = (config, { scan
     return exportedConfig;
   });
   config = addSettingsBundle(config);
-  config = registerLicensePlistBuildPhase(config);
+  config = registerLicensePlistBuildPhase(config, licensePlist);
   return config;
 };
