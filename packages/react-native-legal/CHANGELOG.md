@@ -1,5 +1,13 @@
 # react-native-legal
 
+## 1.7.0
+
+### Minor Changes
+
+- [#181](https://github.com/callstackincubator/react-native-legal/pull/181) [`cccba70`](https://github.com/callstackincubator/react-native-legal/commit/cccba70b57151e0c1171b917cd5ce96e463f4e0e) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Add (experimental) Swift Package Manager support (from RN 0.87)
+
+- [#182](https://github.com/callstackincubator/react-native-legal/pull/182) [`9f59bfb`](https://github.com/callstackincubator/react-native-legal/commit/9f59bfb86e027abe3c73b993995ab5f11277c58e) Thanks [@gabrieldonadel](https://github.com/gabrieldonadel)! - Skip explicit Kotlin plugin when AGP registers the kotlin extension
+
 ## 1.6.5
 
 ### Patch Changes
