@@ -2,18 +2,19 @@
   "compilerOptions": {
     "declaration": true,
     "lib": ["es2020"],
-    "module": "commonjs",
+    "module": "node16",
     "target": "es2020",
 
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
 
     "outDir": "build",
     "rootDir": "src",
-    "typeRoots": ["../types-definitions", "../../../node_modules/@types"]
+    "typeRoots": ["../types-definitions", "../../../node_modules/@types"],
+    "types": ["node", "xcode"]
   },
   "include": ["./src"],
   "exclude": ["**/__mocks__/*", "**/__tests__/*"]

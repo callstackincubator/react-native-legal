@@ -1,0 +1,96 @@
+{
+  "originHash" : "cee7bf8ff6206ef1f83a8d7f34e0a0b8ad3e2b2f0097d8f6864806fc464ba4ed",
+  "pins" : [
+    {
+      "identity" : "apikit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ishkawa/APIKit.git",
+      "state" : {
+        "revision" : "b839e53b870104798035b279d2a6168b0a2227b1",
+        "version" : "5.4.0"
+      }
+    },
+    {
+      "identity" : "heliumlogger",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kitura/HeliumLogger.git",
+      "state" : {
+        "revision" : "fc2a71597ae974da5282d751bcc11965964bccce",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "licenseplist",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mono0926/LicensePlist",
+      "state" : {
+        "revision" : "af8dd93bcf798fc70e648f489a14423ea9105334",
+        "version" : "3.28.0"
+      }
+    },
+    {
+      "identity" : "loggerapi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kitura/LoggerAPI.git",
+      "state" : {
+        "revision" : "c26d5ef0009fbc0945326933e0f790bd33fe9062",
+        "version" : "2.1.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+        "version" : "1.8.2"
+      }
+    },
+    {
+      "identity" : "swift-html-entities",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kitura/swift-html-entities.git",
+      "state" : {
+        "revision" : "d8ca73197f59ce260c71bd6d7f6eb8bbdccf508b",
+        "version" : "4.0.1"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "3ffafb9722d5d918c614feb496c8789a3b59d222",
+        "version" : "1.15.0"
+      }
+    },
+    {
+      "identity" : "tomlkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/LebJe/TOMLKit.git",
+      "state" : {
+        "revision" : "ec6198d37d495efc6acd4dffbd262cdca7ff9b3f",
+        "version" : "0.6.0"
+      }
+    },
+    {
+      "identity" : "xcodeedit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tomlokhorst/XcodeEdit.git",
+      "state" : {
+        "revision" : "0e550cdee72844b35431afc3a1e176042be6d0f0",
+        "version" : "2.13.0"
+      }
+    },
+    {
+      "identity" : "yams",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jpsim/Yams.git",
+      "state" : {
+        "revision" : "a27b21e0c81c5bf42049b897a62aaf387e80f279",
+        "version" : "6.2.2"
+      }
+    }
+  ],
+  "version" : 3
+}

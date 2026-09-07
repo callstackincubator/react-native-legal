@@ -37,8 +37,11 @@
     "plugin",
     "plugin-utils",
     "src",
+    "swift-tools/Package.resolved",
+    "swift-tools/Package.swift",
     "LICENSE",
     "app.plugin.js",
+    "Package.swift",
     "react-native.config.js",
     "ReactNativeLegal.podspec"
   ],

@@ -55,3 +55,6 @@ packages/*/build/
 # Expo example
 examples/expo-example/android
 examples/expo-example/ios/
+
+# SPM
+.build/

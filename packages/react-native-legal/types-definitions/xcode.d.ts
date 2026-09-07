@@ -140,6 +140,10 @@ declare module 'xcode' {
         buildActionMask: number;
         files: unknown[];
         runOnlyForDeploymentPostprocessing: number;
+        inputPaths?: string[];
+        outputPaths?: string[];
+        shellPath: string;
+        shellScript: string;
       };
     };
     addFile(path: string, group?: string, opt?: FileOptions): pbxFile | null;
@@ -147,6 +151,20 @@ declare module 'xcode' {
     addToPbxBuildFileSection(file: pbxFile): void;
     addToPbxResourcesBuildPhase(file: pbxFile): void;
     buildPhase(group: string, target: string): string | undefined;
+    buildPhaseObject(
+      name: string,
+      group: string,
+      target: string,
+    ): {
+      isa: string;
+      buildActionMask: number;
+      files: unknown[];
+      runOnlyForDeploymentPostprocessing: number;
+      inputPaths?: string[];
+      outputPaths?: string[];
+      shellPath: string;
+      shellScript: string;
+    } | null;
     findPBXGroupKey(criteria: { name?: string; path?: string }): string | undefined;
     generateUuid(): string;
     getFirstProject(): { uuid: string; firstProject: PBXProject };

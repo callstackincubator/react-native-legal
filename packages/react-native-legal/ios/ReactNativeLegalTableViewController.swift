@@ -1,3 +1,5 @@
+import UIKit
+
 class ReactNativeLegalTableViewController: UITableViewController {
   private let cellIdentifier = "ReactNativeLegalCell"
 

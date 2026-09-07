@@ -39,11 +39,27 @@ export function registerLicensePlistBuildPhaseUtil(
   projectTargetId: string,
   pbxproj: XcodeProject, // Xcode Pbxproj
 ) {
+  const licensePlistFlags = '--add-version-numbers --output-path ./Settings.bundle';
+  const licensePlistShellScript = `set -e\\n\\nif [[ -n \${PODS_ROOT} ]]; then \${PODS_ROOT}/LicensePlist/license-plist ${licensePlistFlags}; else /usr/bin/env xcrun --sdk macosx swift run -c release --package-path ./build/generated/autolinking/libs/ReactNativeLegal/swift-tools license-plist ${licensePlistFlags}; fi\\n`;
   const nativeTargetSection = pbxproj.pbxNativeTargetSection();
   const nativeTarget = nativeTargetSection[projectTargetId];
 
-  if (pbxproj.buildPhase(GENERATE_LICENSE_PLIST_BUILD_PHASE_COMMENT, projectTargetId)) {
-    console.log(`LicensePlist buildPhase already added in "${nativeTarget.name}" - SKIP`);
+  const existingBuildPhase = pbxproj.buildPhaseObject(
+    'PBXShellScriptBuildPhase',
+    GENERATE_LICENSE_PLIST_BUILD_PHASE_COMMENT,
+    projectTargetId,
+  );
+
+  if (existingBuildPhase) {
+    const licensePlistShellScriptWithDoubleQuotes = '"' + licensePlistShellScript + '"';
+
+    if (existingBuildPhase.shellScript === licensePlistShellScriptWithDoubleQuotes) {
+      console.log(`LicensePlist buildPhase already added in "${nativeTarget.name}" - SKIP`);
+    } else {
+      existingBuildPhase.shellScript = licensePlistShellScriptWithDoubleQuotes;
+      console.log(`LicensePlist buildPhase in "${nativeTarget.name}" - MODIFIED`);
+    }
+
     return pbxproj;
   }
 
@@ -59,7 +75,7 @@ export function registerLicensePlistBuildPhaseUtil(
     projectTargetId,
     {
       shellPath: '/bin/sh',
-      shellScript: '${PODS_ROOT}/LicensePlist/license-plist --add-version-numbers --output-path ./Settings.bundle',
+      shellScript: licensePlistShellScript,
     },
   );
   /**
