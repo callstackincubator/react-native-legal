@@ -5,25 +5,39 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.updatePadding
-import com.mikepenz.aboutlibraries.LibsBuilder.Companion.BUNDLE_TITLE
-import com.mikepenz.aboutlibraries.ui.LibsSupportFragment
+import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
+import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 
-/**
- * Based on AboutLibraries LibsActivity, but simplified (no search filter), with improved back
- * handling and hidden Toolbar/ActionBar for TV devices
- */
+@OptIn(ExperimentalMaterial3Api::class)
 class ReactNativeLegalActivity : AppCompatActivity() {
-    private lateinit var fragment: LibsSupportFragment
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.ReactNativeLegalTheme)
         super.onCreate(savedInstanceState)
@@ -32,75 +46,58 @@ class ReactNativeLegalActivity : AppCompatActivity() {
         setupEdgeToEdge()
 
         val bundle = intent.extras
-        fragment = LibsSupportFragment().apply { arguments = bundle }
+        val id = bundle?.getInt("id") ?: -1
+        val title = bundle?.getString("title", "") ?: ""
+        val composeView = findViewById<ComposeView>(R.id.compose_view)
 
         // https://developer.android.com/training/tv/start/hardware.html#runtime-check
         val isTVDevice = packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
 
-        if (isTVDevice) {
-            hideToolbar()
-        } else {
-            setupToolbar(bundle)
-        }
+        composeView.setContent {
+            val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .commit()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            onBackPressedDispatcher.onBackPressed()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun hideToolbar() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.visibility = View.GONE
-        supportActionBar?.hide()
-    }
-
-    private fun setupToolbar(bundle: Bundle?) {
-        val title = bundle?.getString(BUNDLE_TITLE, "") ?: ""
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        supportActionBar?.let {
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setDisplayShowTitleEnabled(title.isNotEmpty())
-            it.title = title
-        }
-
-        toolbar.setOnApplyWindowInsetsListener { v, insets ->
-            val systemInsets =
-                WindowInsetsCompat.toWindowInsetsCompat(insets)
-                    .getInsets(WindowInsetsCompat.Type.systemBars())
-            v.updatePadding(
-                left = systemInsets.left,
-                top = systemInsets.top,
-                right = systemInsets.right,
-            )
-
-            insets
-        }
-
-        if (toolbar.isAttachedToWindow) {
-            toolbar.requestApplyInsets()
-        } else {
-            toolbar.addOnAttachStateChangeListener(
-                object : View.OnAttachStateChangeListener {
-                    override fun onViewAttachedToWindow(v: View) {
-                        v.removeOnAttachStateChangeListener(this)
-                        v.requestApplyInsets()
+            MaterialTheme(
+                colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+            ) {
+                Scaffold(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                    topBar = {
+                        if (!isTVDevice) {
+                            CenterAlignedTopAppBar(
+                                title = {
+                                    Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                },
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = { onBackPressedDispatcher.onBackPressed() }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                            contentDescription = "Go back",
+                                        )
+                                    }
+                                },
+                            )
+                        }
+                    },
+                ) { innerPadding ->
+                    if (id == -1) {
+                        Column(
+                            modifier = Modifier.fillMaxSize().padding(innerPadding),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Text("Incorrect resource identifier provided")
+                        }
+                    } else {
+                        val libraries by produceLibraries(id)
+                        LibrariesContainer(
+                            libraries = libraries,
+                            modifier = Modifier.fillMaxSize().padding(innerPadding),
+                        )
                     }
-
-                    override fun onViewDetachedFromWindow(v: View) = Unit
                 }
-            )
+            }
         }
     }
 

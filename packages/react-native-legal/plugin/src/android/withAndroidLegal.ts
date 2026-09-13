@@ -6,6 +6,7 @@ import { type ConfigPlugin, withAndroidManifest } from 'expo/config-plugins';
 import type { PlatformPluginOptions } from '../types';
 
 import { addListActivity } from './addListActivity';
+import { addResourceKeepFile } from './addResourceKeepFile';
 import { applyAndConfigureAboutLibrariesPlugin } from './applyAndConfigureAboutLibrariesPlugin';
 import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
 
@@ -28,5 +29,6 @@ export const withAndroidLegal: ConfigPlugin<PlatformPluginOptions> = (config, { 
   config = declareAboutLibrariesPlugin(config);
   config = applyAndConfigureAboutLibrariesPlugin(config);
   config = addListActivity(config);
+  config = addResourceKeepFile(config);
   return config;
 };
