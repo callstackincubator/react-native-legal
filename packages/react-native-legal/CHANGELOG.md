@@ -1,5 +1,11 @@
 # react-native-legal
 
+## 1.8.0
+
+### Minor Changes
+
+- [#201](https://github.com/callstackincubator/react-native-legal/pull/201) [`f4bf65b`](https://github.com/callstackincubator/react-native-legal/commit/f4bf65b25eb579c6a026aa4f606bfc1aa072a9bd) Thanks [@mateusz1913](https://github.com/mateusz1913)! - Upgrade AboutLibraries to v13.1.0 and use Compose UI for the fullscreen Activity mode
+
 ## 1.7.0
 
 ### Minor Changes
