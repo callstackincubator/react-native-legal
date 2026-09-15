@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Button, StyleSheet } from 'react-native';
+import { Button, StyleSheet, useColorScheme } from 'react-native';
 import type { Library } from 'react-native-legal';
 import { ReactNativeLegal } from 'react-native-legal';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,8 +7,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomList } from './CustomList';
 import { ExampleButton } from './ExampleButton';
 import { FullscreenModal } from './FullscreenModal';
+import { DARK_BACKGROUND_COLOR, LIGHT_BACKGROUND_COLOR } from './constants';
 
 export const MainScreen = () => {
+  const isDarkScheme = useColorScheme() === 'dark';
   const [customModalVisible, setCustomModalVisible] = useState(false);
   const [libraries, setLibraries] = useState<Library[]>([]);
 
@@ -40,7 +42,7 @@ export const MainScreen = () => {
       <ExampleButton label="Tap to see list of OSS libraries" onPress={launchNotice} />
       <ExampleButton label="Tap to get list of licenses" onPress={getLibraries} />
       <FullscreenModal visible={customModalVisible}>
-        <SafeAreaView edges={['bottom', 'left', 'right', 'top']} style={styles.modalContent}>
+        <SafeAreaView edges={['bottom', 'left', 'right', 'top']} style={isDarkScheme ? DARK_STYLES : LIGHT_STYLES}>
           <Button onPress={closeModal} title="Exit list" />
           <CustomList libraries={libraries} />
         </SafeAreaView>
@@ -50,6 +52,12 @@ export const MainScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  darkContent: {
+    backgroundColor: DARK_BACKGROUND_COLOR,
+  },
+  lightContent: {
+    backgroundColor: LIGHT_BACKGROUND_COLOR,
+  },
   modalContent: {
     alignItems: 'center',
     alignSelf: 'stretch',
@@ -57,3 +65,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+const DARK_STYLES = [styles.modalContent, styles.darkContent];
+const LIGHT_STYLES = [styles.modalContent, styles.lightContent];

@@ -4,6 +4,7 @@ import path from 'node:path';
 import { type Types as SharedTypes, scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/licenses';
 
 import { addListActivity } from './addListActivity';
+import { addResourceKeepFile } from './addResourceKeepFile';
 import { applyAndConfigureAboutLibrariesPlugin } from './applyAndConfigureAboutLibrariesPlugin';
 import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
 
@@ -29,4 +30,5 @@ export function androidCommand(androidProjectPath: string, scanOptionsFactory: S
   declareAboutLibrariesPlugin(androidProjectPath);
   applyAndConfigureAboutLibrariesPlugin(androidProjectPath);
   addListActivity(androidProjectPath);
+  addResourceKeepFile(androidProjectPath);
 }

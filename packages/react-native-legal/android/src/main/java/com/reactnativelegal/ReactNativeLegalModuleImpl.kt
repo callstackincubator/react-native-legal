@@ -1,5 +1,6 @@
 package com.reactnativelegal
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.os.bundleOf
@@ -7,20 +8,20 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.WritableMap
 import com.mikepenz.aboutlibraries.Libs
-import com.mikepenz.aboutlibraries.LibsBuilder
-import com.mikepenz.aboutlibraries.util.withContext
 
 object ReactNativeLegalModuleImpl {
     const val NAME = "ReactNativeLegalModule"
 
     private var cachedData: List<Bundle>? = null
+    private var cachedId: Int = -1
 
     fun launchLicenseListScreen(reactContext: ReactApplicationContext, licenseHeaderText: String) {
         val context = reactContext.currentActivity ?: return
+        val id = getOrInitLibrariesResourceIdentifier(context)
         val intent =
             Intent(context, ReactNativeLegalActivity::class.java).apply {
-                this.putExtra("data", LibsBuilder())
-                this.putExtra(LibsBuilder.BUNDLE_TITLE, licenseHeaderText)
+                this.putExtra("id", id)
+                this.putExtra("title", licenseHeaderText)
             }
 
         context.startActivity(intent)
@@ -31,14 +32,31 @@ object ReactNativeLegalModuleImpl {
             cachedData = retrieveLibrariesArray(reactContext)
         }
 
-        val libraries = cachedData ?: emptyList<Bundle>()
+        val libraries = cachedData ?: emptyList()
         return Arguments.createMap().apply { putArray("data", Arguments.fromList(libraries)) }
+    }
+
+    private fun getOrInitLibrariesResourceIdentifier(context: Context): Int {
+        if (cachedId == -1) {
+            cachedId =
+                context.resources.getIdentifier(
+                    "aboutlibraries",
+                    "raw",
+                    context.packageName,
+                )
+        }
+        return cachedId
     }
 
     private fun retrieveLibrariesArray(reactContext: ReactApplicationContext): List<Bundle>? {
         val context = reactContext.currentActivity ?: return null
 
-        val libraries = Libs.Builder().withContext(context).build().libraries
+        val jsonString =
+            context.resources
+                .openRawResource(getOrInitLibrariesResourceIdentifier(context))
+                .bufferedReader()
+                .use { it.readText() }
+        val libraries = Libs.Builder().withJson(jsonString).build().libraries
 
         return libraries.map { library ->
             bundleOf(

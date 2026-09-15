@@ -1,23 +1,16 @@
 buildscript {
-    ext.safeExtGet = {prop, fallback ->
-        rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
-    }
-
-    def kotlin_version = safeExtGet('kotlinVersion', '1.7.22')
+    def agp_version = rootProject.ext.has('androidGradlePluginVersion') ? rootProject.ext.get('androidGradlePluginVersion') : project.properties['ReactNativeLegal_androidGradlePluginVersion']
+    def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : project.properties['ReactNativeLegal_kotlinVersion']
 
     repositories {
         google()
         gradlePluginPortal()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.2.1")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-        classpath("com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:7.0.2")
+        classpath("com.android.tools.build:gradle:$agp_version")
+        classpath("org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:$kotlin_version")
+        classpath("com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:8.10.2")
     }
-}
-
-def isNewArchitectureEnabled() {
-    return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
 }
 
 if (project == rootProject) {
@@ -33,28 +26,37 @@ if (project.extensions.findByName('kotlin') == null) {
     apply plugin: 'kotlin-android'
 }
 
-if (isNewArchitectureEnabled()) {
+if (project != rootProject) {
     apply plugin: "com.facebook.react"
 }
 
+apply plugin: "org.jetbrains.kotlin.plugin.compose"
+
+def getOrExtDefault(name) {
+    return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['ReactNativeLegal_' + name]
+}
+
+def getOrExtIntegerDefault(name) {
+    return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties['ReactNativeLegal_' + name]).toInteger()
+}
+
 android {
-    compileSdkVersion safeExtGet('compileSdkVersion', 33)
+    compileSdkVersion getOrExtIntegerDefault('compileSdkVersion')
 
     namespace "com.reactnativelegal"
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 21)
-        targetSdkVersion safeExtGet('targetSdkVersion', 33)
-        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+        minSdkVersion getOrExtIntegerDefault('minSdkVersion')
+        targetSdkVersion getOrExtIntegerDefault('targetSdkVersion')
+    }
+
+    buildFeatures {
+        compose true
     }
 
     sourceSets {
         main {
-            if (isNewArchitectureEnabled()) {
-                java.srcDirs += ['src/newarch/java', "${project.buildDir}/generated/source/codegen/java"]
-            } else {
-                java.srcDirs += ['src/oldarch/java']
-            }
+            java.srcDirs += ['src/newarch/java', "${project.buildDir}/generated/source/codegen/java"]
         }
     }
 }
@@ -70,12 +72,17 @@ repositories {
 dependencies {
     implementation "com.facebook.react:react-android" // Set by the React Native Gradle Plugin
 
-    def aboutLibrariesPluginVersion = "10.8.3"
-    implementation("com.mikepenz:aboutlibraries-core-android:$aboutLibrariesPluginVersion")
-    implementation("com.mikepenz:aboutlibraries:$aboutLibrariesPluginVersion") {
-        exclude group: 'com.mikepenz', module: 'aboutlibraries-core'
-    }
+    def aboutLibrariesVersion = getOrExtDefault('aboutLibrariesVersion')
+    implementation("com.mikepenz:aboutlibraries-core:$aboutLibrariesVersion")
+    implementation("com.mikepenz:aboutlibraries-compose-m3:$aboutLibrariesVersion")
 
-    def constraintLayoutVersion = "2.1.4"
-    implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
+    def composeBomVersion = getOrExtDefault('composeBomVersion')
+    Dependency composeBom = platform("androidx.compose:compose-bom:$composeBomVersion")
+    implementation composeBom
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.material:material")
+    implementation("androidx.compose.material:material-icons-core")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.runtime:runtime")
+    implementation("androidx.compose.ui:ui")
 }
