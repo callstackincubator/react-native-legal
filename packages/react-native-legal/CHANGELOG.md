@@ -1,5 +1,11 @@
 # react-native-legal
 
+## 1.8.1
+
+### Patch Changes
+
+- [#203](https://github.com/callstackincubator/react-native-legal/pull/203) [`aa0fe7f`](https://github.com/callstackincubator/react-native-legal/commit/aa0fe7f62dd4db05701e79b35648e75d9595bd57) Thanks [@Lanchez](https://github.com/Lanchez)! - Include `android/gradle.properties` in the published package, so the Android library resolves its AGP, Compose BOM and AboutLibraries versions when installed from npm instead of failing with `Could not find com.android.tools.build:gradle:null`
+
 ## 1.8.0
 
 ### Minor Changes
