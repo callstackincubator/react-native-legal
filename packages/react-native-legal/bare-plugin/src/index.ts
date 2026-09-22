@@ -1,4 +1,4 @@
-import { createPluginScanOptionsFactory } from '../../plugin-utils/build/common';
+import { createPluginLicensesScanner } from '../../plugin-utils/build/common';
 import type { PluginScanOptions } from '../../plugin-utils/build/types';
 
 import { androidCommand } from './android/androidCommand';
@@ -9,14 +9,14 @@ function generateLegal(
   iosProjectPath: string | undefined,
   pluginScanOptions: PluginScanOptions,
 ) {
-  const scanOptionsFactory = createPluginScanOptionsFactory(pluginScanOptions);
+  const scanLicenses = createPluginLicensesScanner(pluginScanOptions);
 
   if (androidProjectPath) {
-    androidCommand(androidProjectPath, scanOptionsFactory);
+    androidCommand(androidProjectPath, scanLicenses);
   }
 
   if (iosProjectPath) {
-    iosCommand(iosProjectPath, scanOptionsFactory);
+    iosCommand(iosProjectPath, scanLicenses);
   }
 }
 

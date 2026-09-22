@@ -9,6 +9,7 @@ import type {
   AboutLibrariesLikePackageInfo,
   AggregatedLicensesMapping,
   DependencyType,
+  GetBundledPackagesOptions,
   LicensePlistPayload,
   ParentPackageInfo,
   ScanPackageCallContext,
@@ -16,7 +17,7 @@ import type {
 } from '../types';
 import { YamlUtils } from '../utils';
 
-import { PackageUtils } from './utils';
+import { BundleGraphUtils, PackageUtils } from './utils';
 
 type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: string][]; dependencyType: DependencyType };
 
@@ -213,6 +214,32 @@ export function scanDependencies(
   }
 
   return result;
+}
+
+/**
+ * Scans `package.json` dependencies (see {@link scanDependencies}) and - if `bundleOptions` is provided - narrows the result down
+ * to the packages that are actually bundled by Metro, by reading the bundle dependency graph (see {@link BundleGraphUtils.getBundledPackages}).
+ *
+ * @param appPackageJsonPath Path to the `package.json` file of the application
+ * @param scanOptionsFactory Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
+ * @param bundleOptions Options controlling how the bundle dependency graph is obtained; the `projectRoot` defaults to the directory of `appPackageJsonPath`; if `undefined`, no filtering is applied
+ * @returns Aggregated licenses object containing the scanned (and optionally filtered) dependencies and their license information
+ */
+export function scanBundledDependencies(
+  appPackageJsonPath: string,
+  scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
+  bundleOptions?: Partial<GetBundledPackagesOptions>,
+): AggregatedLicensesMapping {
+  const licenses = scanDependencies(appPackageJsonPath, scanOptionsFactory);
+
+  if (!bundleOptions) {
+    return licenses;
+  }
+
+  const projectRoot = bundleOptions.projectRoot ?? path.dirname(path.resolve(appPackageJsonPath));
+  const bundledPackages = BundleGraphUtils.getBundledPackages({ ...bundleOptions, projectRoot });
+
+  return BundleGraphUtils.filterLicensesByBundledPackages(licenses, bundledPackages);
 }
 
 const PODSPEC_NAME_REGEX =

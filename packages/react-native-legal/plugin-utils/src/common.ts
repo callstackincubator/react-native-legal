@@ -1,6 +1,8 @@
-import type { Types as SharedTypes } from '@callstack/licenses';
+import path from 'node:path';
 
-import type { PluginScanOptions } from './types';
+import { type Types as SharedTypes, scanBundledDependencies } from '@callstack/licenses';
+
+import type { PluginLicensesScanner, PluginScanOptions } from './types';
 
 export function createPluginScanOptionsFactory(
   pluginScanOptions: PluginScanOptions,
@@ -45,5 +47,28 @@ export function createPluginScanOptionsFactory(
       includeTransitiveDependencies,
       includeOptionalDependencies,
     };
+  };
+}
+
+/**
+ * Creates a licenses scanner that applies the plugin scan options; if `bundledOnly` is set,
+ * the scanned licenses are narrowed down to the packages present in the Metro bundle dependency graph of the given platform
+ */
+export function createPluginLicensesScanner(pluginScanOptions: PluginScanOptions): PluginLicensesScanner {
+  const scanOptionsFactory = createPluginScanOptionsFactory(pluginScanOptions);
+
+  return function (appPackageJsonPath, platform) {
+    return scanBundledDependencies(
+      appPackageJsonPath,
+      scanOptionsFactory,
+      pluginScanOptions.bundledOnly
+        ? {
+            projectRoot: path.dirname(path.resolve(appPackageJsonPath)),
+            source: pluginScanOptions.bundleSource ?? 'auto',
+            platforms: pluginScanOptions.bundlePlatforms?.length ? pluginScanOptions.bundlePlatforms : [platform],
+            entryFile: pluginScanOptions.bundleEntryFile,
+          }
+        : undefined,
+    );
   };
 }

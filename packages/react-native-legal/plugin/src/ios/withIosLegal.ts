@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { scanDependencies, writeLicensePlistNPMOutput } from '@callstack/licenses';
+import { writeLicensePlistNPMOutput } from '@callstack/licenses';
 import { type ConfigPlugin, withXcodeProject } from 'expo/config-plugins';
 
 import type { PlatformPluginOptions } from '../types';
@@ -14,12 +14,9 @@ import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase
  * It scans the NPM dependencies, generates LicensePlist-compatible metadata,
  * configures Settings.bundle and registers a shell script generating LicensePlist metadata for iOS dependencies
  */
-export const withIosLegal: ConfigPlugin<PlatformPluginOptions> = (config, { scanOptionsFactory }) => {
+export const withIosLegal: ConfigPlugin<PlatformPluginOptions> = (config, { scanLicenses }) => {
   withXcodeProject(config, async (exportedConfig) => {
-    const licenses = scanDependencies(
-      path.join(exportedConfig.modRequest.projectRoot, 'package.json'),
-      scanOptionsFactory,
-    );
+    const licenses = scanLicenses(path.join(exportedConfig.modRequest.projectRoot, 'package.json'), 'ios');
 
     writeLicensePlistNPMOutput(licenses, exportedConfig.modRequest.platformProjectRoot);
     return exportedConfig;

@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 
-import { type Types, scanDependencies } from '@callstack/licenses';
+import { type Types } from '@callstack/licenses';
 
-import { createScanOptionsFactory } from '../scanOptionsUtils';
 import type { CLIVisualizeOptions } from '../types/CLIOptions';
 import { getProjectPaths } from '../utils/projectUtils';
+
+import { scanLicenses } from './scanLicenses';
 
 export type LicensesMappingResult = {
   licenses: Types.AggregatedLicensesMapping;
@@ -18,7 +19,7 @@ export function generateLicensesMapping(options: CLIVisualizeOptions) {
   const projectName = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')).name;
 
   return {
-    licenses: scanDependencies(packageJsonPath, createScanOptionsFactory(options)),
+    licenses: scanLicenses(packageJsonPath, options),
     repoRootPath,
     projectName,
   };

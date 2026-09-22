@@ -75,6 +75,21 @@ interface PluginOptions {
   // `'none'` (no transitive dependencies of direct dependencies)
   // @default `'all'`
   transitiveDepsMode?: 'all' | 'from-external-only' | 'from-workspace-only' | 'none';
+  // whether to narrow the results down to the packages actually bundled by Metro (see "Bundled packages only" below)
+  // @default `false`
+  bundledOnly?: boolean;
+  // how to obtain the Metro bundle dependency graph (applies only if `bundledOnly` is `true`)
+  // `'auto'` (`'expo'` if the project depends on `expo`, otherwise `'metro'`)
+  // `'metro'` (`metro get-dependencies`)
+  // `'expo'` (`expo export --source-maps`)
+  // @default `'auto'`
+  bundleSource?: 'auto' | 'metro' | 'expo';
+  // platforms to resolve the bundle dependency graph for (applies only if `bundledOnly` is `true`)
+  // @default the platform being set up (`['ios']` for the iOS project, `['android']` for the Android project)
+  bundlePlatforms?: ('ios' | 'android' | 'web')[];
+  // entry file of the bundle, relative to the project root (applies only if `bundledOnly` is `true` and the source resolves to `'metro'`)
+  // @default the `main` field of `package.json` or the first existing of `index.js`, `index.ts`, `index.tsx`, `index.jsx`
+  bundleEntryFile?: string;
 }
 ```
 
@@ -97,6 +112,29 @@ This will extract and prepare license metadata for use in your app.
 | `--tm, --transitive-deps-mode [mode]`     | Controls, which transitive dependencies are included: <ul><li>`'all'`</li> <li>`'from-external-only'` (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers)</li> <li>`'from-workspace-only'` (only direct dependencies of direct dependencies specified by `workspace:` specifier)</li> <li>`'none'`</li></ul> | `'all'`                  |
 | `--dm, --dev-deps-mode [mode]`            | <ul><li>`'root-only'` (only direct devDependencies from the scanned project's root package.json)</li> <li>`'none'`</li></ul>                                                                                                                                                                                                                             | `'none'`             |
 | `--od, --include-optional-deps [include]` | Whether to include optionalDependencies in the scan; other flags apply                                                                                                                                                                                                                                                                                   | `true`                    |
+| `--bo, --bundled-only [boolean]`          | Whether to narrow the results down to the packages actually bundled by Metro, by reading the bundle dependency graph (see [Bundled packages only](#bundled-packages-only))                                                                                                                                                                               | `false`                  |
+| `--bs, --bundle-source <source>`          | How to obtain the Metro bundle dependency graph (applies only with `--bundled-only`): <ul><li>`'auto'` (`'expo'` if the project depends on `expo`, otherwise `'metro'`)</li> <li>`'metro'` (`metro get-dependencies`)</li> <li>`'expo'` (`expo export --source-maps`)</li></ul>                                                                          | `'auto'`                 |
+| `--bp, --bundle-platforms <platforms>`    | Comma-separated platforms to resolve the bundle dependency graph for: `'ios'`, `'android'` (applies only with `--bundled-only`); defaults to the platform being set up                                                                                                                                                                                   | —                        |
+| `--be, --bundle-entry-file <path>`        | Entry file of the bundle, relative to the project root (applies only with `--bundled-only` and the `'metro'` source); defaults to the `main` field of `package.json` or `index.{js,ts,tsx,jsx}`                                                                                                                                                          | —                        |
+
+### Bundled packages only
+
+By default, all packages found in the dependency tree of your `package.json` (according to the scan options above) are listed - including packages that are never imported by your JS bundle (e.g. build tooling, Babel plugins or Node.js-only helpers).
+
+With the `bundledOnly` option (`--bundled-only` flag for bare React Native projects), the plugin reads the **Metro dependency graph** and keeps only the packages whose modules actually end up in the JS bundle. Depending on the project, the graph is obtained by running, in the project root:
+
+- `metro get-dependencies` for bare React Native projects (the project's `metro.config.js` is respected), or
+- `expo export --source-maps` for Expo projects (the bundled modules are read from the emitted source maps).
+
+The graph is resolved for a production bundle and separately for each platform - the iOS project only lists packages bundled for iOS, and the Android project only lists packages bundled for Android.
+
+:::info
+Packages that ship only native code and no JS module imported by the bundle are not part of the Metro dependency graph and therefore would not be listed as NPM dependencies. Their native (CocoaPods / Gradle) licenses are still collected by LicensePlist and AboutLibraries.
+:::
+
+:::warning
+Reading the dependency graph requires a full Metro resolution of the bundle (or a full `expo export`), so the setup step will take noticeably longer.
+:::
 
 ## Usage
 

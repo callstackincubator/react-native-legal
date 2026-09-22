@@ -10,3 +10,4 @@ export * from './DependencyType';
 export * from './ParentPackageInfo';
 export * from './LicenseAnalysisResult';
 export * from './LicenseStats';
+export * from './BundledPackages';

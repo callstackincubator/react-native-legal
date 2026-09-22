@@ -8,14 +8,13 @@ import {
   WEAK_COPYLEFT_LICENSES_LOWERCASE,
   analyzeLicenses,
   categorizeLicense,
-  scanDependencies,
 } from '@callstack/licenses';
 import { bold, green, italic, red, underline, whiteBright, yellow, yellowBright } from 'colorette';
 import type { Command } from 'commander';
 import { type TableUserConfig, getBorderCharacters, table } from 'table';
 
-import { createScanOptionsFactory } from '../scanOptionsUtils';
-import { curryCommonScanOptions } from '../utils/commandUtils';
+import { scanLicenses } from '../logic/scanLicenses';
+import { curryCommonScanOptions, validateCommonScanOptions } from '../utils/commandUtils';
 
 const tableConfig: TableUserConfig = {
   border: getBorderCharacters('norc'),
@@ -49,6 +48,8 @@ export default function analyzeCommandSetup(program: Command): Command {
       .option('--list-unknown', 'List unknown licenses', false)
       .option('--show-breakdown', 'Show breakdown of licenses by category and type', false),
   ).action((options) => {
+    validateCommonScanOptions(options);
+
     const repoRootPath = path.resolve(process.cwd(), options.root);
     const packageJsonPath = path.join(repoRootPath, 'package.json');
 
@@ -65,7 +66,7 @@ export default function analyzeCommandSetup(program: Command): Command {
 
     console.log();
 
-    const licenses = scanDependencies(packageJsonPath, createScanOptionsFactory(options));
+    const licenses = scanLicenses(packageJsonPath, options);
 
     const { byCategory, byLicense, categorizedLicenses, total, description, categoriesPresence } =
       analyzeLicenses(licenses);

@@ -82,6 +82,36 @@ This approach gives a programmatic control at an arbitrary level of precision ov
 
 As a reference, you can see how this is used in the `license-kit` CLI in [`createScanOptionsFactory` of `scanOptionsUtils.ts`](https://github.com/callstackincubator/react-native-legal/blob/main/packages/license-kit/src/scanOptionsUtils.ts).
 
+### Bundled packages only (Metro dependency graph)
+
+For React Native / Expo projects, the scan of `package.json` files can be narrowed down to the packages that are actually bundled by Metro. The `BundleGraphUtils` namespace (Node.js entrypoint only) reads the Metro dependency graph by running either `metro get-dependencies` or `expo export --source-maps` in the project root and maps the bundled modules to their packages:
+
+```typescript
+import { BundleGraphUtils, scanBundledDependencies, scanDependencies } from '@callstack/licenses';
+
+// one-liner: scan & narrow down to the packages bundled for iOS & Android (the defaults)
+const bundledLicenses = scanBundledDependencies(packageJsonPath, optionsFactory, {
+  // 'auto' (default) - 'expo' if the project depends on `expo`, otherwise 'metro'
+  source: 'auto',
+  // defaults to ['ios', 'android']; the result is a union across platforms
+  platforms: ['ios'],
+  // 'metro' source only; defaults to the `main` field of package.json or index.{js,ts,tsx,jsx}
+  entryFile: 'index.js',
+});
+
+// or, step by step:
+const licenses = scanDependencies(packageJsonPath, optionsFactory);
+const bundledPackages = BundleGraphUtils.getBundledPackages({ projectRoot, platforms: ['android'] });
+
+bundledPackages.packageKeys; // Set of '<name>@<version>' keys of the bundled packages
+bundledPackages.packageNames; // Set of names of the bundled packages
+bundledPackages.modulePaths; // absolute paths of all modules in the dependency graph
+
+const androidBundledLicenses = BundleGraphUtils.filterLicensesByBundledPackages(licenses, bundledPackages);
+```
+
+The lower-level building blocks are exported as well: `BundleGraphUtils.getMetroModulePaths`, `BundleGraphUtils.getExpoExportModulePaths`, `BundleGraphUtils.getModulePathsFromSourceMaps` and `BundleGraphUtils.getBundledPackagesFromModulePaths` - e.g. to pass in a list of module paths obtained by other means.
+
 ### API Documentation
 
 The API documentation is published under: https://callstackincubator.github.io/react-native-legal/api/.

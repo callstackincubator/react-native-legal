@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/licenses';
+import { writeAboutLibrariesNPMOutput } from '@callstack/licenses';
 import { type ConfigPlugin, withAndroidManifest } from 'expo/config-plugins';
 
 import type { PlatformPluginOptions } from '../types';
@@ -16,12 +16,9 @@ import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
  * It scans the NPM dependencies, generates AboutLibraries-compatible metadata,
  * installs & configures AboutLibraries Gradle plugin and adds Android Activity with a list of dependencies and their licenses
  */
-export const withAndroidLegal: ConfigPlugin<PlatformPluginOptions> = (config, { scanOptionsFactory }) => {
+export const withAndroidLegal: ConfigPlugin<PlatformPluginOptions> = (config, { scanLicenses }) => {
   withAndroidManifest(config, async (exportedConfig) => {
-    const licenses = scanDependencies(
-      path.join(exportedConfig.modRequest.projectRoot, 'package.json'),
-      scanOptionsFactory,
-    );
+    const licenses = scanLicenses(path.join(exportedConfig.modRequest.projectRoot, 'package.json'), 'android');
 
     writeAboutLibrariesNPMOutput(licenses, exportedConfig.modRequest.platformProjectRoot);
     return exportedConfig;

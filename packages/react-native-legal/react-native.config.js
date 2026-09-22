@@ -36,13 +36,64 @@ module.exports = {
           },
           default: 'all',
         },
+        {
+          name: '--bo, --bundled-only [boolean]',
+          description:
+            'Narrow the results down to the packages actually bundled by Metro, by reading the bundle dependency graph (runs `metro get-dependencies` or `expo export --source-maps`)',
+          parse: (val) => val !== 'false',
+          default: false,
+        },
+        {
+          name: '--bs, --bundle-source <string>',
+          description:
+            "How to obtain the Metro bundle dependency graph (applies only with --bundled-only): 'auto' ('expo' if the project depends on expo, otherwise 'metro'), 'metro', 'expo'",
+          parse: (val) => {
+            if (val === 'auto' || val === 'metro' || val === 'expo') {
+              return val;
+            }
+
+            return 'auto';
+          },
+          default: 'auto',
+        },
+        {
+          name: '--bp, --bundle-platforms <string>',
+          description:
+            "Comma-separated platforms to resolve the bundle dependency graph for: 'ios', 'android' (applies only with --bundled-only); defaults to the platform being set up",
+          parse: (val) =>
+            val
+              .split(',')
+              .map((platform) => platform.trim())
+              .filter((platform) => platform === 'ios' || platform === 'android' || platform === 'web'),
+        },
+        {
+          name: '--be, --bundle-entry-file <string>',
+          description:
+            "Entry file of the bundle, relative to the project root (applies only with --bundled-only and the 'metro' source); defaults to the 'main' field of package.json or index.{js,ts,tsx,jsx}",
+        },
       ],
       func: ([], { project: { android, ios } }, args) => {
         const generateLegal = require('./bare-plugin/build').default;
         /** @type {import('./plugin-utils/build/types').PluginScanOptions} */
-        const { devDepsMode, includeOptionalDeps, transitiveDepsMode } = args;
+        const {
+          devDepsMode,
+          includeOptionalDeps,
+          transitiveDepsMode,
+          bundledOnly,
+          bundleSource,
+          bundlePlatforms,
+          bundleEntryFile,
+        } = args;
 
-        generateLegal(android?.sourceDir, ios?.sourceDir, { devDepsMode, includeOptionalDeps, transitiveDepsMode });
+        generateLegal(android?.sourceDir, ios?.sourceDir, {
+          devDepsMode,
+          includeOptionalDeps,
+          transitiveDepsMode,
+          bundledOnly,
+          bundleSource,
+          bundlePlatforms,
+          bundleEntryFile,
+        });
       },
     },
   ],

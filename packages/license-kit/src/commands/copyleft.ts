@@ -2,15 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
-import {
-  STRONG_COPYLEFT_LICENSES_LOWERCASE,
-  WEAK_COPYLEFT_LICENSES_LOWERCASE,
-  scanDependencies,
-} from '@callstack/licenses';
+import { STRONG_COPYLEFT_LICENSES_LOWERCASE, WEAK_COPYLEFT_LICENSES_LOWERCASE } from '@callstack/licenses';
 import type { Command } from 'commander';
 
 import { ERROR_EMOJI, NON_TAB_HELP_LISTING_SUBLIST_OFFSET, WARNING_EMOJI } from '../constants';
-import { createScanOptionsFactory } from '../scanOptionsUtils';
+import { scanLicenses } from '../logic/scanLicenses';
 import { curryCommonScanOptions, validateCommonScanOptions } from '../utils/commandUtils';
 
 export default function copyleftCommandSetup(program: Command): Command {
@@ -37,7 +33,7 @@ export default function copyleftCommandSetup(program: Command): Command {
       process.exit(1);
     }
 
-    const licenses = scanDependencies(packageJsonPath, createScanOptionsFactory(options));
+    const licenses = scanLicenses(packageJsonPath, options);
 
     const strongCopyleftLicensesFound: string[] = [];
     const weakCopyleftLicensesFound: string[] = [];
