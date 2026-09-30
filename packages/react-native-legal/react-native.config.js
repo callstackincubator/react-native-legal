@@ -36,13 +36,31 @@ module.exports = {
           },
           default: 'all',
         },
+        {
+          name: '--ds, --dependency-source <string>',
+          description:
+            'How the dependencies are determined: from package.json files or from the Metro dependency graph',
+          parse: (val) => {
+            if (val === 'metro') {
+              return val;
+            }
+
+            return 'package-json';
+          },
+          default: 'package-json',
+        },
       ],
       func: ([], { project: { android, ios } }, args) => {
         const generateLegal = require('./bare-plugin/build').default;
         /** @type {import('./plugin-utils/build/types').PluginScanOptions} */
-        const { devDepsMode, includeOptionalDeps, transitiveDepsMode } = args;
+        const { devDepsMode, includeOptionalDeps, transitiveDepsMode, dependencySource } = args;
 
-        generateLegal(android?.sourceDir, ios?.sourceDir, { devDepsMode, includeOptionalDeps, transitiveDepsMode });
+        return generateLegal(android?.sourceDir, ios?.sourceDir, {
+          devDepsMode,
+          includeOptionalDeps,
+          transitiveDepsMode,
+          dependencySource,
+        });
       },
     },
   ],
