@@ -9,6 +9,7 @@ import type {
   AboutLibrariesLikePackageInfo,
   AggregatedLicensesMapping,
   DependencyType,
+  License,
   LicensePlistPayload,
   ParentPackageInfo,
   ScanPackageCallContext,
@@ -19,6 +20,78 @@ import { YamlUtils } from '../utils';
 import { PackageUtils } from './utils';
 
 type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: string][]; dependencyType: DependencyType };
+
+/**
+ * Collects license information for a given list of package directories, e.g. the packages found in the Metro dependency graph.
+ * Unlike {@link scanDependencies}, it does not scan dependencies of the packages - the list is expected to be complete.
+ *
+ * @param packageRoots Paths to the root directories of the packages (directories containing `package.json`)
+ * @returns Aggregated licenses object containing the given packages and their license information
+ */
+export function scanPackageRoots(packageRoots: string[]): AggregatedLicensesMapping {
+  const result: AggregatedLicensesMapping = {};
+
+  for (const packageRoot of packageRoots) {
+    const packageJsonPath = path.join(packageRoot, 'package.json');
+
+    if (!fs.existsSync(packageJsonPath)) {
+      console.warn(`[react-native-legal] skipping ${packageRoot} could not find package.json`);
+      continue;
+    }
+
+    try {
+      const packageJson = require(path.resolve(packageJsonPath));
+
+      if (!packageJson.name || packageJson.private === true) {
+        continue;
+      }
+
+      const licenseInfo = readPackageLicenseInfo(packageJsonPath);
+
+      result[`${licenseInfo.name}@${licenseInfo.version}`] = {
+        ...licenseInfo,
+        dependencyType: 'dependency',
+        requiredVersion: licenseInfo.version,
+        parentPackages: [],
+      };
+    } catch (error) {
+      console.warn(`[react-native-legal] could not process package.json in ${packageRoot}`);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Reads license information of a single package, based only on its own files
+ * (package.json and LICENSE file), without any context of how the package was found
+ *
+ * @param packageJsonPath Path to the package.json file of the package
+ */
+function readPackageLicenseInfo(
+  packageJsonPath: string,
+): Pick<License, 'name' | 'author' | 'content' | 'file' | 'description' | 'type' | 'url' | 'version'> {
+  const packageJson = require(path.resolve(packageJsonPath));
+
+  const licenseFiles = glob.sync('LICEN{S,C}E{.md,}', {
+    cwd: path.dirname(packageJsonPath),
+    absolute: true,
+    nocase: true,
+    nodir: true,
+    ignore: '**/{__tests__,__fixtures__,__mocks__}/**',
+  });
+
+  return {
+    name: packageJson.name,
+    author: PackageUtils.parseAuthorField(packageJson),
+    content: licenseFiles?.[0] ? fs.readFileSync(licenseFiles[0], { encoding: 'utf-8' }) : undefined,
+    file: licenseFiles?.[0] ? licenseFiles[0] : undefined,
+    description: packageJson.description,
+    type: PackageUtils.parseLicenseField(packageJson),
+    url: PackageUtils.parseRepositoryFieldToUrl(packageJson),
+    version: packageJson.version,
+  };
+}
 
 /**
  * Scans a single package and its dependencies for license information
@@ -76,14 +149,6 @@ function scanPackage(
     const localPackageJson = require(path.resolve(localPackageJsonPath));
 
     if (localPackageJson.private !== true) {
-      const licenseFiles = glob.sync('LICEN{S,C}E{.md,}', {
-        cwd: path.dirname(localPackageJsonPath),
-        absolute: true,
-        nocase: true,
-        nodir: true,
-        ignore: '**/{__tests__,__fixtures__,__mocks__}/**',
-      });
-
       const resolvedVersionPackageKey = `${packageName}@${localPackageJson.version}`;
 
       let parentPackageInfo: ParentPackageInfo | undefined;
@@ -102,14 +167,8 @@ function scanPackage(
         ];
       } else {
         result[resolvedVersionPackageKey] = {
+          ...readPackageLicenseInfo(localPackageJsonPath),
           name: packageName,
-          author: PackageUtils.parseAuthorField(localPackageJson),
-          content: licenseFiles?.[0] ? fs.readFileSync(licenseFiles[0], { encoding: 'utf-8' }) : undefined,
-          file: licenseFiles?.[0] ? licenseFiles[0] : undefined,
-          description: localPackageJson.description,
-          type: PackageUtils.parseLicenseField(localPackageJson),
-          url: PackageUtils.parseRepositoryFieldToUrl(localPackageJson),
-          version: localPackageJson.version,
           requiredVersion,
           parentPackages: parentPackageInfo ? [parentPackageInfo] : [],
           parentPackageRequiredVersion,
