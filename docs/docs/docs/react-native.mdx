@@ -51,6 +51,7 @@ This will ensure the required native dependencies are included.
 +     [
 +       "react-native-legal",
 +       {
++         "dependencySource": "package-json",
 +         "devDepsMode": "root-only",
 +         "includeOptionalDeps": true,
 +         "transitiveDepsMode": "all"
@@ -63,6 +64,11 @@ This will ensure the required native dependencies are included.
 
 ```ts
 interface PluginOptions {
+  // `'package-json'` (dependencies declared in package.json files, and their dependencies)
+  // `'metro'` (only packages included in the app's Metro bundle, per platform;
+  //   `devDepsMode`, `includeOptionalDeps` and `transitiveDepsMode` are ignored)
+  // @default `'package-json'`
+  dependencySource?: 'package-json' | 'metro';
   // `'root-only'` (only direct devDependencies from the scanned project's root package.json)
   // `'none'` (no devDependencies included)
   // @default `'none'`
@@ -94,6 +100,7 @@ This will extract and prepare license metadata for use in your app.
 
 | Flag / Option                             | Description                                                                                                                                                                                                                                                                                                                                              | Default                   |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `--ds, --dependency-source [source]`      | How the dependencies are determined: <ul><li>`'package-json'` (dependencies declared in package.json files)</li> <li>`'metro'` (only packages included in the Metro bundle; other flags are ignored)</li></ul> | `'package-json'` |
 | `--tm, --transitive-deps-mode [mode]`     | Controls, which transitive dependencies are included: <ul><li>`'all'`</li> <li>`'from-external-only'` (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers)</li> <li>`'from-workspace-only'` (only direct dependencies of direct dependencies specified by `workspace:` specifier)</li> <li>`'none'`</li></ul> | `'all'`                  |
 | `--dm, --dev-deps-mode [mode]`            | <ul><li>`'root-only'` (only direct devDependencies from the scanned project's root package.json)</li> <li>`'none'`</li></ul>                                                                                                                                                                                                                             | `'none'`             |
 | `--od, --include-optional-deps [include]` | Whether to include optionalDependencies in the scan; other flags apply                                                                                                                                                                                                                                                                                   | `true`                    |

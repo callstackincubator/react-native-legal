@@ -46,6 +46,7 @@
       ],
       [
         "react-native-legal", {
+          "dependencySource": "metro",
           "devDepsMode": "none",
           "includeOptionalDeps": true,
           "transitiveDepsMode": "all"

@@ -22,6 +22,54 @@ import { PackageUtils } from './utils';
 type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: string][]; dependencyType: DependencyType };
 
 /**
+ * Finds the root directory of the package that a directory belongs to - the closest directory (itself or a parent)
+ * containing a `package.json` with a `name` field. Nested `package.json` files without a name
+ * (e.g. `lib/commonjs/package.json` containing only `{ "type": "commonjs" }`) are skipped.
+ *
+ * Works for packages installed in `node_modules` as well as for workspace / linked packages,
+ * which are referenced by their real path (outside `node_modules`)
+ *
+ * @param startDir Absolute path to the directory to start the search from, e.g. the directory of a module file
+ * @returns Path to the package root directory or `null` if the directory does not belong to any named package
+ */
+export function findPackageRoot(startDir: string): string | null {
+  let dir = startDir;
+
+  // `path.dirname` of the filesystem root returns the root itself, which ends the loop
+  while (path.dirname(dir) !== dir) {
+    if (hasNamedPackageJson(dir)) {
+      return dir;
+    }
+
+    dir = path.dirname(dir);
+  }
+
+  return hasNamedPackageJson(dir) ? dir : null;
+}
+
+/**
+ * Checks whether a directory contains a valid `package.json` with a `name` field
+ *
+ * @param dir Path to the directory to check
+ */
+function hasNamedPackageJson(dir: string): boolean {
+  const packageJsonPath = path.join(dir, 'package.json');
+
+  if (!fs.existsSync(packageJsonPath)) {
+    return false;
+  }
+
+  try {
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, { encoding: 'utf-8' }));
+
+    return Boolean(packageJson.name);
+  } catch {
+    // invalid package.json - treat it as not a package root
+    return false;
+  }
+}
+
+/**
  * Collects license information for a given list of package directories, e.g. the packages found in the Metro dependency graph.
  * Unlike {@link scanDependencies}, it does not scan dependencies of the packages - the list is expected to be complete.
  *

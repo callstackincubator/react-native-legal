@@ -1,4 +1,7 @@
+import fs from 'node:fs';
 import path from 'node:path';
+
+import { findPackageRoot } from '@callstack/licenses';
 
 /**
  * Minimal typing of the Metro APIs used below - Metro is not a dependency of this package,
@@ -13,32 +16,31 @@ type MetroModule = {
 };
 
 /**
- * Returns the root directory of the package that a module file belongs to,
- * or `null` if the module is not inside `node_modules` (e.g. the app's own source file)
+ * Resolves the entry file of the app, the same way it is resolved when bundling:
+ * `main` field of the app's `package.json` (either a relative path, e.g. `index.js`, or a module, e.g. `expo-router/entry`),
+ * falling back to `index` file in the project root
  *
- * @example
- * getPackageRoot('/app/node_modules/@scope/pkg/lib/index.js'); // '/app/node_modules/@scope/pkg'
- * getPackageRoot('/app/node_modules/a/node_modules/b/index.js'); // '/app/node_modules/a/node_modules/b'
- * getPackageRoot('/app/src/App.tsx'); // null
+ * @param projectRoot Root directory of the app (containing `package.json`)
  */
-export function getPackageRoot(modulePath: string): string | null {
-  const marker = `${path.sep}node_modules${path.sep}`;
-  const index = modulePath.lastIndexOf(marker);
+export function resolveEntryFile(projectRoot: string): string {
+  const packageJson = JSON.parse(fs.readFileSync(path.join(projectRoot, 'package.json'), { encoding: 'utf-8' }));
+  const main: string | undefined = packageJson.main;
 
-  if (index === -1) {
-    return null;
+  if (!main) {
+    return require.resolve(path.join(projectRoot, 'index'));
   }
 
-  const start = index + marker.length;
-  const parts = modulePath.slice(start).split(path.sep);
-  const nameParts = parts[0].startsWith('@') ? parts.slice(0, 2) : parts.slice(0, 1);
-
-  return modulePath.slice(0, start) + nameParts.join(path.sep);
+  try {
+    return require.resolve(path.resolve(projectRoot, main));
+  } catch {
+    return require.resolve(main, { paths: [projectRoot] });
+  }
 }
 
 /**
  * Builds the Metro dependency graph of the app for a given platform
  * and returns root directories of all packages included in the production bundle
+ * (the app's own package is not included)
  *
  * @param projectRoot Root directory of the app (containing `package.json` and `metro.config.js`)
  * @param platform Platform for which the dependency graph should be built
@@ -48,21 +50,24 @@ export async function getMetroPackageRoots(projectRoot: string, platform: 'ios' 
   const { loadConfig, buildGraph }: MetroModule = require(metroPath);
 
   const config = await loadConfig({ cwd: projectRoot });
-  const entryFile = require.resolve(projectRoot);
 
   const graph = await buildGraph(config, {
-    entries: [entryFile],
+    entries: [resolveEntryFile(projectRoot)],
     platform,
     dev: false,
     minify: false,
   });
 
+  // Metro reports real paths of the modules, so the project root has to be compared by its real path too
+  const appRoot = fs.realpathSync(projectRoot);
+  // many modules share a directory - look up the package root only once per directory
+  const moduleDirs = new Set([...graph.dependencies.keys()].map((modulePath) => path.dirname(modulePath)));
   const packageRoots = new Set<string>();
 
-  for (const modulePath of graph.dependencies.keys()) {
-    const packageRoot = getPackageRoot(modulePath);
+  for (const moduleDir of moduleDirs) {
+    const packageRoot = findPackageRoot(moduleDir);
 
-    if (packageRoot) {
+    if (packageRoot && packageRoot !== appRoot) {
       packageRoots.add(packageRoot);
     }
   }

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { scanPackageRoots } from '../common';
+import { findPackageRoot, scanPackageRoots } from '../common';
 
 // Creates a fake package on disk: a folder with package.json and (optionally) a LICENSE file
 function createPackage(root: string, packageJson: object | string, licenseContent?: string) {
@@ -132,5 +132,64 @@ describe('scanPackageRoots', () => {
     });
 
     expect(Object.keys(scanPackageRoots([first, second]))).toEqual(['dup@1.0.0']);
+  });
+});
+
+describe('findPackageRoot', () => {
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'find-package-root-'));
+  });
+
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it('should return the directory itself when it contains a named package.json', () => {
+    const root = createPackage(path.join(tmpDir, 'node_modules', 'pkg'), { name: 'pkg', version: '1.0.0' });
+
+    expect(findPackageRoot(root)).toBe(root);
+  });
+
+  it('should find the package root from a nested directory', () => {
+    const root = createPackage(path.join(tmpDir, 'node_modules', '@scope', 'pkg'), { name: '@scope/pkg' });
+    const nestedDir = path.join(root, 'lib', 'module');
+
+    fs.mkdirSync(nestedDir, { recursive: true });
+
+    expect(findPackageRoot(nestedDir)).toBe(root);
+  });
+
+  it('should skip nested package.json files without a name', () => {
+    const root = createPackage(path.join(tmpDir, 'node_modules', 'pkg'), { name: 'pkg' });
+    const commonjsDir = path.join(root, 'lib', 'commonjs');
+
+    createPackage(commonjsDir, { type: 'commonjs' });
+
+    expect(findPackageRoot(commonjsDir)).toBe(root);
+  });
+
+  it('should skip invalid package.json files', () => {
+    const root = createPackage(path.join(tmpDir, 'pkg'), { name: 'pkg' });
+    const brokenDir = createPackage(path.join(root, 'broken'), '{ not valid json');
+
+    expect(findPackageRoot(brokenDir)).toBe(root);
+  });
+
+  it('should find the innermost package for nested node_modules', () => {
+    createPackage(path.join(tmpDir, 'node_modules', 'a'), { name: 'a' });
+    const inner = createPackage(path.join(tmpDir, 'node_modules', 'a', 'node_modules', 'b'), { name: 'b' });
+
+    expect(findPackageRoot(inner)).toBe(inner);
+  });
+
+  it('should find workspace packages which are not inside node_modules', () => {
+    const workspacePackage = createPackage(path.join(tmpDir, 'packages', 'my-lib'), { name: 'my-lib' });
+    const srcDir = path.join(workspacePackage, 'src');
+
+    fs.mkdirSync(srcDir);
+
+    expect(findPackageRoot(srcDir)).toBe(workspacePackage);
   });
 });

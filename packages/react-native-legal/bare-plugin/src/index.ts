@@ -20,5 +20,4 @@ async function generateLegal(
   }
 }
 
-
 export default generateLegal;
