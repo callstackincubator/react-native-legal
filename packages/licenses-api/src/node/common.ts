@@ -21,10 +21,6 @@ import { PackageUtils } from './utils';
 
 type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: string][]; dependencyType: DependencyType };
 
-type InternalScanPackageCallContext = ScanPackageCallContext & {
-  projectRoot?: string;
-};
-
 /**
  * Scans a single package and its dependencies for license information
  *
@@ -174,6 +170,7 @@ function scanPackage(
 
 type DependencyMapping = Record<string, string>;
 type MaybeDependencyMapping = DependencyMapping | undefined;
+type InternalScanPackageCallContext = ScanPackageCallContext & { projectRoot: string };
 
 /**
  * Scans `package.json` and searches for all packages under `dependencies` field. Supports monorepo projects.
