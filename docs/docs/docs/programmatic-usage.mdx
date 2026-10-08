@@ -120,6 +120,17 @@ Dependencies are resolved starting from the directory of the scanned `package.js
 If a monorepo package is private, its name and license won't be included in the license list, but its dependencies will still be scanned and included.
 :::
 
+To combine the results of several scans, e.g. of the app and of a folder that the app does not depend on, use `mergeLicensesMappings`. It keeps a single entry per `name@version` (the entry from the first mapping wins) and combines the parent packages of all entries:
+
+```typescript
+import { mergeLicensesMappings, scanDependencies } from '@callstack/licenses';
+
+const licenses = mergeLicensesMappings(
+  scanDependencies('./package.json', optionsFactory),
+  scanDependencies('../backend/package.json', optionsFactory),
+);
+```
+
 ### Known Limitations
 
 #### `file:` dependencies
