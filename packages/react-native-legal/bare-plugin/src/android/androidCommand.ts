@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { type Types as SharedTypes, scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/licenses';
+import { scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/licenses';
+
+import type { PlatformCommandOptions } from '../types';
 
 import { addListActivity } from './addListActivity';
 import { addResourceKeepFile } from './addResourceKeepFile';
@@ -14,10 +16,14 @@ import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
  * It scans the NPM dependencies, generates AboutLibraries-compatible metadata for them,
  * installs & configures AboutLibraries Gradle plugin and adds Android Activity with a list of dependencies and their licenses
  */
-export function androidCommand(androidProjectPath: string, scanOptionsFactory: SharedTypes.ScanPackageOptionsFactory) {
+export function androidCommand(
+  androidProjectPath: string,
+  { scanOptionsFactory, additionalProjectRoots }: PlatformCommandOptions,
+) {
   const licenses = scanDependencies(
     path.join(path.resolve(androidProjectPath, '..'), 'package.json'),
     scanOptionsFactory,
+    { additionalProjectRoots },
   );
 
   const aboutLibrariesConfigDirPath = path.join(androidProjectPath, 'config');

@@ -36,13 +36,25 @@ module.exports = {
           },
           default: 'all',
         },
+        {
+          name: '--apr, --additional-project-roots <paths>',
+          description:
+            'Comma-separated paths (relative to the app root) of other folders with a package.json whose dependencies should be listed too, e.g. monorepo workspaces the app does not depend on; can be repeated',
+          parse: (val, previous) => [...previous, ...val.split(',').map((rootPath) => rootPath.trim())],
+          default: () => [],
+        },
       ],
       func: ([], { project: { android, ios } }, args) => {
         const generateLegal = require('./bare-plugin/build').default;
         /** @type {import('./plugin-utils/build/types').PluginScanOptions} */
-        const { devDepsMode, includeOptionalDeps, transitiveDepsMode } = args;
+        const { devDepsMode, includeOptionalDeps, transitiveDepsMode, additionalProjectRoots } = args;
 
-        generateLegal(android?.sourceDir, ios?.sourceDir, { devDepsMode, includeOptionalDeps, transitiveDepsMode });
+        generateLegal(android?.sourceDir, ios?.sourceDir, {
+          devDepsMode,
+          includeOptionalDeps,
+          transitiveDepsMode,
+          additionalProjectRoots,
+        });
       },
     },
   ],

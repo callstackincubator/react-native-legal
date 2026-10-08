@@ -10,13 +10,14 @@ function generateLegal(
   pluginScanOptions: PluginScanOptions,
 ) {
   const scanOptionsFactory = createPluginScanOptionsFactory(pluginScanOptions);
+  const { additionalProjectRoots } = pluginScanOptions;
 
   if (androidProjectPath) {
-    androidCommand(androidProjectPath, scanOptionsFactory);
+    androidCommand(androidProjectPath, { scanOptionsFactory, additionalProjectRoots });
   }
 
   if (iosProjectPath) {
-    iosCommand(iosProjectPath, scanOptionsFactory);
+    iosCommand(iosProjectPath, { scanOptionsFactory, additionalProjectRoots });
   }
 }
 

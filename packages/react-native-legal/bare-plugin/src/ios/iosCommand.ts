@@ -1,6 +1,8 @@
 import path from 'node:path';
 
-import { type Types as SharedTypes, scanDependencies, writeLicensePlistNPMOutput } from '@callstack/licenses';
+import { scanDependencies, writeLicensePlistNPMOutput } from '@callstack/licenses';
+
+import type { PlatformCommandOptions } from '../types';
 
 import { addSettingsBundle } from './addSettingsBundle';
 import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase';
@@ -11,8 +13,13 @@ import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase
  * It scans the NPM dependencies, generates LicensePlist-compatible metadata for them,
  * configures Settings.bundle and registers a shell script generating LicensePlist metadata for iOS dependencies
  */
-export function iosCommand(iosProjectPath: string, scanOptionsFactory: SharedTypes.ScanPackageOptionsFactory) {
-  const licenses = scanDependencies(path.join(path.resolve(iosProjectPath, '..'), 'package.json'), scanOptionsFactory);
+export function iosCommand(
+  iosProjectPath: string,
+  { scanOptionsFactory, additionalProjectRoots }: PlatformCommandOptions,
+) {
+  const licenses = scanDependencies(path.join(path.resolve(iosProjectPath, '..'), 'package.json'), scanOptionsFactory, {
+    additionalProjectRoots,
+  });
 
   writeLicensePlistNPMOutput(licenses, iosProjectPath);
 

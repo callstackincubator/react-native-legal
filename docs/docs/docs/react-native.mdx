@@ -53,7 +53,8 @@ This will ensure the required native dependencies are included.
 +       {
 +         "devDepsMode": "root-only",
 +         "includeOptionalDeps": true,
-+         "transitiveDepsMode": "all"
++         "transitiveDepsMode": "all",
++         "additionalProjectRoots": ["../../packages/shared"]
 +       }
 +     ]
 +   ]
@@ -75,6 +76,10 @@ interface PluginOptions {
   // `'none'` (no transitive dependencies of direct dependencies)
   // @default `'all'`
   transitiveDepsMode?: 'all' | 'from-external-only' | 'from-workspace-only' | 'none';
+  // paths (relative to the app root) of other folders with a package.json whose dependencies should be listed too,
+  // e.g. monorepo workspaces the app does not depend on
+  // @default `[]`
+  additionalProjectRoots?: string[];
 }
 ```
 
@@ -97,6 +102,21 @@ This will extract and prepare license metadata for use in your app.
 | `--tm, --transitive-deps-mode [mode]`     | Controls, which transitive dependencies are included: <ul><li>`'all'`</li> <li>`'from-external-only'` (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers)</li> <li>`'from-workspace-only'` (only direct dependencies of direct dependencies specified by `workspace:` specifier)</li> <li>`'none'`</li></ul> | `'all'`  |
 | `--dm, --dev-deps-mode [mode]`            | <ul><li>`'root-only'` (only direct devDependencies from the scanned project's root package.json)</li> <li>`'none'`</li></ul>                                                                                                                                                                                                                             | `'none'` |
 | `--od, --include-optional-deps [include]` | Whether to include optionalDependencies in the scan; other flags apply                                                                                                                                                                                                                                                                                   | `true`   |
+| `--apr, --additional-project-roots <paths>` | Comma-separated paths (relative to the app root) of other folders with a `package.json` whose dependencies should be listed too, e.g. monorepo workspaces the app does not depend on; can be repeated | `[]` |
+
+### Monorepos
+
+Workspaces that the app depends on (e.g. with `workspace:*`) are scanned together with their dependencies.
+If the app also bundles code from folders it does not depend on, e.g. a monorepo workspace that Metro reaches through `watchFolders` or a separately bundled JS VM with its own `node_modules`, list them as additional project roots:
+
+- Expo: `"additionalProjectRoots": ["../../packages/shared"]` in the [plugin options](#expo-plugin-options)
+- bare React Native: `react-native legal-generate --additional-project-roots ../../packages/shared` (comma-separated or repeated)
+
+Paths are relative to the app root, and each of them must be a directory with a `package.json`. They are scanned with the same options as the app, so with `devDepsMode: 'root-only'` / `--dev-deps-mode root-only` their direct `devDependencies` are listed too. See [Monorepo Support](/docs/programmatic-usage#monorepo-support) for details.
+
+:::info
+On EAS Build or CI, these folders must be available in the build environment, with their dependencies installed.
+:::
 
 ## Usage
 
