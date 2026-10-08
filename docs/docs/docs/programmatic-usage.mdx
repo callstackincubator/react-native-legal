@@ -120,7 +120,21 @@ Dependencies are resolved from the directory of the scanned `package.json`, walk
 If a monorepo package is private, its name and license won't be included in the license list, but its dependencies will still be scanned and included.
 :::
 
-To combine the results of several scans, e.g. of the app and of a folder that the app does not depend on, use `mergeLicensesMappings`. It keeps a single entry per `name@version` (the entry from the first mapping wins) and combines the parent packages of all entries:
+To also include dependencies of folders that the app does not depend on, e.g. a monorepo workspace that is not listed in the app's `package.json` or a separately bundled JS VM with its own `node_modules`, pass them as `additionalProjectRoots`:
+
+```typescript
+import { scanDependencies } from '@callstack/licenses';
+
+const licenses = scanDependencies('./package.json', optionsFactory, {
+  additionalProjectRoots: ['../../packages/shared', './backend'],
+});
+```
+
+- Paths are resolved against the directory of the scanned `package.json`, and each of them must be a directory with a `package.json`, otherwise an error is thrown.
+- Each additional project root is scanned like the app itself, with the same `optionsFactory` (`isRoot` is `true` for its own `package.json`); its own package is not listed.
+- Do not list workspaces that the app already depends on (e.g. with `workspace:*`). They are scanned anyway, and listing them would scan them as roots too, e.g. with their `devDependencies` if `includeDevDependencies` is set to `isRoot`.
+
+To combine the results of any scans yourself, use `mergeLicensesMappings`. It keeps a single entry per `name@version` (the entry from the first mapping wins) and combines the parent packages of all entries:
 
 ```typescript
 import { mergeLicensesMappings, scanDependencies } from '@callstack/licenses';
@@ -139,14 +153,6 @@ const licenses = mergeLicensesMappings(
 This tool (and in turn, the CLI and RN plugins) do not support `file:` specified dependencies, which is a known limitation. If such packages are scanned and their dependencies (of any type) are not installed in the root `node_modules` directory, such dependencies will not be found and included.
 
 If you would like to have support for this, please start a discussion on Github.
-:::
-
-#### Private packages
-
-All private packages (i.e., packages that have a `private: true` field in their `package.json`) are excluded from the scan. All their dependencies (all kinds of dependencies) also are **not included** in the scan / report. Therefore, all the tooling ignores private packages & their dependencies.
-
-:::warning
-If you are using a private package that introduces dependencies to your bundle / program, remember it itself & its dependencies won't be included.
 :::
 
 ### Default `scanOptionsFactory` value

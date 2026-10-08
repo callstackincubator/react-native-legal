@@ -44,6 +44,54 @@ function createMonorepo(root: string) {
   return appDir;
 }
 
+/**
+ * Monorepo with an app, a library workspace the app does not depend on,
+ * and a backend folder inside the app with its own `node_modules` (e.g. a separately bundled JS VM)
+ */
+function createMonorepoWithAdditionalProjects(root: string) {
+  const appDir = path.join(root, 'apps', 'app');
+  const backendDir = path.join(appDir, 'backend');
+
+  writePackage(path.join(root, 'node_modules', 'fixture-hoisted'), { name: 'fixture-hoisted', version: '1.0.0' });
+  writePackage(path.join(root, 'node_modules', 'fixture-common'), { name: 'fixture-common', version: '1.0.0' });
+  writePackage(path.join(root, 'node_modules', 'fixture-lib-dep'), {
+    name: 'fixture-lib-dep',
+    version: '1.0.0',
+    dependencies: { 'fixture-common': '1.0.0' },
+  });
+  writePackage(appDir, {
+    name: 'fixture-app',
+    private: true,
+    dependencies: { 'fixture-app-dep': '1.0.0', 'fixture-shared': '*' },
+  });
+  writePackage(path.join(appDir, 'node_modules', 'fixture-app-dep'), {
+    name: 'fixture-app-dep',
+    version: '1.0.0',
+    dependencies: { 'fixture-common': '^1.0.0' },
+  });
+  writePackage(path.join(appDir, 'node_modules', 'fixture-shared'), { name: 'fixture-shared', version: '1.0.0' });
+  writePackage(backendDir, {
+    name: 'fixture-backend',
+    private: true,
+    dependencies: { 'fixture-shared': '*' },
+    devDependencies: { 'fixture-backend-tool': '1.0.0' },
+  });
+  writePackage(path.join(backendDir, 'node_modules', 'fixture-shared'), { name: 'fixture-shared', version: '2.0.0' });
+  writePackage(path.join(backendDir, 'node_modules', 'fixture-backend-tool'), {
+    name: 'fixture-backend-tool',
+    version: '1.0.0',
+  });
+  writePackage(path.join(root, 'packages', 'lib'), {
+    name: '@fixture/lib',
+    version: '0.1.0',
+    license: 'MIT',
+    dependencies: { 'fixture-hoisted': '1.0.0', 'fixture-lib-dep': '1.0.0' },
+  });
+  fs.mkdirSync(path.join(root, 'not-a-project'));
+
+  return appDir;
+}
+
 describe('scanDependencies', () => {
   let tmp: string;
 
@@ -154,6 +202,128 @@ describe('scanDependencies', () => {
       const licenses = scanDependencies(path.join(appDir, 'package.json'));
 
       expect(Object.keys(licenses)).toEqual(['fixture-parent@1.0.0']);
+    });
+  });
+
+  describe('additionalProjectRoots', () => {
+    it.each([
+      ['a relative', () => '../../packages/lib'],
+      ['an absolute', () => path.join(tmp, 'packages', 'lib')],
+    ])('lists dependencies of an additional project root given as %s path next to the app ones', (_, getRoot) => {
+      const appDir = createMonorepoWithAdditionalProjects(tmp);
+
+      const licenses = scanDependencies(path.join(appDir, 'package.json'), undefined, {
+        additionalProjectRoots: [getRoot()],
+      });
+
+      expect(Object.keys(licenses).sort()).toEqual([
+        'fixture-app-dep@1.0.0',
+        'fixture-common@1.0.0',
+        'fixture-hoisted@1.0.0',
+        'fixture-lib-dep@1.0.0',
+        'fixture-shared@1.0.0',
+      ]);
+    });
+
+    it('resolves a relative additional project root from the real directory of an app reached through a symlink', () => {
+      const appDir = createMonorepoWithAdditionalProjects(path.join(tmp, 'repo'));
+      const linkToAppDir = path.join(tmp, 'links', 'app');
+
+      fs.mkdirSync(path.dirname(linkToAppDir));
+      fs.symlinkSync(appDir, linkToAppDir, 'dir');
+
+      const licenses = scanDependencies(path.join(linkToAppDir, 'package.json'), undefined, {
+        additionalProjectRoots: ['../../packages/lib'],
+      });
+
+      expect(Object.keys(licenses).sort()).toEqual([
+        'fixture-app-dep@1.0.0',
+        'fixture-common@1.0.0',
+        'fixture-hoisted@1.0.0',
+        'fixture-lib-dep@1.0.0',
+        'fixture-shared@1.0.0',
+      ]);
+    });
+
+    it("resolves an additional project root's dependencies from its own node_modules, even for a range the app already requires", () => {
+      const appDir = createMonorepoWithAdditionalProjects(tmp);
+
+      const licenses = scanDependencies(path.join(appDir, 'package.json'), undefined, {
+        additionalProjectRoots: ['backend'],
+      });
+
+      expect(Object.keys(licenses).sort()).toEqual([
+        'fixture-app-dep@1.0.0',
+        'fixture-common@1.0.0',
+        'fixture-shared@1.0.0',
+        'fixture-shared@2.0.0',
+      ]);
+    });
+
+    it('lists devDependencies of an additional project root when the root scan options include them', () => {
+      const appDir = createMonorepoWithAdditionalProjects(tmp);
+
+      const licenses = scanDependencies(
+        path.join(appDir, 'package.json'),
+        ({ isRoot }) => ({
+          includeDevDependencies: isRoot,
+          includeTransitiveDependencies: true,
+          includeOptionalDependencies: true,
+        }),
+        { additionalProjectRoots: ['backend'] },
+      );
+
+      expect(Object.keys(licenses)).toContain('fixture-backend-tool@1.0.0');
+    });
+
+    it('does not list devDependencies of an additional project root with the default scan options', () => {
+      const appDir = createMonorepoWithAdditionalProjects(tmp);
+
+      const licenses = scanDependencies(path.join(appDir, 'package.json'), undefined, {
+        additionalProjectRoots: ['backend'],
+      });
+
+      expect(Object.keys(licenses)).not.toContain('fixture-backend-tool@1.0.0');
+    });
+
+    it('combines parent packages of a package version found in several project roots', () => {
+      const appDir = createMonorepoWithAdditionalProjects(tmp);
+
+      const licenses = scanDependencies(path.join(appDir, 'package.json'), undefined, {
+        additionalProjectRoots: ['../../packages/lib'],
+      });
+
+      expect(licenses['fixture-common@1.0.0'].parentPackages).toEqual([
+        { name: 'fixture-app-dep', requiredVersion: '1.0.0', resolvedVersion: '1.0.0' },
+        { name: 'fixture-lib-dep', requiredVersion: '1.0.0', resolvedVersion: '1.0.0' },
+      ]);
+    });
+
+    it.each(['../../missing', '../../not-a-project'])(
+      'throws a descriptive error for an additional project root that is not a directory with a package.json (%s)',
+      (additionalProjectRoot) => {
+        const appDir = createMonorepoWithAdditionalProjects(tmp);
+
+        expect(() =>
+          scanDependencies(path.join(appDir, 'package.json'), undefined, {
+            additionalProjectRoots: [additionalProjectRoot],
+          }),
+        ).toThrow(/additional project root/i);
+      },
+    );
+
+    it.each([
+      ['a string', '../../packages/lib'],
+      ['a non-string entry', [42]],
+      ['an empty path', ['']],
+    ])('rejects additionalProjectRoots that is not an array of non-empty paths (%s)', (_, additionalProjectRoots) => {
+      const appDir = createMonorepoWithAdditionalProjects(tmp);
+
+      expect(() =>
+        scanDependencies(path.join(appDir, 'package.json'), undefined, {
+          additionalProjectRoots: additionalProjectRoots as string[],
+        }),
+      ).toThrow(/\[react-native-legal\] additionalProjectRoots/);
     });
   });
 });

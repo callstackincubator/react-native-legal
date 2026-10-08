@@ -12,11 +12,13 @@ import type {
   DependencyType,
   LicensePlistPayload,
   ParentPackageInfo,
+  ScanDependenciesOptions,
   ScanPackageCallContext,
   ScanPackageOptionsFactory,
 } from '../types';
 import { YamlUtils } from '../utils';
 
+import { mergeLicensesMappings } from './mergeLicensesMappings';
 import { PackageUtils } from './utils';
 
 type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: string][]; dependencyType: DependencyType };
@@ -177,18 +179,56 @@ type InternalScanPackageCallContext = ScanPackageCallContext & { projectRoot: st
  *
  * @param appPackageJsonPath Path to the `package.json` file of the application
  * @param scanOptionsFactory Factory function to create scan options for dependencies; defaults to {@link PackageUtils.legacyDefaultScanPackageOptionsFactory}
+ * @param options Additional options, see {@link ScanDependenciesOptions}
  * @returns Aggregated licenses object containing all scanned dependencies and their license information
  */
 export function scanDependencies(
   appPackageJsonPath: string,
   scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
+  options: ScanDependenciesOptions = {},
 ): AggregatedLicensesMapping {
-  const appPackageJson = require(path.resolve(appPackageJsonPath));
+  const { additionalProjectRoots = [] } = options;
+
+  if (
+    !Array.isArray(additionalProjectRoots) ||
+    additionalProjectRoots.some(
+      (additionalProjectRoot) => typeof additionalProjectRoot !== 'string' || !additionalProjectRoot,
+    )
+  ) {
+    throw new TypeError('[react-native-legal] additionalProjectRoots must be an array of non-empty paths');
+  }
+
+  const appRoot = fs.realpathSync(path.dirname(path.resolve(appPackageJsonPath)));
+  const additionalPackageJsonPaths = additionalProjectRoots.map((additionalProjectRoot) => {
+    const packageJsonPath = path.join(path.resolve(appRoot, additionalProjectRoot), 'package.json');
+
+    if (!fs.existsSync(packageJsonPath)) {
+      throw new Error(
+        `[react-native-legal] additional project root "${additionalProjectRoot}" is not a directory with a package.json (${packageJsonPath} not found)`,
+      );
+    }
+
+    return packageJsonPath;
+  });
+
+  return mergeLicensesMappings(
+    scanProjectDependencies(appPackageJsonPath, scanOptionsFactory),
+    ...additionalPackageJsonPaths.map((packageJsonPath) =>
+      scanProjectDependencies(packageJsonPath, scanOptionsFactory),
+    ),
+  );
+}
+
+function scanProjectDependencies(
+  projectPackageJsonPath: string,
+  scanOptionsFactory: ScanPackageOptionsFactory,
+): AggregatedLicensesMapping {
+  const projectPackageJson = require(path.resolve(projectPackageJsonPath));
   // real path, so that `node_modules` directories of the project's parent directories are found even if the project is reached through a symlink
-  const projectRoot = fs.realpathSync(path.dirname(path.resolve(appPackageJsonPath)));
-  const dependencies: MaybeDependencyMapping = appPackageJson.dependencies;
-  const devDependencies: MaybeDependencyMapping = appPackageJson.devDependencies;
-  const optionalDependencies: MaybeDependencyMapping = appPackageJson.optionalDependencies;
+  const projectRoot = fs.realpathSync(path.dirname(path.resolve(projectPackageJsonPath)));
+  const dependencies: MaybeDependencyMapping = projectPackageJson.dependencies;
+  const devDependencies: MaybeDependencyMapping = projectPackageJson.devDependencies;
+  const optionalDependencies: MaybeDependencyMapping = projectPackageJson.optionalDependencies;
   const result: AggregatedLicensesMapping = {};
   const processedPackages = new Set<string>();
 
