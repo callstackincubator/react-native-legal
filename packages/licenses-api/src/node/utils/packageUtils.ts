@@ -8,30 +8,46 @@ export { prepareAboutLibrariesLicenseField, prepareAboutLibrariesLicenses } from
 export { buildLicensePlistBody } from './licensePlistBody';
 export { readLicenseFiles } from './licenseFiles';
 
-export function getPackageJsonPath(dependency: string, root?: string) {
+export function getPackageJsonPath(dependency: string, root?: string, projectRoot: string = process.cwd()) {
   const rootsToSearch = [
     ...(root ? [root] : []), // provided for purpose of nested node_modules resolution inside a package dir, in a subdirectory inside the root node_modules dir
-    process.cwd(), // fallback - root node_modules directory home
+    projectRoot, // fallback - root node_modules directory home
   ]; // in order of priority (left-to-right)
 
   try {
     return require.resolve(`${dependency}/package.json`, { paths: rootsToSearch });
   } catch (error) {
     for (const root of rootsToSearch) {
-      const pkgJsonInNodeModules = path.join(root, 'node_modules', dependency, 'package.json');
+      const pkgJsonInNodeModules = findPackageJsonInNodeModules(dependency, root);
 
-      if (fs.existsSync(pkgJsonInNodeModules)) {
+      if (pkgJsonInNodeModules) {
         return pkgJsonInNodeModules;
       }
     }
 
-    return resolvePackageJsonFromEntry(dependency); // final fallback
+    return resolvePackageJsonFromEntry(dependency, rootsToSearch); // final fallback
   }
 }
 
-export function resolvePackageJsonFromEntry(dependency: string) {
+function findPackageJsonInNodeModules(dependency: string, startDir: string) {
+  let currentDir = startDir;
+
+  while (currentDir !== path.dirname(currentDir)) {
+    if (path.basename(currentDir) !== 'node_modules') {
+      const pkgJsonInNodeModules = path.join(currentDir, 'node_modules', dependency, 'package.json');
+
+      if (fs.existsSync(pkgJsonInNodeModules)) return fs.realpathSync(pkgJsonInNodeModules);
+    }
+
+    currentDir = path.dirname(currentDir);
+  }
+
+  return null;
+}
+
+export function resolvePackageJsonFromEntry(dependency: string, paths?: string[]) {
   try {
-    const entryPath = require.resolve(dependency);
+    const entryPath = require.resolve(dependency, paths ? { paths } : undefined);
     const packageDir = findPackageRoot(entryPath);
 
     if (!packageDir) return null;

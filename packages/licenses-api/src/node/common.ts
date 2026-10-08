@@ -21,6 +21,10 @@ import { PackageUtils } from './utils';
 
 type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: string][]; dependencyType: DependencyType };
 
+type InternalScanPackageCallContext = ScanPackageCallContext & {
+  projectRoot?: string;
+};
+
 /**
  * Scans a single package and its dependencies for license information
  *
@@ -44,7 +48,8 @@ function scanPackage(
     dependencyType,
     parentPackageRequiredVersion,
     parentPackageResolvedVersion,
-  }: ScanPackageCallContext,
+    projectRoot,
+  }: InternalScanPackageCallContext,
 ) {
   const requiredVersionPackageKey = `${packageName}@${requiredVersion}`;
 
@@ -63,7 +68,7 @@ function scanPackage(
   processedPackages.add(requiredVersionPackageKey);
 
   try {
-    const localPackageJsonPath = PackageUtils.getPackageJsonPath(packageName, parentPackageRoot);
+    const localPackageJsonPath = PackageUtils.getPackageJsonPath(packageName, parentPackageRoot, projectRoot);
 
     if (!localPackageJsonPath) {
       // do not warn if the package is an optional dependency, it's normal it may not be installed
@@ -158,6 +163,7 @@ function scanPackage(
           parentPackageName: packageName,
           parentPackageRequiredVersion: requiredVersion,
           parentPackageResolvedVersion: localPackageJson.version,
+          projectRoot,
         });
       }
     }
@@ -181,6 +187,8 @@ export function scanDependencies(
   scanOptionsFactory: ScanPackageOptionsFactory = PackageUtils.legacyDefaultScanPackageOptionsFactory,
 ): AggregatedLicensesMapping {
   const appPackageJson = require(path.resolve(appPackageJsonPath));
+  // real path, so that `node_modules` directories of the project's parent directories are found even if the project is reached through a symlink
+  const projectRoot = fs.realpathSync(path.dirname(path.resolve(appPackageJsonPath)));
   const dependencies: MaybeDependencyMapping = appPackageJson.dependencies;
   const devDependencies: MaybeDependencyMapping = appPackageJson.devDependencies;
   const optionalDependencies: MaybeDependencyMapping = appPackageJson.optionalDependencies;
@@ -207,6 +215,7 @@ export function scanDependencies(
     for (const [depName, depVersion] of packages) {
       scanPackage(depName, depVersion as string, processedPackages, result, scanOptionsFactory, {
         dependencyType,
+        projectRoot,
       });
     }
   }

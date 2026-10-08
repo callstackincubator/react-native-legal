@@ -114,6 +114,8 @@ Use `parseLicenseExpression`, `renderLicenseExpression` and `classifyLicenseExpr
 
 `react-native-legal` scans dependencies from workspace packages with the `workspace:*` notation in your `package.json` in addition to the app's direct dependencies.
 
+Dependencies are resolved starting from the directory of the scanned `package.json` and walking up the `node_modules` directories, the same way Node.js resolves packages, so the result does not depend on the working directory the scan is run from.
+
 :::info
 If a monorepo package is private, its name and license won't be included in the license list, but its dependencies will still be scanned and included.
 :::
