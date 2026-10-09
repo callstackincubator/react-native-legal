@@ -1,5 +1,15 @@
 # @callstack/licenses
 
+## 1.0.0
+
+### Major Changes
+
+- [#209](https://github.com/callstackincubator/react-native-legal/pull/209) [`dd565f1`](https://github.com/callstackincubator/react-native-legal/commit/dd565f196512cd63f22968631633c7920eb10ec0) Thanks [@wjaszczuk](https://github.com/wjaszczuk)! - Parse licenses as SPDX License Expressions. Classification follows the expression (`AND` takes the most restrictive operand, `OR` follows the new `--or-policy` option, `WITH` and `+` take the base license's category), unrecognised values are Unknown instead of permissive, and every license file of a package is collected. **Breaking:** `type`, `content` and `file` are removed from scanned entries and `report --format json`; use `rawLicense`, `license`, `licenseIds` and `licenseFiles`. `MIT OR GPL-3.0` style packages now fail `copyleft` by default; `--or-policy least-restrictive` restores the previous result. See the migration guide. `copyleft` also lists licenses that could hide copyleft because part of their expression is Unknown (`MIT AND LicenseRef-Custom`) in a warning, and the new opt-in `--error-on-unidentified` flag exits with code `3` for them; the other exit codes are unchanged.
+
+### Minor Changes
+
+- [#211](https://github.com/callstackincubator/react-native-legal/pull/211) [`8f2d9c7`](https://github.com/callstackincubator/react-native-legal/commit/8f2d9c7a274b8a3339cd43296d8169f445e5d656) Thanks [@wjaszczuk](https://github.com/wjaszczuk)! - Add the `dependencySource` option (`--dependency-source` flag of the `legal-generate` command, `dependencySource` option of the Expo plugin) that selects how the JS dependencies added to the native license screens are determined: `'package-json'` (default, the current behavior - scanning `package.json` files) or `'metro'` (only packages included in the Metro dependency graph of the app). Combining `'metro'` with `devDepsMode`, `includeOptionalDeps` or `transitiveDepsMode` throws an error, as these options are not used with Metro. `@callstack/licenses` exposes the new `scanPackageRoots` and `findPackageRoot` functions.
+
 ## 0.3.3
 
 ### Patch Changes
