@@ -15,14 +15,12 @@ module.exports = {
 
             return 'none';
           },
-          default: 'none',
         },
         {
           name: '--od, --include-optional-deps [boolean]',
           description:
             'Whether to include optionalDependencies in the scan; includeTransitiveDependencies option applies',
           parse: (val) => val !== 'false',
-          default: true,
         },
         {
           name: '--tm, --transitive-deps-mode <string>',
@@ -34,15 +32,32 @@ module.exports = {
 
             return 'all';
           },
-          default: 'all',
+        },
+        {
+          name: '--ds, --dependency-source <string>',
+          description:
+            'How the dependencies are determined: from package.json files or from the Metro dependency graph',
+          parse: (val) => {
+            if (val === 'metro') {
+              return val;
+            }
+
+            return 'package-json';
+          },
+          default: 'package-json',
         },
       ],
       func: ([], { project: { android, ios } }, args) => {
         const generateLegal = require('./bare-plugin/build').default;
-        /** @type {import('./plugin-utils/build/types').PluginScanOptions} */
-        const { devDepsMode, includeOptionalDeps, transitiveDepsMode } = args;
+        const { resolvePluginScanOptions } = require('./plugin-utils/build/common');
+        const { devDepsMode, includeOptionalDeps, transitiveDepsMode, dependencySource } = args;
 
-        generateLegal(android?.sourceDir, ios?.sourceDir, { devDepsMode, includeOptionalDeps, transitiveDepsMode });
+        // the defaults are assigned here (not in the options above), so that the options explicitly passed by the user can be validated
+        return generateLegal(
+          android?.sourceDir,
+          ios?.sourceDir,
+          resolvePluginScanOptions({ devDepsMode, includeOptionalDeps, transitiveDepsMode, dependencySource }),
+        );
       },
     },
   ],

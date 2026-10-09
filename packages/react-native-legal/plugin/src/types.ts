@@ -1,9 +1,10 @@
 import type { Types as SharedTypes } from '@callstack/licenses';
 
-import type { PluginScanOptions } from '../../plugin-utils/build/types';
+import type { DependencySource, PluginScanOptions } from '../../plugin-utils/build/types';
 
-export type PluginOptions = PluginScanOptions;
+export type PluginOptions = Partial<PluginScanOptions>;
 
 export type PlatformPluginOptions = {
   scanOptionsFactory: SharedTypes.ScanPackageOptionsFactory;
+  dependencySource: DependencySource;
 };
