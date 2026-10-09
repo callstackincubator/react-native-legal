@@ -54,7 +54,8 @@ This will ensure the required native dependencies are included.
 +         "dependencySource": "package-json",
 +         "devDepsMode": "root-only",
 +         "includeOptionalDeps": true,
-+         "transitiveDepsMode": "all"
++         "transitiveDepsMode": "all",
++         "additionalProjectRoots": ["../../packages/shared"]
 +       }
 +     ]
 +   ]
@@ -66,7 +67,7 @@ This will ensure the required native dependencies are included.
 interface PluginOptions {
   // `'package-json'` (dependencies declared in package.json files, and their dependencies)
   // `'metro'` (only packages included in the app's Metro bundle, per platform;
-  //   combining it with `devDepsMode`, `includeOptionalDeps` or `transitiveDepsMode` throws an error)
+  //   combining it with `devDepsMode`, `includeOptionalDeps`, `transitiveDepsMode` or `additionalProjectRoots` throws an error)
   // @default `'package-json'`
   dependencySource?: 'package-json' | 'metro';
   // `'root-only'` (only direct devDependencies from the scanned project's root package.json)
@@ -81,6 +82,10 @@ interface PluginOptions {
   // `'none'` (no transitive dependencies of direct dependencies)
   // @default `'all'`
   transitiveDepsMode?: 'all' | 'from-external-only' | 'from-workspace-only' | 'none';
+  // paths (relative to the app root) of other folders with a package.json whose dependencies should be listed too,
+  // e.g. monorepo workspaces the app does not depend on
+  // @default `[]`
+  additionalProjectRoots?: string[];
 }
 ```
 
@@ -98,12 +103,29 @@ This will extract and prepare license metadata for use in your app.
 
 #### Bare React Native Plugin Options
 
-| Flag / Option                             | Description                                                                                                                                                                                                                                                                                                                                              | Default          |
-| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| `--ds, --dependency-source [source]`      | How the dependencies are determined: <ul><li>`'package-json'` (dependencies declared in package.json files)</li> <li>`'metro'` (only packages included in the Metro bundle; cannot be combined with the other flags)</li></ul>                                                                                                                           | `'package-json'` |
-| `--tm, --transitive-deps-mode [mode]`     | Controls, which transitive dependencies are included: <ul><li>`'all'`</li> <li>`'from-external-only'` (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers)</li> <li>`'from-workspace-only'` (only direct dependencies of direct dependencies specified by `workspace:` specifier)</li> <li>`'none'`</li></ul> | `'all'`          |
-| `--dm, --dev-deps-mode [mode]`            | <ul><li>`'root-only'` (only direct devDependencies from the scanned project's root package.json)</li> <li>`'none'`</li></ul>                                                                                                                                                                                                                             | `'none'`         |
-| `--od, --include-optional-deps [include]` | Whether to include optionalDependencies in the scan; other flags apply                                                                                                                                                                                                                                                                                   | `true`           |
+| Flag / Option                               | Description                                                                                                                                                                                                                                                                                                                                              | Default          |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `--ds, --dependency-source [source]`        | How the dependencies are determined: <ul><li>`'package-json'` (dependencies declared in package.json files)</li> <li>`'metro'` (only packages included in the Metro bundle; cannot be combined with the other flags)</li></ul>                                                                                                                           | `'package-json'` |
+| `--tm, --transitive-deps-mode [mode]`       | Controls, which transitive dependencies are included: <ul><li>`'all'`</li> <li>`'from-external-only'` (only transitive dependencies of direct dependencies specified by non-workspace:... specifiers)</li> <li>`'from-workspace-only'` (only direct dependencies of direct dependencies specified by `workspace:` specifier)</li> <li>`'none'`</li></ul> | `'all'`          |
+| `--dm, --dev-deps-mode [mode]`              | <ul><li>`'root-only'` (only direct devDependencies from the scanned project's root package.json)</li> <li>`'none'`</li></ul>                                                                                                                                                                                                                             | `'none'`         |
+| `--od, --include-optional-deps [include]`   | Whether to include optionalDependencies in the scan; other flags apply                                                                                                                                                                                                                                                                                   | `true`           |
+| `--apr, --additional-project-roots <paths>` | Comma-separated paths (relative to the app root) of other folders with a `package.json` whose dependencies should be listed too, e.g. monorepo workspaces the app does not depend on; can be repeated                                                                                                                                                    | `[]`             |
+
+### Monorepos
+
+Workspaces that the app depends on (e.g. with `workspace:*`) are scanned together with their dependencies.
+If the app also bundles code from folders it does not depend on, e.g. a monorepo workspace that Metro reaches through `watchFolders` or a separately bundled JS VM with its own `node_modules`, list them as additional project roots:
+
+- Expo: `"additionalProjectRoots": ["../../packages/shared"]` in the [plugin options](#expo-plugin-options)
+- bare React Native: `react-native legal-generate --additional-project-roots ../../packages/shared` (comma-separated or repeated)
+
+Paths are relative to the app root, and each of them must be a directory with a `package.json`. They are scanned like the app itself: their own packages are not listed, and with `devDepsMode: 'root-only'` / `--dev-deps-mode root-only` their direct `devDependencies` are listed too. See [Monorepo Support](/docs/programmatic-usage#monorepo-support) for details.
+
+Additional project roots cannot be combined with `dependencySource: 'metro'` / `--dependency-source metro`, which lists the packages of the app's Metro bundle, including the ones that Metro bundles from other folders.
+
+:::info
+On EAS Build or CI, these folders must be available in the build environment, with their dependencies installed.
+:::
 
 ## Usage
 

@@ -48,7 +48,8 @@
         "react-native-legal", {
           "devDepsMode": "none",
           "includeOptionalDeps": true,
-          "transitiveDepsMode": "all"
+          "transitiveDepsMode": "all",
+          "additionalProjectRoots": ["../packages/example-additional-project-root"]
         }
       ]
     ]

@@ -1,10 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { type Types as SharedTypes, writeAboutLibrariesNPMOutput } from '@callstack/licenses';
+import { writeAboutLibrariesNPMOutput } from '@callstack/licenses';
 
 import { scanLicenses } from '../../../plugin-utils/build/common';
-import type { DependencySource } from '../../../plugin-utils/build/types';
+import type { PlatformPluginOptions } from '../../../plugin-utils/build/types';
 
 import { addListActivity } from './addListActivity';
 import { addResourceKeepFile } from './addResourceKeepFile';
@@ -19,14 +19,14 @@ import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
  */
 export async function androidCommand(
   androidProjectPath: string,
-  scanOptionsFactory: SharedTypes.ScanPackageOptionsFactory,
-  dependencySource: DependencySource,
+  { scanOptionsFactory, dependencySource, additionalProjectRoots }: PlatformPluginOptions,
 ): Promise<void> {
   const licenses = await scanLicenses({
     projectRoot: path.resolve(androidProjectPath, '..'),
     platform: 'android',
     dependencySource,
     scanOptionsFactory,
+    additionalProjectRoots,
   });
 
   const aboutLibrariesConfigDirPath = path.join(androidProjectPath, 'config');

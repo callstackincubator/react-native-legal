@@ -12,7 +12,7 @@
     "gem:install": "bundle install",
     "ios": "yarn legal-generate && react-native run-ios --no-packager",
     "ios:release": "yarn legal-generate && react-native run-ios --no-packager --mode \"Release\"",
-    "legal-generate": "react-native legal-generate --dev-deps-mode=none --include-optional-deps --transitive-deps-mode=all",
+    "legal-generate": "react-native legal-generate --dev-deps-mode=none --include-optional-deps --transitive-deps-mode=all --additional-project-roots=../packages/example-additional-project-root",
     "lint": "eslint .",
     "mkdist": "node -e \"require('node:fs').mkdirSync('dist', { recursive: true, mode: 0o755 })\"",
     "mke2e_results": "node -e \"require('node:fs').mkdirSync('e2e_results', { recursive: true, mode: 0o755 })\"",

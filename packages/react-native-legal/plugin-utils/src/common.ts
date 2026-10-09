@@ -9,6 +9,7 @@ const PACKAGE_JSON_SCAN_OPTION_DEFAULTS = {
   devDepsMode: 'none',
   includeOptionalDeps: true,
   transitiveDepsMode: 'all',
+  additionalProjectRoots: [],
 } as const satisfies Omit<PluginScanOptions, 'dependencySource'>;
 
 const PACKAGE_JSON_SCAN_OPTION_NAMES = Object.keys(PACKAGE_JSON_SCAN_OPTION_DEFAULTS) as Array<
@@ -101,11 +102,13 @@ export async function scanLicenses({
   platform,
   dependencySource,
   scanOptionsFactory,
+  additionalProjectRoots,
 }: {
   projectRoot: string;
   platform: 'ios' | 'android';
   dependencySource: DependencySource;
   scanOptionsFactory: SharedTypes.ScanPackageOptionsFactory;
+  additionalProjectRoots: readonly string[];
 }): Promise<SharedTypes.AggregatedLicensesMapping> {
   if (dependencySource === 'metro') {
     const packageRoots = await getMetroPackageRoots(projectRoot, platform);
@@ -113,5 +116,5 @@ export async function scanLicenses({
     return scanPackageRoots(packageRoots);
   }
 
-  return scanDependencies(path.join(projectRoot, 'package.json'), scanOptionsFactory);
+  return scanDependencies(path.join(projectRoot, 'package.json'), scanOptionsFactory, { additionalProjectRoots });
 }

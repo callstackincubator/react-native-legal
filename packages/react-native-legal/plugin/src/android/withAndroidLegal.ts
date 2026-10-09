@@ -2,7 +2,7 @@ import { writeAboutLibrariesNPMOutput } from '@callstack/licenses';
 import { type ConfigPlugin, withAndroidManifest } from 'expo/config-plugins';
 
 import { scanLicenses } from '../../../plugin-utils/build/common';
-import type { PlatformPluginOptions } from '../types';
+import type { PlatformPluginOptions } from '../../../plugin-utils/build/types';
 
 import { addListActivity } from './addListActivity';
 import { addResourceKeepFile } from './addResourceKeepFile';
@@ -17,7 +17,7 @@ import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
  */
 export const withAndroidLegal: ConfigPlugin<PlatformPluginOptions> = (
   config,
-  { scanOptionsFactory, dependencySource },
+  { scanOptionsFactory, dependencySource, additionalProjectRoots },
 ) => {
   withAndroidManifest(config, async (exportedConfig) => {
     const licenses = await scanLicenses({
@@ -25,6 +25,7 @@ export const withAndroidLegal: ConfigPlugin<PlatformPluginOptions> = (
       platform: 'android',
       dependencySource,
       scanOptionsFactory,
+      additionalProjectRoots,
     });
 
     writeAboutLibrariesNPMOutput(licenses, exportedConfig.modRequest.platformProjectRoot);
