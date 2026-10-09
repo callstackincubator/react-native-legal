@@ -16,7 +16,7 @@ All packages in this monorepo depend on the [`@callstack/licenses` package](pack
 yarn workspace @callstack/licenses dev
 ```
 
-While developing, you will have 2 example apps that can be used to test your changes.
+While developing, you will have a few example apps that can be used to test your changes.
 Any changes you make in your library's JavaScript code will be reflected in the example app without a rebuild.
 If you change any native code, then you'll need to rebuild the example app.
 
@@ -44,6 +44,17 @@ To run the example app on iOS:
 
 ```sh
 yarn ios
+```
+
+### Expo example app (Metro graph)
+
+`examples/expo-metro-graph-example` is a copy of the Expo example app that uses the Metro dependency graph (`"dependencySource": "metro"`) instead of scanning `package.json` files.
+The commands are the same as for the Expo example app above:
+
+```sh
+cd examples/expo-metro-graph-example
+yarn expo prebuild --clean
+yarn android # or: yarn ios
 ```
 
 ### Bare RN example app
@@ -80,6 +91,11 @@ To run the example app on iOS:
 ```sh
 yarn ios
 ```
+
+### Bare RN example app (Metro graph)
+
+`examples/bare-metro-graph-example` is a copy of the bare RN example app (without the e2e tests) whose `legal-generate` script uses the Metro dependency graph (`--dependency-source=metro`) instead of scanning `package.json` files.
+The commands are the same as for the bare RN example app above, run from `examples/bare-metro-graph-example`.
 
 ### Developing Expo Config Plugin
 

@@ -1,7 +1,8 @@
 import path from 'node:path';
 
-import { scanDependencies, writeLicensePlistNPMOutput } from '@callstack/licenses';
+import { writeLicensePlistNPMOutput } from '@callstack/licenses';
 
+import { scanLicenses } from '../../../plugin-utils/build/common';
 import type { PlatformPluginOptions } from '../../../plugin-utils/build/types';
 
 import { addSettingsBundle } from './addSettingsBundle';
@@ -13,11 +14,15 @@ import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase
  * It scans the NPM dependencies, generates LicensePlist-compatible metadata for them,
  * configures Settings.bundle and registers a shell script generating LicensePlist metadata for iOS dependencies
  */
-export function iosCommand(
+export async function iosCommand(
   iosProjectPath: string,
-  { scanOptionsFactory, additionalProjectRoots }: PlatformPluginOptions,
+  { scanOptionsFactory, dependencySource, additionalProjectRoots }: PlatformPluginOptions,
 ) {
-  const licenses = scanDependencies(path.join(path.resolve(iosProjectPath, '..'), 'package.json'), scanOptionsFactory, {
+  const licenses = await scanLicenses({
+    projectRoot: path.resolve(iosProjectPath, '..'),
+    platform: 'ios',
+    dependencySource,
+    scanOptionsFactory,
     additionalProjectRoots,
   });
 

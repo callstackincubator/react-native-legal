@@ -56,5 +56,9 @@ packages/*/build/
 examples/expo-example/android
 examples/expo-example/ios/
 
+# Expo Metro graph example
+examples/expo-metro-graph-example/android
+examples/expo-metro-graph-example/ios/
+
 # SPM
 .build/

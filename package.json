@@ -13,7 +13,7 @@
     "build:visualizer": "yarn workspace @callstack/license-kit-visualizer build",
     "lint:js": "eslint \"**/*.{js,ts,tsx}\"",
     "lint:docs": "yarn workspace docs check",
-    "typescript": "yarn build:library && tsc --noEmit -p examples/bare-example/tsconfig.json && tsc --noEmit -p examples/expo-example/tsconfig.json",
+    "typescript": "yarn build:library && tsc --noEmit -p examples/bare-example/tsconfig.json && tsc --noEmit -p examples/bare-metro-graph-example/tsconfig.json && tsc --noEmit -p examples/expo-example/tsconfig.json && tsc --noEmit -p examples/expo-metro-graph-example/tsconfig.json",
     "lint:android": "./scripts/lint-android.sh",
     "lint:objc": "./scripts/lint-objc.sh",
     "lint:swift": "./scripts/lint-swift.sh",

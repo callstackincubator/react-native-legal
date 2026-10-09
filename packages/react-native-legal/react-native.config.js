@@ -15,14 +15,12 @@ module.exports = {
 
             return 'none';
           },
-          default: 'none',
         },
         {
           name: '--od, --include-optional-deps [boolean]',
           description:
             'Whether to include optionalDependencies in the scan; includeTransitiveDependencies option applies',
           parse: (val) => val !== 'false',
-          default: true,
         },
         {
           name: '--tm, --transitive-deps-mode <string>',
@@ -34,27 +32,44 @@ module.exports = {
 
             return 'all';
           },
-          default: 'all',
+        },
+        {
+          name: '--ds, --dependency-source <string>',
+          description:
+            'How the dependencies are determined: from package.json files or from the Metro dependency graph',
+          parse: (val) => {
+            if (val === 'metro') {
+              return val;
+            }
+
+            return 'package-json';
+          },
+          default: 'package-json',
         },
         {
           name: '--apr, --additional-project-roots <paths>',
           description:
             'Comma-separated paths (relative to the app root) of other folders with a package.json whose dependencies should be listed too, e.g. monorepo workspaces the app does not depend on; can be repeated',
-          parse: (val, previous) => [...previous, ...val.split(',').map((rootPath) => rootPath.trim())],
-          default: () => [],
+          parse: (val, previous = []) => [...previous, ...val.split(',').map((rootPath) => rootPath.trim())],
         },
       ],
       func: ([], { project: { android, ios } }, args) => {
         const generateLegal = require('./bare-plugin/build').default;
-        /** @type {import('./plugin-utils/build/types').PluginScanOptions} */
-        const { devDepsMode, includeOptionalDeps, transitiveDepsMode, additionalProjectRoots } = args;
+        const { resolvePluginScanOptions } = require('./plugin-utils/build/common');
+        const { devDepsMode, includeOptionalDeps, transitiveDepsMode, dependencySource, additionalProjectRoots } = args;
 
-        generateLegal(android?.sourceDir, ios?.sourceDir, {
-          devDepsMode,
-          includeOptionalDeps,
-          transitiveDepsMode,
-          additionalProjectRoots,
-        });
+        // the defaults are assigned here (not in the options above), so that the options explicitly passed by the user can be validated
+        return generateLegal(
+          android?.sourceDir,
+          ios?.sourceDir,
+          resolvePluginScanOptions({
+            devDepsMode,
+            includeOptionalDeps,
+            transitiveDepsMode,
+            dependencySource,
+            additionalProjectRoots,
+          }),
+        );
       },
     },
   ],

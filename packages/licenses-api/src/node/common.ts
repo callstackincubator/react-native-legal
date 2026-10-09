@@ -10,6 +10,7 @@ import type {
   AboutLibrariesLikePackageInfo,
   AggregatedLicensesMapping,
   DependencyType,
+  License,
   LicensePlistPayload,
   ParentPackageInfo,
   ScanDependenciesOptions,
@@ -22,6 +23,127 @@ import { mergeLicensesMappings } from './mergeLicensesMappings';
 import { PackageUtils } from './utils';
 
 type InternalScanGroupSpecifier = { packages: [depName: string, depVersion: string][]; dependencyType: DependencyType };
+
+/**
+ * Finds the root directory of the package that a directory belongs to - the closest directory (itself or a parent)
+ * containing a `package.json` with a `name` field. Nested `package.json` files without a name
+ * (e.g. `lib/commonjs/package.json` containing only `{ "type": "commonjs" }`) are skipped.
+ *
+ * Works for packages installed in `node_modules` as well as for workspace / linked packages,
+ * which are referenced by their real path (outside `node_modules`)
+ *
+ * @param startDir Absolute path to the directory to start the search from, e.g. the directory of a module file
+ * @returns Path to the package root directory or `null` if the directory does not belong to any named package
+ */
+export function findPackageRoot(startDir: string): string | null {
+  let dir = startDir;
+
+  // `path.dirname` of the filesystem root returns the root itself, which ends the loop
+  while (path.dirname(dir) !== dir) {
+    if (hasNamedPackageJson(dir)) {
+      return dir;
+    }
+
+    dir = path.dirname(dir);
+  }
+
+  return hasNamedPackageJson(dir) ? dir : null;
+}
+
+/**
+ * Checks whether a directory contains a valid `package.json` with a `name` field
+ *
+ * @param dir Path to the directory to check
+ */
+function hasNamedPackageJson(dir: string): boolean {
+  const packageJsonPath = path.join(dir, 'package.json');
+
+  if (!fs.existsSync(packageJsonPath)) {
+    return false;
+  }
+
+  try {
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, { encoding: 'utf-8' }));
+
+    return Boolean(packageJson.name);
+  } catch {
+    // invalid package.json - treat it as not a package root
+    return false;
+  }
+}
+
+/**
+ * Collects license information for a given list of package directories, e.g. the packages found in the Metro dependency graph.
+ * Unlike {@link scanDependencies}, it does not scan dependencies of the packages - the list is expected to be complete.
+ *
+ * @param packageRoots Paths to the root directories of the packages (directories containing `package.json`)
+ * @returns Aggregated licenses object containing the given packages and their license information
+ */
+export function scanPackageRoots(packageRoots: string[]): AggregatedLicensesMapping {
+  const result: AggregatedLicensesMapping = {};
+
+  for (const packageRoot of packageRoots) {
+    const packageJsonPath = path.join(packageRoot, 'package.json');
+
+    if (!fs.existsSync(packageJsonPath)) {
+      console.warn(`[react-native-legal] skipping ${packageRoot} could not find package.json`);
+      continue;
+    }
+
+    try {
+      const packageJson = require(path.resolve(packageJsonPath));
+
+      if (!packageJson.name || packageJson.private === true) {
+        continue;
+      }
+
+      const licenseInfo = readPackageLicenseInfo(packageJsonPath);
+
+      result[`${licenseInfo.name}@${licenseInfo.version}`] = {
+        ...licenseInfo,
+        dependencyType: 'dependency',
+        requiredVersion: licenseInfo.version,
+        parentPackages: [],
+      };
+    } catch (error) {
+      console.warn(`[react-native-legal] could not process package.json in ${packageRoot}`);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Reads license information of a single package, based only on its own files
+ * (package.json and LICENSE file), without any context of how the package was found
+ *
+ * @param packageJsonPath Path to the package.json file of the package
+ */
+function readPackageLicenseInfo(
+  packageJsonPath: string,
+): Pick<
+  License,
+  'name' | 'author' | 'description' | 'rawLicense' | 'license' | 'licenseIds' | 'licenseFiles' | 'url' | 'version'
+> {
+  const packageJson = require(path.resolve(packageJsonPath));
+
+  const rawLicense = PackageUtils.parseLicenseField(packageJson) ?? null;
+  const license = parseLicenseExpression(rawLicense);
+  const licenseIds = collectLicenseIds(license);
+  const licenseFiles = PackageUtils.readLicenseFiles(path.dirname(packageJsonPath), licenseIds);
+
+  return {
+    name: packageJson.name,
+    author: PackageUtils.parseAuthorField(packageJson),
+    description: packageJson.description,
+    rawLicense,
+    license,
+    licenseIds,
+    licenseFiles,
+    url: PackageUtils.parseRepositoryFieldToUrl(packageJson),
+    version: packageJson.version,
+  };
+}
 
 /**
  * Scans a single package and its dependencies for license information
@@ -97,21 +219,9 @@ function scanPackage(
           parentPackageInfo,
         ];
       } else {
-        const rawLicense = PackageUtils.parseLicenseField(localPackageJson) ?? null;
-        const license = parseLicenseExpression(rawLicense);
-        const licenseIds = collectLicenseIds(license);
-        const licenseFiles = PackageUtils.readLicenseFiles(path.dirname(localPackageJsonPath), licenseIds);
-
         result[resolvedVersionPackageKey] = {
+          ...readPackageLicenseInfo(localPackageJsonPath),
           name: packageName,
-          author: PackageUtils.parseAuthorField(localPackageJson),
-          description: localPackageJson.description,
-          rawLicense,
-          license,
-          licenseIds,
-          licenseFiles,
-          url: PackageUtils.parseRepositoryFieldToUrl(localPackageJson),
-          version: localPackageJson.version,
           requiredVersion,
           parentPackages: parentPackageInfo ? [parentPackageInfo] : [],
           parentPackageRequiredVersion,

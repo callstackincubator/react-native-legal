@@ -4,20 +4,20 @@ import type { PluginScanOptions } from '../../plugin-utils/build/types';
 import { androidCommand } from './android/androidCommand';
 import { iosCommand } from './ios/iosCommand';
 
-function generateLegal(
+async function generateLegal(
   androidProjectPath: string | undefined,
   iosProjectPath: string | undefined,
   pluginScanOptions: PluginScanOptions,
 ) {
   const scanOptionsFactory = createPluginScanOptionsFactory(pluginScanOptions);
-  const { additionalProjectRoots } = pluginScanOptions;
+  const { dependencySource, additionalProjectRoots } = pluginScanOptions;
 
   if (androidProjectPath) {
-    androidCommand(androidProjectPath, { scanOptionsFactory, additionalProjectRoots });
+    await androidCommand(androidProjectPath, { scanOptionsFactory, dependencySource, additionalProjectRoots });
   }
 
   if (iosProjectPath) {
-    iosCommand(iosProjectPath, { scanOptionsFactory, additionalProjectRoots });
+    await iosCommand(iosProjectPath, { scanOptionsFactory, dependencySource, additionalProjectRoots });
   }
 }
 
