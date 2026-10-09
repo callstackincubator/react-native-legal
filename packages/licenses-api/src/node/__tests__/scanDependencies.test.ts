@@ -179,6 +179,7 @@ describe('scanDependencies', () => {
       const appDir = path.join(tmp, 'app');
 
       // `glob` is a dependency of @callstack/licenses, but it is not installed for the scanned project
+      expect(() => require.resolve('glob')).not.toThrow();
       writePackage(appDir, { name: 'fixture-app', private: true, dependencies: { glob: '^13.0.0' } });
 
       const licenses = scanDependencies(path.join(appDir, 'package.json'));

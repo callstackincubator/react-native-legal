@@ -1,15 +1,20 @@
+import { parseLicenseExpression } from '../../licenses/licenseExpression';
 import type { License } from '../../types';
 import { mergeLicensesMappings } from '../mergeLicensesMappings';
 
-function license(name: string, version: string, overrides: Partial<License> = {}) {
+function license(name: string, version: string, overrides: Partial<License> = {}): License {
   return {
     name,
     version,
+    rawLicense: 'MIT',
+    license: parseLicenseExpression('MIT'),
+    licenseIds: ['MIT'],
+    licenseFiles: [],
     dependencyType: 'dependency',
     requiredVersion: version,
     parentPackages: [],
     ...overrides,
-  } as License;
+  };
 }
 
 describe('mergeLicensesMappings', () => {
@@ -50,9 +55,12 @@ describe('mergeLicensesMappings', () => {
     expect(Object.keys(merged)).toEqual(['x@1.0.0', 'x@2.0.0']);
   });
 
-  it('does not modify the mappings passed in', () => {
+  it('does not modify the mappings passed in, not even through the merged mapping', () => {
     const first = {
       'x@1.0.0': license('x', '1.0.0', {
+        parentPackages: [{ name: 'parent-a', requiredVersion: '^1.0.0', resolvedVersion: '1.2.0' }],
+      }),
+      'y@1.0.0': license('y', '1.0.0', {
         parentPackages: [{ name: 'parent-a', requiredVersion: '^1.0.0', resolvedVersion: '1.2.0' }],
       }),
     };
@@ -65,7 +73,7 @@ describe('mergeLicensesMappings', () => {
 
     const merged = mergeLicensesMappings(first, second);
 
-    merged['x@1.0.0'].parentPackages.push({ name: 'parent-c', requiredVersion: '3.0.0', resolvedVersion: '3.0.0' });
+    merged['y@1.0.0'].parentPackages.push({ name: 'parent-c', requiredVersion: '3.0.0', resolvedVersion: '3.0.0' });
 
     expect([first, second]).toEqual(snapshots);
   });
