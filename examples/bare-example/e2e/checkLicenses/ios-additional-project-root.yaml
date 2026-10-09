@@ -1,0 +1,35 @@
+appId: org.reactjs.native.example.ReactNativeLegalBareExample
+name: '[iOS] Check additional project root entry in OSS libraries list'
+tags:
+  - pull-request
+  - ios
+---
+- launchApp:
+    clearState: true
+    stopApp: true
+- startRecording: 'e2e_results/checkLicenses-additionalProjectRoot'
+- extendedWaitUntil:
+    visible: 'Tap to see list of OSS libraries'
+    timeout: 30000
+- tapOn: 'Tap to see list of OSS libraries'
+- assertVisible: 'OSS Notice'
+- swipe:
+    start: 50%, 70%
+    end: 50%, 30%
+    duration: 1000
+- scrollUntilVisible:
+    label: Scroll to is-even library
+    element: 'is-even \(.*\)'
+    direction: 'DOWN'
+    timeout: 180000
+    speed: 60
+    visibilityPercentage: 75
+- takeScreenshot: 'e2e_results/additionalProjectRoot-is-even_list_element'
+- tapOn: 'is-even \(.*\)'
+- takeScreenshot: 'e2e_results/additionalProjectRoot-is-even_entry'
+- assertVisible: 'is-even \(.*\)'
+- assertVisible: '.*MIT License.*'
+- assertVisible: '.*Copyright \(c\) 2015, 2017, Jon Schlinkert.*'
+- tapOn: 'OSS Notice'
+- stopRecording
+- killApp
