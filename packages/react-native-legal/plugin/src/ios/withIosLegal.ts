@@ -3,7 +3,7 @@ import path from 'node:path';
 import { scanDependencies, writeLicensePlistNPMOutput } from '@callstack/licenses';
 import { type ConfigPlugin, withXcodeProject } from 'expo/config-plugins';
 
-import type { PlatformPluginOptions } from '../types';
+import type { PlatformPluginOptions } from '../../../plugin-utils/build/types';
 
 import { addSettingsBundle } from './addSettingsBundle';
 import { registerLicensePlistBuildPhase } from './registerLicensePlistBuildPhase';

@@ -17,6 +17,16 @@ function license(name: string, version: string, overrides: Partial<License> = {}
   };
 }
 
+function mutateEveryObjectAndArray(value: unknown) {
+  if (Array.isArray(value)) {
+    value.forEach(mutateEveryObjectAndArray);
+    value.push('mutated');
+  } else if (typeof value === 'object' && value !== null) {
+    Object.values(value).forEach(mutateEveryObjectAndArray);
+    Object.assign(value, { mutated: true });
+  }
+}
+
 describe('mergeLicensesMappings', () => {
   it('contains the entries of all mappings, in order of first appearance', () => {
     const merged = mergeLicensesMappings({ 'a@1.0.0': license('a', '1.0.0') }, { 'b@2.0.0': license('b', '2.0.0') });
@@ -61,6 +71,7 @@ describe('mergeLicensesMappings', () => {
         parentPackages: [{ name: 'parent-a', requiredVersion: '^1.0.0', resolvedVersion: '1.2.0' }],
       }),
       'y@1.0.0': license('y', '1.0.0', {
+        licenseFiles: [{ file: '/y/LICENSE', content: 'MIT License', licenseId: 'MIT' }],
         parentPackages: [{ name: 'parent-a', requiredVersion: '^1.0.0', resolvedVersion: '1.2.0' }],
       }),
     };
@@ -71,9 +82,7 @@ describe('mergeLicensesMappings', () => {
     };
     const snapshots = structuredClone([first, second]);
 
-    const merged = mergeLicensesMappings(first, second);
-
-    merged['y@1.0.0'].parentPackages.push({ name: 'parent-c', requiredVersion: '3.0.0', resolvedVersion: '3.0.0' });
+    mutateEveryObjectAndArray(mergeLicensesMappings(first, second));
 
     expect([first, second]).toEqual(snapshots);
   });

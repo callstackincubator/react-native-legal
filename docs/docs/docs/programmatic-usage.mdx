@@ -130,18 +130,19 @@ const licenses = scanDependencies('./package.json', optionsFactory, {
 });
 ```
 
-- Paths are resolved against the directory of the scanned `package.json`, and each of them must be a directory with a `package.json`, otherwise an error is thrown.
-- Each additional project root is scanned like the app itself, with the same `optionsFactory` (`isRoot` is `true` for its own `package.json`); its own package is not listed.
+- Relative paths are resolved against the real directory (with symlinks resolved) of the scanned `package.json`, and each path must be a directory with a `package.json`, otherwise an error is thrown.
+- Each additional project root is scanned like the app itself, with the same `optionsFactory` (`isRoot` is `true` for its own `package.json`). To scan one with different options, scan it separately and combine the results with `mergeLicensesMappings` (see below).
+- Like the app's own package, the package of an additional project root is not listed, even if it is not private, because it is usually part of the app's own code. If its license should be listed, add it to the app's dependencies (e.g. with `workspace:*`) instead.
 - Do not list workspaces that the app already depends on (e.g. with `workspace:*`). They are scanned anyway, and listing them would scan them as roots too, e.g. with their `devDependencies` if `includeDevDependencies` is set to `isRoot`.
 
-To combine the results of any scans yourself, use `mergeLicensesMappings`. It keeps a single entry per `name@version` (the entry from the first mapping wins) and combines the parent packages of all entries:
+To combine the results of any scans yourself, e.g. to scan an additional project root with different options, use `mergeLicensesMappings`. It keeps a single entry per `name@version` (the entry from the first mapping wins) and combines the parent packages of all entries:
 
 ```typescript
 import { mergeLicensesMappings, scanDependencies } from '@callstack/licenses';
 
 const licenses = mergeLicensesMappings(
   scanDependencies('./package.json', optionsFactory),
-  scanDependencies('../backend/package.json', optionsFactory),
+  scanDependencies('./backend/package.json', backendOptionsFactory),
 );
 ```
 

@@ -30,19 +30,15 @@ export function getPackageJsonPath(dependency: string, root?: string, projectRoo
 }
 
 function findPackageJsonInNodeModules(dependency: string, startDir: string) {
-  let currentDir = startDir;
-
-  while (currentDir !== path.dirname(currentDir)) {
+  for (let currentDir = startDir; ; currentDir = path.dirname(currentDir)) {
     if (path.basename(currentDir) !== 'node_modules') {
       const pkgJsonInNodeModules = path.join(currentDir, 'node_modules', dependency, 'package.json');
 
       if (fs.existsSync(pkgJsonInNodeModules)) return fs.realpathSync(pkgJsonInNodeModules);
     }
 
-    currentDir = path.dirname(currentDir);
+    if (currentDir === path.dirname(currentDir)) return null;
   }
-
-  return null;
 }
 
 export function resolvePackageJsonFromEntry(dependency: string, paths?: string[]) {

@@ -29,4 +29,21 @@ describe('getPackageJsonPath', () => {
 
     expect(getPackageJsonPath('fixture-shared')).toBe(path.join(cwd, 'node_modules', 'fixture-shared', 'package.json'));
   });
+
+  it('searches node_modules in the filesystem root too', () => {
+    const packageJsonPath = path.join(
+      path.parse(tmp).root,
+      'node_modules',
+      'fixture-in-filesystem-root',
+      'package.json',
+    );
+    const { existsSync, realpathSync } = fs;
+
+    jest.spyOn(fs, 'existsSync').mockImplementation((file) => file === packageJsonPath || existsSync(file));
+    jest
+      .spyOn(fs, 'realpathSync')
+      .mockImplementation((file) => (file === packageJsonPath ? packageJsonPath : realpathSync(file)));
+
+    expect(getPackageJsonPath('fixture-in-filesystem-root', undefined, tmp)).toBe(packageJsonPath);
+  });
 });

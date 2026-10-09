@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { scanDependencies, writeAboutLibrariesNPMOutput } from '@callstack/licenses';
 
-import type { PlatformCommandOptions } from '../types';
+import type { PlatformPluginOptions } from '../../../plugin-utils/build/types';
 
 import { addListActivity } from './addListActivity';
 import { addResourceKeepFile } from './addResourceKeepFile';
@@ -18,7 +18,7 @@ import { declareAboutLibrariesPlugin } from './declareAboutLibrariesPlugin';
  */
 export function androidCommand(
   androidProjectPath: string,
-  { scanOptionsFactory, additionalProjectRoots }: PlatformCommandOptions,
+  { scanOptionsFactory, additionalProjectRoots }: PlatformPluginOptions,
 ) {
   const licenses = scanDependencies(
     path.join(path.resolve(androidProjectPath, '..'), 'package.json'),
