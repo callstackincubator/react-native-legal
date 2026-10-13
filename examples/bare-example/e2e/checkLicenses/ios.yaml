@@ -23,7 +23,7 @@ tags:
     direction: 'DOWN'
     timeout: 60000
     speed: 60
-    visibilityPercentage: 75
+    visibilityPercentage: 100
 - takeScreenshot: 'e2e_results/react-native_list_element'
 - assertVisible: '@react-native/virtualized-lists (.*)'
 - tapOn: '@react-native/virtualized-lists (.*)'

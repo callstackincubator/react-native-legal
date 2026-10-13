@@ -49,7 +49,10 @@
           "devDepsMode": "none",
           "includeOptionalDeps": true,
           "transitiveDepsMode": "all",
-          "additionalProjectRoots": ["../packages/example-additional-project-root"]
+          "additionalProjectRoots": [
+            "../packages/example-additional-project-root",
+            "../packages/example-additional-project-root-2"
+          ]
         }
       ]
     ]

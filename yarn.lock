@@ -1706,6 +1706,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@callstack/example-additional-project-root-2@workspace:examples/packages/example-additional-project-root-2":
+  version: 0.0.0-use.local
+  resolution: "@callstack/example-additional-project-root-2@workspace:examples/packages/example-additional-project-root-2"
+  dependencies:
+    clsx: "npm:2.1.1"
+  languageName: unknown
+  linkType: soft
+
 "@callstack/example-additional-project-root@workspace:examples/packages/example-additional-project-root":
   version: 0.0.0-use.local
   resolution: "@callstack/example-additional-project-root@workspace:examples/packages/example-additional-project-root"

@@ -1,5 +1,5 @@
 appId: com.reactnativelegalbareexample
-name: '[Android] Check additional project root entry in OSS libraries list'
+name: '[Android] Check additional project roots entries in OSS libraries list'
 tags:
   - pull-request
   - android
@@ -15,6 +15,21 @@ tags:
     end: 50%, 0%
 - scrollUntilVisible:
     element:
+      containsChild: 'clsx'
+      index: 0
+    direction: 'DOWN'
+    timeout: 180000
+    centerElement: false
+    speed: 75
+    visibilityPercentage: 100
+- takeScreenshot: 'e2e_results/additionalProjectRoot-clsx_list_element'
+- tapOn: 'clsx'
+- takeScreenshot: 'e2e_results/additionalProjectRoot-clsx_license_modal'
+- assertVisible: '.*MIT License.*'
+- assertVisible: '.*Copyright \(c\) Luke Edwards.*'
+- back
+- scrollUntilVisible:
+    element:
       containsChild: 'is-even'
       index: 0
     direction: 'DOWN'
@@ -24,7 +39,7 @@ tags:
     visibilityPercentage: 100
 - takeScreenshot: 'e2e_results/additionalProjectRoot-is-even_list_element'
 - tapOn: 'is-even'
-- takeScreenshot: 'e2e_results/additionalProjectRoot-license_modal'
+- takeScreenshot: 'e2e_results/additionalProjectRoot-is-even_license_modal'
 - assertVisible: '.*MIT License.*'
 - assertVisible: '.*Copyright \(c\) 2015, 2017, Jon Schlinkert.*'
 - back
