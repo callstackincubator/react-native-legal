@@ -10,13 +10,14 @@ async function generateLegal(
   pluginScanOptions: PluginScanOptions,
 ) {
   const scanOptionsFactory = createPluginScanOptionsFactory(pluginScanOptions);
+  const { dependencySource, additionalProjectRoots } = pluginScanOptions;
 
   if (androidProjectPath) {
-    await androidCommand(androidProjectPath, scanOptionsFactory, pluginScanOptions.dependencySource);
+    await androidCommand(androidProjectPath, { scanOptionsFactory, dependencySource, additionalProjectRoots });
   }
 
   if (iosProjectPath) {
-    await iosCommand(iosProjectPath, scanOptionsFactory, pluginScanOptions.dependencySource);
+    await iosCommand(iosProjectPath, { scanOptionsFactory, dependencySource, additionalProjectRoots });
   }
 }
 

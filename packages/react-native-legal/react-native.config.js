@@ -46,17 +46,29 @@ module.exports = {
           },
           default: 'package-json',
         },
+        {
+          name: '--apr, --additional-project-roots <paths>',
+          description:
+            'Comma-separated paths (relative to the app root) of other folders with a package.json whose dependencies should be listed too, e.g. monorepo workspaces the app does not depend on; can be repeated',
+          parse: (val, previous = []) => [...previous, ...val.split(',').map((rootPath) => rootPath.trim())],
+        },
       ],
       func: ([], { project: { android, ios } }, args) => {
         const generateLegal = require('./bare-plugin/build').default;
         const { resolvePluginScanOptions } = require('./plugin-utils/build/common');
-        const { devDepsMode, includeOptionalDeps, transitiveDepsMode, dependencySource } = args;
+        const { devDepsMode, includeOptionalDeps, transitiveDepsMode, dependencySource, additionalProjectRoots } = args;
 
         // the defaults are assigned here (not in the options above), so that the options explicitly passed by the user can be validated
         return generateLegal(
           android?.sourceDir,
           ios?.sourceDir,
-          resolvePluginScanOptions({ devDepsMode, includeOptionalDeps, transitiveDepsMode, dependencySource }),
+          resolvePluginScanOptions({
+            devDepsMode,
+            includeOptionalDeps,
+            transitiveDepsMode,
+            dependencySource,
+            additionalProjectRoots,
+          }),
         );
       },
     },

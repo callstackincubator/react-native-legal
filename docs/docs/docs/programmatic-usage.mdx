@@ -114,9 +114,37 @@ Use `parseLicenseExpression`, `renderLicenseExpression` and `classifyLicenseExpr
 
 `react-native-legal` scans dependencies from workspace packages with the `workspace:*` notation in your `package.json` in addition to the app's direct dependencies.
 
+Dependencies are resolved from the directory of the scanned `package.json`, walking up the `node_modules` directories like Node.js does, so the result does not depend on the working directory the scan is run from (only a relative path to the `package.json` itself is resolved against it).
+
 :::info
 If a monorepo package is private, its name and license won't be included in the license list, but its dependencies will still be scanned and included.
 :::
+
+To also include dependencies of folders that the app does not depend on, e.g. a monorepo workspace that is not listed in the app's `package.json` or a separately bundled JS VM with its own `node_modules`, pass them as `additionalProjectRoots`:
+
+```typescript
+import { scanDependencies } from '@callstack/licenses';
+
+const licenses = scanDependencies('./package.json', optionsFactory, {
+  additionalProjectRoots: ['../../packages/shared', './backend'],
+});
+```
+
+- Relative paths are resolved against the real directory (with symlinks resolved) of the scanned `package.json`, and each path must be a directory with a `package.json`, otherwise an error is thrown.
+- Each additional project root is scanned like the app itself, with the same `optionsFactory` (`isRoot` is `true` for its own `package.json`). To scan one with different options, scan it separately and combine the results with `mergeLicensesMappings` (see below).
+- Like the app's own package, the package of an additional project root is not listed, even if it is not private, because it is usually part of the app's own code. If its license should be listed, add it to the app's dependencies (e.g. with `workspace:*`) instead.
+- Do not list workspaces that the app already depends on (e.g. with `workspace:*`). They are scanned anyway, and listing them would scan them as roots too, e.g. with their `devDependencies` if `includeDevDependencies` is set to `isRoot`.
+
+To combine the results of any scans yourself, e.g. to scan an additional project root with different options, use `mergeLicensesMappings`. It keeps a single entry per `name@version` (the entry from the first mapping wins) and combines the parent packages of all entries:
+
+```typescript
+import { mergeLicensesMappings, scanDependencies } from '@callstack/licenses';
+
+const licenses = mergeLicensesMappings(
+  scanDependencies('./package.json', optionsFactory),
+  scanDependencies('./backend/package.json', backendOptionsFactory),
+);
+```
 
 ### Known Limitations
 
@@ -126,14 +154,6 @@ If a monorepo package is private, its name and license won't be included in the 
 This tool (and in turn, the CLI and RN plugins) do not support `file:` specified dependencies, which is a known limitation. If such packages are scanned and their dependencies (of any type) are not installed in the root `node_modules` directory, such dependencies will not be found and included.
 
 If you would like to have support for this, please start a discussion on Github.
-:::
-
-#### Private packages
-
-All private packages (i.e., packages that have a `private: true` field in their `package.json`) are excluded from the scan. All their dependencies (all kinds of dependencies) also are **not included** in the scan / report. Therefore, all the tooling ignores private packages & their dependencies.
-
-:::warning
-If you are using a private package that introduces dependencies to your bundle / program, remember it itself & its dependencies won't be included.
 :::
 
 ### Default `scanOptionsFactory` value

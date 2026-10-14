@@ -8,11 +8,14 @@ on:
       - '.github/workflows/test-e2e-ios.yaml'
       - 'examples/bare-example/e2e/checkLicenses/ios.yaml'
       - 'examples/bare-example/e2e/checkLicenses/ios-get-licenses.yaml'
+      - 'examples/bare-example/e2e/checkLicenses/ios-additional-project-root.yaml'
       - 'packages/react-native-legal/**/*.[tj]sx?'
       - 'packages/react-native-legal/ios/**'
       - 'packages/licenses-api/**/*.[tj]sx?'
       - 'examples/bare-example/**/*.[tj]sx?'
       - 'examples/bare-example/ios/**'
+      - 'examples/bare-example/package.json'
+      - 'examples/packages/**'
 
   push:
     branches:

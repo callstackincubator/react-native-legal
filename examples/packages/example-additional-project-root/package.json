@@ -1,0 +1,7 @@
+{
+  "name": "@callstack/example-additional-project-root",
+  "private": true,
+  "dependencies": {
+    "is-even": "1.0.0"
+  }
+}

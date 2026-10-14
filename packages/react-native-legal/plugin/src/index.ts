@@ -13,12 +13,12 @@ const pak = require('react-native-legal/package.json');
 const withReactNativeLegal: ConfigPlugin<PluginOptions> = (config, options) => {
   // validates the raw options, before the defaults are assigned
   const pluginScanOptions = resolvePluginScanOptions(options);
-  const { dependencySource } = pluginScanOptions;
+  const { dependencySource, additionalProjectRoots } = pluginScanOptions;
 
   const scanOptionsFactory = createPluginScanOptionsFactory(pluginScanOptions);
 
-  config = withAndroidLegal(config, { scanOptionsFactory, dependencySource });
-  config = withIosLegal(config, { scanOptionsFactory, dependencySource });
+  config = withAndroidLegal(config, { scanOptionsFactory, dependencySource, additionalProjectRoots });
+  config = withIosLegal(config, { scanOptionsFactory, dependencySource, additionalProjectRoots });
 
   return config;
 };
