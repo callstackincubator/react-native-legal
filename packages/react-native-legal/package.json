@@ -1,6 +1,6 @@
 {
   "name": "react-native-legal",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "description": "Acknowledge OSS libraries used in your React Native app",
   "keywords": [
     "react-native",
@@ -63,7 +63,7 @@
     "react-native-builder-bob": "0.42.1"
   },
   "dependencies": {
-    "@callstack/licenses": "^0.3.3",
+    "@callstack/licenses": "^1.0.0",
     "glob": "^13.0.0",
     "xcode": "^3.0.1",
     "xml2js": "^0.6.2"
