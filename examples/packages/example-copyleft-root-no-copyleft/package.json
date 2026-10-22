@@ -1,10 +1,10 @@
 {
   "name": "@callstack/example-copyleft-root-no-copyleft",
-  "private": true,
   "description": "Test project for the license-kit copyleft exit code integration tests",
   "packageManager": "yarn@3.6.1",
   "dependencies": {
     "@callstack/example-license-mit-or-apache-2.0": "workspace:*",
     "@callstack/example-license-mit-or-apache-2.0-and-isc": "workspace:*"
-  }
+  },
+  "private": true
 }

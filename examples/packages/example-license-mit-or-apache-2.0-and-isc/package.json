@@ -3,5 +3,6 @@
   "version": "1.0.0",
   "description": "Test package with an expression relying on AND binding tighter than OR, for the license-kit integration tests",
   "license": "MIT OR Apache-2.0 AND ISC",
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@3.6.1",
+  "private": true
 }

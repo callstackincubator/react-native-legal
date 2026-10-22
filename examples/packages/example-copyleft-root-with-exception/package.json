@@ -1,9 +1,9 @@
 {
   "name": "@callstack/example-copyleft-root-with-exception",
-  "private": true,
   "description": "Test project for the license-kit integration tests",
   "packageManager": "yarn@3.6.1",
   "dependencies": {
     "@callstack/example-license-gpl-2.0-with-classpath-exception": "workspace:*"
-  }
+  },
+  "private": true
 }

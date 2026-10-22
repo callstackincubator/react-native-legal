@@ -3,5 +3,6 @@
   "version": "1.0.0",
   "description": "Test package with no license grant, for the license-kit integration tests",
   "license": "UNLICENSED",
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@3.6.1",
+  "private": true
 }

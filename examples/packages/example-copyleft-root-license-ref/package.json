@@ -1,9 +1,9 @@
 {
   "name": "@callstack/example-copyleft-root-license-ref",
-  "private": true,
   "description": "Test project for the license-kit integration tests",
   "packageManager": "yarn@3.6.1",
   "dependencies": {
     "@callstack/example-license-gpl-3.0-and-license-ref": "workspace:*"
-  }
+  },
+  "private": true
 }

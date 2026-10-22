@@ -3,5 +3,6 @@
   "version": "1.0.0",
   "description": "Test package whose license points to a file, for the license-kit integration tests",
   "license": "SEE LICENSE IN LICENSE.md",
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@3.6.1",
+  "private": true
 }
