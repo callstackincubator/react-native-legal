@@ -1968,29 +1968,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@callstack/rspress-preset@npm:^0.6.7":
-  version: 0.6.7
-  resolution: "@callstack/rspress-preset@npm:0.6.7"
+"@callstack/rspress-preset@npm:0.6.6":
+  version: 0.6.6
+  resolution: "@callstack/rspress-preset@npm:0.6.6"
   dependencies:
-    "@callstack/rspress-theme": "npm:0.6.7"
+    "@callstack/rspress-theme": "npm:0.6.6"
     "@rspress/plugin-sitemap": "npm:^2.0.8"
     "@vercel/analytics": "npm:^2.0.1"
     rsbuild-plugin-open-graph: "npm:^1.1.2"
     zod: "npm:^4.3.6"
   peerDependencies:
     "@rspress/core": ^2.0.8
-  checksum: 10/6d13e056b009496bd1a3dd2745657bd64e0af6f86252c2a30ab006accb44841f2eaa5f2f4e0e30a3f8c9b7ba767120ced6debac281d203f62b89586d72df2028
+  checksum: 10/50caab08e2ac3e18d8d4e1a57eaa3d8fbc09a4c67509351d1b835895951d42f2d45daef426f3832146f922300dd527dbd493140c2f749b9096489dd868dfcd8a
   languageName: node
   linkType: hard
 
-"@callstack/rspress-theme@npm:0.6.7, @callstack/rspress-theme@npm:^0.6.7":
-  version: 0.6.7
-  resolution: "@callstack/rspress-theme@npm:0.6.7"
+"@callstack/rspress-theme@npm:0.6.6":
+  version: 0.6.6
+  resolution: "@callstack/rspress-theme@npm:0.6.6"
   peerDependencies:
     "@rspress/core": ^2.0.8
     react: ^19.2.4
     react-dom: ^19.2.4
-  checksum: 10/8ee84706129dd746a509d7c3e0fccb1b34d2274cc7f75e8b7afc8cacf18761a27d32e46f4af3e9410de6299c403f86f4499b9888cce00ac22126f209b1f50968
+  checksum: 10/7c8486cb3132b21d0ccee7a4efaba059528044f2c3d679a6cc8bcf0905f3948986d905f96a4fcf6aa07efa441b559f6fc00ddf461f23a89eec52b0d41b7602f3
   languageName: node
   linkType: hard
 
@@ -9027,8 +9027,8 @@ __metadata:
   resolution: "docs@workspace:docs"
   dependencies:
     "@biomejs/biome": "npm:^1.9.4"
-    "@callstack/rspress-preset": "npm:^0.6.7"
-    "@callstack/rspress-theme": "npm:^0.6.7"
+    "@callstack/rspress-preset": "npm:0.6.6"
+    "@callstack/rspress-theme": "npm:0.6.6"
     "@rspress/core": "npm:^2.0.23"
     "@rspress/plugin-typedoc": "npm:^2.0.23"
     "@types/node": "npm:^24"
