@@ -12,6 +12,7 @@ const makeLicense = (name: string, rawLicense: string | null): License => ({
   rawLicense,
   license: parseLicenseExpression(rawLicense),
   licenseIds: [],
+  licenseFiles: [],
 });
 
 const makeReport = (entries: [name: string, rawLicense: string | null][]): AggregatedLicensesMapping =>
