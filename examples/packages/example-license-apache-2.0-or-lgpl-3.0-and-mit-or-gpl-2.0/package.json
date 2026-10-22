@@ -3,5 +3,6 @@
   "version": "1.0.0",
   "description": "Test package with two Dual Licenses combined with AND, for the license-kit integration tests",
   "license": "(Apache-2.0 OR LGPL-3.0-only) AND (MIT OR GPL-2.0-only)",
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@3.6.1",
+  "private": true
 }

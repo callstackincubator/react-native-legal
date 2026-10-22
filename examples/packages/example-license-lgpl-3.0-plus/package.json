@@ -3,5 +3,6 @@
   "version": "1.0.0",
   "description": "Test package with an LGPL-3.0+ license and a LICENSE.txt file, for the example apps",
   "license": "LGPL-3.0+",
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@3.6.1",
+  "private": true
 }

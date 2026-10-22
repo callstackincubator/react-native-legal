@@ -1,0 +1,34 @@
+name: Lint Release
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/lint-release.yml'
+      - 'packages/react-native-legal/**/package.json'
+      - 'packages/licenses-api/**/package.json'
+      - 'packages/license-kit/**/package.json'
+      - 'examples/**/package.json'
+      - 'examples/**/package.json'
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+   contents: read
+
+jobs:
+  lint-release:
+    name: Lint Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          enable-cache: true
+
+      - name: Run linter
+        run: yarn lint:release

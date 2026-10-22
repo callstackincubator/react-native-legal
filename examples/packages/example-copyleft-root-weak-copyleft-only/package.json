@@ -1,9 +1,9 @@
 {
   "name": "@callstack/example-copyleft-root-weak-copyleft-only",
-  "private": true,
   "description": "Test project for the license-kit copyleft exit code integration tests",
   "packageManager": "yarn@3.6.1",
   "dependencies": {
     "@callstack/example-license-mit-and-lgpl-2.1": "workspace:*"
-  }
+  },
+  "private": true
 }

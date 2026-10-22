@@ -1,4 +1,6 @@
 import child_process from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
 import { stripVTControlCharacters } from 'node:util';
 
 /**
@@ -60,4 +62,32 @@ export function runLicenseKit(args: string[] = []) {
       },
     );
   });
+}
+
+/**
+ * All workspace packages that are not meant to be published to NPM need to be private
+ *
+ * The problem is that we would like to use some fixture packages for tests and for that we actually need
+ * to have them non-private :C
+ *
+ * The solution is to make them non-private only in test environment - jest exposes `globalSetup` and `globalTeardown`
+ * that we can use to monkey patch the packages before and after all test suite run (not ideal, but works)
+ */
+export function patchFixturesPackages(fixturesDir: string, isPrivate: boolean) {
+  for (const packageName of fs.readdirSync(fixturesDir)) {
+    if (packageName === 'example-private-package') {
+      continue;
+    }
+
+    const packagePath = path.join(fixturesDir, packageName, 'package.json');
+    const packageJson = JSON.parse(fs.readFileSync(packagePath, { encoding: 'utf8' }));
+
+    if (isPrivate) {
+      packageJson.private = true;
+    } else {
+      delete packageJson.private;
+    }
+
+    fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2) + '\n', { encoding: 'utf8' });
+  }
 }

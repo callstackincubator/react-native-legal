@@ -3,5 +3,6 @@
   "version": "1.0.0",
   "description": "Test package with a Dual License nested inside AND, for the license-kit integration tests",
   "license": "(MIT OR GPL-3.0-only) AND LGPL-2.1-only",
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@3.6.1",
+  "private": true
 }

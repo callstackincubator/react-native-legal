@@ -1,6 +1,10 @@
 pre-push:
   piped: true
   commands:
+    lint-release:
+      files: git diff --name-only --cached origin/main
+      glob: '*/package.json'
+      run: yarn lint:release
     lint-js:
       # Run ESLint for root ESLint config JS/TS files if any of them are staged
       files: git diff --name-only --cached origin/main

@@ -1,10 +1,10 @@
 {
   "name": "@callstack/example-copyleft-root-unknown-licenses",
-  "private": true,
   "description": "Test project for the license-kit integration tests",
   "packageManager": "yarn@3.6.1",
   "dependencies": {
     "@callstack/example-license-see-license-in": "workspace:*",
     "@callstack/example-license-unlicensed": "workspace:*"
-  }
+  },
+  "private": true
 }

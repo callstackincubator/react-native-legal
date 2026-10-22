@@ -11,6 +11,7 @@
   "scripts": {
     "build:library": "yarn workspace @callstack/licenses build && yarn workspace react-native-legal build-plugins && yarn workspace license-kit build-library && yarn workspace react-native-legal build-library",
     "build:visualizer": "yarn workspace @callstack/license-kit-visualizer build",
+    "lint:release": "./scripts/lint-public-workspace-packages.js -p 'react-native-legal' -p 'license-kit' -p '@callstack/licenses' -i '**/node_modules/**' -i '**/dist/**' -i '**/lib/**' -i '**/visualizer-build/**'",
     "lint:js": "eslint \"**/*.{js,ts,tsx}\"",
     "lint:docs": "yarn workspace docs check",
     "typescript": "yarn build:library && tsc --noEmit -p examples/bare-example/tsconfig.json && tsc --noEmit -p examples/bare-metro-graph-example/tsconfig.json && tsc --noEmit -p examples/expo-example/tsconfig.json && tsc --noEmit -p examples/expo-metro-graph-example/tsconfig.json",
