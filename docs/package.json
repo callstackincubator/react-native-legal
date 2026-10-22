@@ -15,13 +15,13 @@
     "preview": "rspress preview"
   },
   "dependencies": {
-    "@callstack/rspress-preset": "^0.6.2",
-    "@callstack/rspress-theme": "^0.6.2",
-    "@rspress/core": "^2.0.8"
+    "@callstack/rspress-preset": "^0.6.7",
+    "@callstack/rspress-theme": "^0.6.7",
+    "@rspress/core": "^2.0.23"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@rspress/plugin-typedoc": "^2.0.8",
+    "@rspress/plugin-typedoc": "^2.0.23",
     "@types/node": "^24"
   }
 }

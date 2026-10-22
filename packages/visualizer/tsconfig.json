@@ -36,7 +36,8 @@
     "dist/types/**/*.ts",
     "next-env.d.ts",
     "../license-kit/visualizer-build/types/**/*.ts",
-    "../license-kit/visualizer-build/dev/types/**/*.ts"
+    "../license-kit/visualizer-build/dev/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
