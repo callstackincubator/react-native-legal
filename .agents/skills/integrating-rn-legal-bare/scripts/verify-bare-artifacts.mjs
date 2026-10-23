@@ -1,0 +1,1 @@
+../../../../skills/integrating-rn-legal-bare/scripts/verify-bare-artifacts.mjs
